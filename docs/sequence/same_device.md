@@ -41,7 +41,13 @@ sequenceDiagram
 
 ### 1.Initiate transaction
 
-URL:https://verifier-backend.eudiw.dev/ui/presentaitions
+VerifierからVerifier Endpointに対して、VP提示フローを開始するためのリクエストを送信する。  
+リクエストパラメータの`type`には`vp_token`、`presentation_definition`には[OpenID for Verifiable Presentationsの認可リクエストの項目に記載されているようなJSONオブジェクト](https://openid.github.io/OpenID4VP/openid-4-verifiable-presentations-wg-draft.html#section-5.1)を指定する。
+
+(上記以外のリクエストパラメータ、`vp_token`以外の`type`の指定については、[リンク先](https://github.com/eu-digital-identity-wallet/eudi-srv-web-verifier-endpoint-23220-4-kt?tab=readme-ov-file#initialize-transaction-endpoint)を参照)
+
+URL:https://verifier-backend.eudiw.dev/ui/presentaitions  
+Method: POST  
 Parameters:
 ```json
 {
@@ -77,6 +83,10 @@ Parameters:
 
 ### 2.Authorization request as request_url
 
+Verifier EndpointからVerifierに認可リクエストを要求するためのURLを返却する。  
+`presentation_id`はVPの提示フロー完了後、VerifierがVerifier Endpointに対してvp_tokenをリクエストする際に使用する。  
+`request_uri`は、WalletがVerifier Endpointに対し認可リクエストを要求する際に使用する。  
+
 Parameters:
 ```json
 {
@@ -88,16 +98,27 @@ Parameters:
 
 ### 3.Render request as deep link
 
+Deep linkを使用してWalletを呼び出す。  
+クエリパラメータにVerifier Endpointから受け取った`request_uri`を含める。  
+
 URL: eudi-openid4vp://verifier-backend.eudiw.dev?client_id=verifier-backend.eudiw.dev&request_uri=https%3A%2F%2Fverifier-backend.eudiw.dev%2Fwallet%2Frequest.jwt%2FMU78l5jS6d2YwtNOiL5zXaLBJhX3MU59W6PO0T3pfp-SCLlnmtSE-hxaIZHDR7efq4S0rig9Riv4SNBCyE0llA
 
 ### 4.Get authorization request via request_uri 
 
-URL: https://verifier-backend.eudiw.dev/wallet/request.jwt/{transactionId} （3.のクエリパラメータrequest_uriの値）
+Verifier Endpointに対して認可リクエストを要求する。  
+URLには`request_uri`を指定する。  
+
+URL: https://verifier-backend.eudiw.dev/wallet/request.jwt/{transactionId}   
+Method: GET
 
 {transactionId}には以下のような値が指定される: 
 - NVeIFA4rT0FRvXYwQ48re6b7RTH990rTrYSVAJhsCNqaaotM6XNQH8zMJMEN3rPKiJXw4xL7FRgkHzDaHytXf
 
 ### 5.authorization_request
+
+Verifier EndpointからWalletに対し認可リクエストを返却する。  
+パラメータはJWT形式で返却される。  
+下記は、返却されたJWT形式のパラメータとJWTのヘッダーとペイロードをデコードしたもの。  
 
 Raw Parameters:
 ```text
@@ -168,7 +189,12 @@ Payload
 
 ### 6.Post vp_token response
 
-URL: https://verifier-backend.eudiw.dev/wallet/direct_post
+WalletからVerifier Endpointに対して認可リクエストのレスポンスを送信する。  
+`state`は認可リクエストのJWTに含まれていた値。  
+`response`は`vp_token`や`presentation_submission`(Verifierが要求しているクレデンシャルと`vp_token`に含まれるクレデンシャルのマッピング情報)を含む暗号化JWT(JWE)。
+
+URL: https://verifier-backend.eudiw.dev/wallet/direct_post  
+Method: POST  
 Parameters:
 ```json
 {
@@ -179,6 +205,8 @@ Parameters:
 
 ### 7.Return redirect_uri with response_code
 
+WalletからVerifierにリダイレクトするための`redirect_uri`を返却する。
+
 Parameters:
 ```json
 {
@@ -188,15 +216,22 @@ Parameters:
 
 ### 8.Follow redirect_uri passing response_code
 
+Verifier Endpointから返却された`redirect_uri`にリダイレクトする。
+
 URL: https://verifier.eudiw.dev/get-wallet-code?response_code=a37b48e7-3abb-4149-8d0a-4695e44aa1b6
 
 ### 9.Get wallet response passing response_code 
 
-URL: https://verifier-backend.eudiw.dev/ui/presentations/{presentation_id}?response_code=a37b48e7-3abb-4149-8d0a-4695e44aa1b6
+Verifier Endpointに対し、Walletから提示された`vp_token`をリクエストする。
+
+URL: https://verifier-backend.eudiw.dev/ui/presentations/{presentation_id}?response_code=a37b48e7-3abb-4149-8d0a-4695e44aa1b6  
+Method: GET
 
 ※presentation_idには2.で受け取ったpresentation_idの値が入る。
 
 ### 10.Return wallet response
+
+Walletから提示された`vp_token`をVerifierに返却する。
 
 Parameters:
 ```json
