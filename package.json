@@ -1,0 +1,35 @@
+{
+  "name": "oid4vc-verifier-endpoint-core",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dentsusoken/oid4vc-verifier-endpoint-core"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    }
+  },
+  "scripts": {
+    "build": "vite build && tsc",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "typedoc": "^0.26.4",
+    "typedoc-plugin-markdown": "^4.2.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vitest": "^1.4.0"
+  }
+}
