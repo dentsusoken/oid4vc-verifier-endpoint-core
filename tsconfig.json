@@ -23,5 +23,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["lib"]
+  // TODO remove mock from include
+  "include": ["lib", "mock"]
 }
