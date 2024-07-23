@@ -51,7 +51,7 @@ VerifierからVerifier Endpointに対して、VP提示フローを開始する�
 
 (上記以外のリクエストパラメータ、`vp_token`以外の`type`の指定については、[リンク先](https://github.com/eu-digital-identity-wallet/eudi-srv-web-verifier-endpoint-23220-4-kt?tab=readme-ov-file#initialize-transaction-endpoint)を参照)
 
-URL:https://verifier-backend.eudiw.dev/ui/presentaitions  
+URL:https://verifier-backend.eudiw.dev/ui/presentations  
 Method: POST  
 Parameters:
 ```json
