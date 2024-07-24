@@ -140,6 +140,8 @@ export namespace GetWalletResponseMethod {
   export class Redirect implements GetWalletResponseMethod {
     constructor(public redirectUriTemplate: string) {}
   }
+
+  export namespace Redirect {}
 }
 
 export interface Presentation {
