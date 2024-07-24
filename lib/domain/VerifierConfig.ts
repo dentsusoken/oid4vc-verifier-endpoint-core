@@ -128,7 +128,7 @@ export namespace ClientIdScheme {
     constructor(public clientId: string, public jarSigning: SigningConfig) {
       if (!jarSigning.certificate().containsSanDns(clientId)) {
         throw new Error(
-          "Client Id '$clientId' not contained in 'DNS' Subject Alternative Names of JAR Signing Certificate."
+          `Client Id '${clientId}' not contained in 'DNS' Subject Alternative Names of JAR Signing Certificate.`
         );
       }
 
@@ -141,7 +141,7 @@ export namespace ClientIdScheme {
     constructor(public clientId: string, public jarSigning: SigningConfig) {
       if (!jarSigning.certificate().containsSanUri(clientId)) {
         throw new Error(
-          "Client Id '$clientId' not contained in 'URI' Subject Alternative Names of JAR Signing Certificate."
+          `Client Id '${clientId}' not contained in 'URI' Subject Alternative Names of JAR Signing Certificate.`
         );
       }
 

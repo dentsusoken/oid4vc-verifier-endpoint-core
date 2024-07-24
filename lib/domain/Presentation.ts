@@ -178,10 +178,7 @@ export namespace Presentation {
     ) {
       const initiatedAtEpoc = initiatedAt.getTime();
       const requestObjectRetrievedAtEpoc = requestObjectRetrievedAt.getTime();
-      if (
-        initiatedAtEpoc < requestObjectRetrievedAtEpoc ||
-        initiatedAtEpoc === requestObjectRetrievedAtEpoc
-      ) {
+      if (initiatedAtEpoc > requestObjectRetrievedAtEpoc) {
         throw new Error(
           'initiatedAt must be earlier than requestObjectRetrievedAt or equal to requestObjectRetrievedAtEpoc'
         );
@@ -245,7 +242,7 @@ export namespace Presentation {
     ) {
       const initiatedAtEpoc = initiatedAt.getTime();
       const now = Date.now();
-      if (initiatedAtEpoc < now) {
+      if (initiatedAtEpoc > now) {
         throw new Error('initiatedAt must be earlier than now');
       }
     }
@@ -326,7 +323,7 @@ export namespace Presentation {
         const initiatedAtEpoc = presentation.initiatedAt.getTime();
         const atEpoc = at.getTime();
 
-        if (initiatedAtEpoc < atEpoc) {
+        if (initiatedAtEpoc > atEpoc) {
           throw new Error('initiatedAt must be earlier than at');
         }
         if (this.isSubmitted(presentation)) {

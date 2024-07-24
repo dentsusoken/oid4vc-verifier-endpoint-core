@@ -12,7 +12,7 @@ export class Result<T> {
     private exception: Error | undefined
   ) {
     if (value) this.isSuccess = true;
-    if (exception) this.isSuccess = true;
+    if (exception) this.isFailure = true;
   }
 
   getOrNull() {
