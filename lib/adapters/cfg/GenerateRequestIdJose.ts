@@ -58,10 +58,10 @@ class GenerateRequestIdJose {
    * Generates a new request ID.
    * @returns A Promise that resolves to the generated [RequestId]
    */
-  invoke(): Promise<RequestId> {
+  invoke: GenerateRequestId = (): Promise<RequestId> => {
     const value = this.generateRandomValue();
     return Promise.resolve(new RequestId(value));
-  }
+  };
 
   /**
    * Generates a random Base64URL-encoded value of the specified byte length.
