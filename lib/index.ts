@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 export * from './domain/Presentation';
 export * from './domain/VerifierConfig';
 export * from './kotlin';
