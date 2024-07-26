@@ -13,6 +13,7 @@ import {
 } from '../../domain';
 import { PresentationDefinition } from '../../../mock/prex/PresentationDefinition';
 import { QueryResponse } from './QueryResponse';
+import { LoadPresentationByRequestId } from '../out/persistence';
 
 const jwk = {
   p: '8ORn4_vDk_4QTOKLe3RNOYxGV2codzLw85aPm7Ip_5tHme6yWBp0iBxkVJ32wFJCyYFLdLwUrrn-2As8epMXwKmLAM5uDMPawz5hIn9tUw07ETALqv_eo52OaENwXH5QcWJLser0p-7V2IQXfd4pxWTCxdPlGHC9u4qhv2rH750',
@@ -43,23 +44,23 @@ describe('GetJarmJwksLive', () => {
     expect(result).toBe(QueryResponse.InvalidState);
   });
   it('should return a QueryResponse.Found when loadPresentationByRequestId returns correct presentation', async () => {
-    const loadPresentationByRequestId = vi
-      .fn()
-      .mockReturnValue(
-        new Presentation.Requested(
-          new TransactionId('test'),
-          new Date(),
-          new PresentationType.VpTokenRequest(new PresentationDefinition()),
-          new RequestId('test'),
-          new Nonce('test'),
-          new EphemeralEncryptionKeyPairJWK(jwkString),
-          ResponseModeOption.DirectPostJwt,
-          EmbedOption.ByValue,
-          GetWalletResponseMethod.Redirect
-        )
-          .retrieveRequestObject(new Date())
-          .getOrThrow()
-      );
+    const loadPresentationByRequestId: LoadPresentationByRequestId = async (
+      // @ts-ignore
+      requestId: RequestId
+    ) =>
+      new Presentation.Requested(
+        new TransactionId('test'),
+        new Date(),
+        new PresentationType.VpTokenRequest(new PresentationDefinition()),
+        new RequestId('test'),
+        new Nonce('test'),
+        new EphemeralEncryptionKeyPairJWK(jwkString),
+        ResponseModeOption.DirectPostJwt,
+        EmbedOption.ByValue,
+        GetWalletResponseMethod.Redirect
+      )
+        .retrieveRequestObject(new Date())
+        .getOrThrow();
     const getJarmJwksLive = new GetJarmJwksLive(loadPresentationByRequestId);
     const result = await getJarmJwksLive.invoke(new RequestId('test'));
     expect(result).toBeInstanceOf(QueryResponse.Found);

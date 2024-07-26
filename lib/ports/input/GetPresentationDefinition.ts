@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { PresentationDefinition } from '../../../mock/prex/PresentationDefinition';
-import { LoadPresentationByRequestId } from '../../adapter/out/persistence';
+import { LoadPresentationByRequestId } from '../out/persistence';
 import { Presentation, RequestId } from '../../domain';
 import { QueryResponse } from './QueryResponse';
 
@@ -29,17 +29,21 @@ export class GetPresentationDefinitionLive
     private loadPresentationByRequestId: LoadPresentationByRequestId
   ) {}
 
-  invoke(requestId: RequestId): QueryResponse<PresentationDefinition> {
+  async invoke(
+    requestId: RequestId
+  ): Promise<QueryResponse<PresentationDefinition>> {
     const foundOrInvalid = (p: Presentation) => {
       const it = p.type.presentationDefinitionOrNull();
       return it ? new QueryResponse.Found(it) : QueryResponse.InvalidState;
     };
 
-    const presentation = this.loadPresentationByRequestId(requestId);
+    const presentation = await this.loadPresentationByRequestId(requestId);
 
     switch (presentation instanceof Presentation.RequestObjectRetrieved) {
       case true:
-        return foundOrInvalid(presentation);
+        return foundOrInvalid(
+          presentation as Presentation.RequestObjectRetrieved
+        );
       default:
         switch (presentation) {
           case undefined:

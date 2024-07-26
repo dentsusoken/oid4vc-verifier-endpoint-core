@@ -17,7 +17,7 @@ import { Presentation, RequestId } from '../../domain';
 import { jwk } from '../../adapter/out/jose';
 import { QueryResponse } from './QueryResponse';
 import * as jose from 'jose';
-import { LoadPresentationByRequestId } from '../../adapter/out/persistence';
+import { LoadPresentationByRequestId } from '../out/persistence';
 
 // TODO - Confirm if this is the correct type
 type JWKSet = jose.JSONWebKeySet;
@@ -29,17 +29,19 @@ export interface GetJarmJwks {
   invoke: (id: RequestId) => QueryResponse<JWKSet>;
 }
 
-export class GetJarmJwksLive implements LoadPresentationByRequestId {
+export class GetJarmJwksLive implements GetJarmJwks {
   constructor(
     private loadPresentationByRequestId: LoadPresentationByRequestId
   ) {}
 
   async invoke(id: RequestId): Promise<QueryResponse<JWKSet>> {
-    const presentation = this.loadPresentationByRequestId(id);
+    const presentation = await this.loadPresentationByRequestId(id);
 
     switch (presentation instanceof Presentation.RequestObjectRetrieved) {
       case true:
-        const it = await ephemeralEcPubKey(presentation);
+        const it = await ephemeralEcPubKey(
+          presentation as Presentation.RequestObjectRetrieved
+        );
         return it ? new QueryResponse.Found(it) : QueryResponse.InvalidState;
       default:
         switch (presentation) {
