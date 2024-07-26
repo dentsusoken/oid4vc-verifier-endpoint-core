@@ -19,7 +19,7 @@ import { Presentation, RequestId } from '../../domain';
 import { QueryResponse } from './QueryResponse';
 
 export interface GetPresentationDefinition {
-  invoke(requestId: RequestId): QueryResponse<PresentationDefinition>;
+  invoke(requestId: RequestId): Promise<QueryResponse<PresentationDefinition>>;
 }
 
 export class GetPresentationDefinitionLive

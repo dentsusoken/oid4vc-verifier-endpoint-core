@@ -26,7 +26,7 @@ type JWKSet = jose.JSONWebKeySet;
 const toPublicJWKSet = (jwkSet: JWKSet): JWKSet => jwkSet;
 
 export interface GetJarmJwks {
-  invoke: (id: RequestId) => QueryResponse<JWKSet>;
+  invoke(id: RequestId): Promise<QueryResponse<JWKSet>>;
 }
 
 export class GetJarmJwksLive implements GetJarmJwks {
