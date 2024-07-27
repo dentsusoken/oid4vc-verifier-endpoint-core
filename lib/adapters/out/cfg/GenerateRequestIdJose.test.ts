@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createGenerateRequestIdHoseInvoker } from './GenerateRequestIdJose';
-import { RequestId } from '../../domain';
+import { RequestId } from '../../../domain';
 
 describe('GenerateRequestIdJose', () => {
   it('should generate a request ID with the default byte length', async () => {

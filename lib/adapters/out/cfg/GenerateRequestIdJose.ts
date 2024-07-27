@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import { GenerateRequestId } from '../../ports/out/cfg';
-import { RequestId } from '../../domain';
-import { base64url } from 'jose';
+import { GenerateRequestId } from '../../../ports/out/cfg';
+import { RequestId } from '../../../domain';
+import { randomBase64URL } from '../../../utils';
+
+const DEFAULT_BYTE_LENGTH = 32;
 
 /**
  * Creates a function that generates a request ID using the GenerateRequestIdJose class.
@@ -39,7 +41,6 @@ export const createGenerateRequestIdHoseInvoker = (
  * Generates a request ID using the JOSE library.
  */
 class GenerateRequestIdJose {
-  private static readonly DEFAULT_BYTE_LENGTH = 32;
   private readonly byteLength: number;
 
   /**
@@ -47,7 +48,7 @@ class GenerateRequestIdJose {
    * @param byteLength The byte length of the generated request ID. Defaults to 32 bytes.
    * @throws {Error} If the byte length is less than 32.
    */
-  constructor(byteLength: number = GenerateRequestIdJose.DEFAULT_BYTE_LENGTH) {
+  constructor(byteLength: number = DEFAULT_BYTE_LENGTH) {
     if (byteLength < 32) {
       throw new Error('The byte length must be greater than or equal to 32');
     }
@@ -59,17 +60,7 @@ class GenerateRequestIdJose {
    * @returns A Promise that resolves to the generated [RequestId]
    */
   invoke: GenerateRequestId = (): Promise<RequestId> => {
-    const value = this.generateRandomValue();
+    const value = randomBase64URL(this.byteLength);
     return Promise.resolve(new RequestId(value));
   };
-
-  /**
-   * Generates a random Base64URL-encoded value of the specified byte length.
-   * @returns The generated random value as a string.
-   */
-  private generateRandomValue(): string {
-    const buffer = new Uint8Array(this.byteLength);
-    crypto.getRandomValues(buffer);
-    return base64url.encode(buffer);
-  }
 }

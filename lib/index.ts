@@ -1,6 +1,5 @@
 import 'reflect-metadata';
-export * from './domain/Presentation';
-export * from './domain/VerifierConfig';
+export * from './domain';
 export * from './kotlin';
 
 export type Duration = number;
