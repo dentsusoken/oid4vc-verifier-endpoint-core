@@ -21,7 +21,7 @@ import { Result } from '../../../kotlin';
  * An out port that generates ephemeral key
  */
 export interface GenerateEphemeralEncryptionKeyPair {
-  (
-    encryptedResponse: JarmOption.Encrypted
-  ): Result<EphemeralEncryptionKeyPairJWK>;
+  (encryptedResponse: JarmOption.Encrypted): Promise<
+    Result<EphemeralEncryptionKeyPairJWK>
+  >;
 }

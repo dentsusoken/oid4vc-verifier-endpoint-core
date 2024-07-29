@@ -103,3 +103,19 @@ export const runCatching = <T, A extends unknown[]>(
     return Result.failure(new Error(String(e)));
   }
 };
+
+export const runAsyncCatching = async <T, A extends unknown[]>(
+  f: (...args: A) => Promise<T>,
+  ...args: A
+): Promise<Result<T>> => {
+  try {
+    const value = await f(...args);
+    return Result.success(value);
+  } catch (e) {
+    if (e instanceof Error) {
+      return Result.failure(e);
+    }
+
+    return Result.failure(new Error(String(e)));
+  }
+};

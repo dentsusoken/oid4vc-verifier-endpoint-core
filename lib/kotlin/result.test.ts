@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { Result, runCatching } from './result';
+import { Result, runCatching, runAsyncCatching } from './result';
 //import { Result } from '../kotlin';
 
 describe('Result', () => {
@@ -233,6 +233,26 @@ describe('Result', () => {
 
   it('runCatching when success with args', () => {
     const result = runCatching((a: number, b: number) => a + b, 1, 2);
+
+    expect(result.getOrNull()).toEqual(3);
+  });
+
+  it('runAsyncCatching when success', async () => {
+    const result = await runAsyncCatching(async () => 1);
+
+    expect(result.getOrNull()).toEqual(1);
+  });
+
+  it('runAsyncCatching when failure', async () => {
+    const result = await runAsyncCatching(async () => {
+      throw new Error('error');
+    });
+
+    expect(result.exceptionOrNull()?.message).toEqual('error');
+  });
+
+  it('runAsyncCatching when success with args', async () => {
+    const result = await runAsyncCatching(async (a, b) => a + b, 1, 2);
 
     expect(result.getOrNull()).toEqual(3);
   });
