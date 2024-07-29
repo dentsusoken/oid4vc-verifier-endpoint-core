@@ -227,7 +227,7 @@ describe('EmbedOption', () => {
 
       const embedOption = new EmbedOption.ByReference(urlBuilder);
 
-      expect(embedOption.builderUrl).toBe(urlBuilder);
+      expect(embedOption.buildUrl).toBe(urlBuilder);
     });
   });
 
@@ -245,7 +245,7 @@ describe('EmbedOption', () => {
 
       const embedOption = EmbedOption.byReference(urlBuilder);
 
-      expect(embedOption.builderUrl).toBe(urlBuilder);
+      expect(embedOption.buildUrl).toBe(urlBuilder);
     });
   });
 });

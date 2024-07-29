@@ -228,7 +228,7 @@ export namespace Presentation {
       requested: Requested,
       at: Date
     ): Result<RequestObjectRetrieved> {
-      return runCatching<RequestObjectRetrieved>(
+      return runCatching(
         () =>
           new RequestObjectRetrieved(
             requested.id,
@@ -280,7 +280,7 @@ export namespace Presentation {
       walletResponse: WalletResponse,
       responseCode: ResponseCode | undefined
     ): Result<Submitted> {
-      return runCatching<Submitted>(
+      return runCatching(
         () =>
           new Submitted(
             requestObjectRetrieved.id,
@@ -307,7 +307,7 @@ export namespace Presentation {
       public timedOutAt: Date
     ) {}
 
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     isExpired(_: Date): boolean {
       return false;
     }
@@ -336,7 +336,7 @@ export namespace Presentation {
       presentation: Requested | RequestObjectRetrieved | Submitted,
       at: Date
     ): Result<TimedOut> {
-      return runCatching<TimedOut>(() => {
+      return runCatching(() => {
         const initiatedAtEpoc = presentation.initiatedAt.getTime();
         const atEpoc = at.getTime();
 

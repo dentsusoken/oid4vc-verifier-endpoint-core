@@ -31,11 +31,11 @@ export namespace EmbedOption {
   export class ByValue implements EmbedOption<unknown> {}
 
   export class ByReference<ID> implements EmbedOption<ID> {
-    constructor(public builderUrl: PresentationRelatedUrlBuilder<ID>) {}
+    constructor(public buildUrl: PresentationRelatedUrlBuilder<ID>) {}
   }
   export const byReference = <ID>(
-    urlBuilder: PresentationRelatedUrlBuilder<ID>
-  ): ByReference<ID> => new ByReference(urlBuilder);
+    buildUrl: PresentationRelatedUrlBuilder<ID>
+  ): ByReference<ID> => new ByReference(buildUrl);
 }
 
 export enum ResponseModeOption {
@@ -110,7 +110,7 @@ export class SigningConfig {
       throw new Error(`'${algorithm.name}' is not a valid signature algorithm`);
     }
 
-    const result = runCatching<unknown>(() =>
+    const result = runCatching(() =>
       new DefaultJWSSignerFactory().createJWSSigner(key, algorithm)
     );
 
