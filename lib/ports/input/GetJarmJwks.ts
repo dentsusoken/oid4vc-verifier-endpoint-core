@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Presentation, RequestId } from '../../domain';
-import { jwk } from '../../adapter/out/jose';
+import { jwk } from '../../adapters/out/jose';
 import { QueryResponse } from './QueryResponse';
 import * as jose from 'jose';
 import { LoadPresentationByRequestId } from '../out/persistence';
