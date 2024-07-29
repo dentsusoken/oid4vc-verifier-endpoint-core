@@ -32,54 +32,73 @@ export interface ParseJarmOption {
     jweAlg: string | null,
     encryptionMethod: string | null
   ): JarmOption | null;
-
-  jwsAlgOf(s: string): string;
-  jweAlgOf(s: string): string;
-  encMethodOf(s: string): string;
 }
 
-export function parseJarmOption(
-  jwsAlg: string | null,
-  jweAlg: string | null,
-  encryptionMethod: string | null
-): JarmOption | null {
-  const signed: JarmOption.Signed | null =
-    jwsAlg && jwsAlg.trim() !== ''
-      ? new JarmOption.Signed(jwsAlgOf(jwsAlg))
+export abstract class AbstractParseJarmOption {
+  invoke: ParseJarmOption = (jwsAlg, jweAlg, encryptionMethod) => {
+    jwsAlg = (jwsAlg && jwsAlg.trim()) || null;
+    jweAlg = (jweAlg && jweAlg.trim()) || null;
+    encryptionMethod = (encryptionMethod && encryptionMethod.trim()) || null;
+
+    const signed: JarmOption.Signed | null = jwsAlg
+      ? new JarmOption.Signed(this.jwsAlgOf(jwsAlg))
       : null;
-  const encrypted: JarmOption.Encrypted | null =
-    jweAlg &&
-    jweAlg.trim() !== '' &&
-    encryptionMethod &&
-    encryptionMethod.trim() !== ''
-      ? new JarmOption.Encrypted(
-          jweAlgOf(jweAlg),
-          encMethodOf(encryptionMethod)
-        )
-      : null;
+    const encrypted: JarmOption.Encrypted | null =
+      jweAlg && encryptionMethod
+        ? new JarmOption.Encrypted(
+            this.jweAlgOf(jweAlg),
+            this.encMethodOf(encryptionMethod)
+          )
+        : null;
+    if (jweAlg && !encryptionMethod) {
+      throw 'Encryption method must be provided with JWE algorithm';
+    }
+    if (!jweAlg && encryptionMethod) {
+      throw 'JWE algorithm must be provided with Encryption method';
+    }
+    if (signed && encrypted) {
+      return new JarmOption.SignedAndEncrypted(signed, encrypted);
+    } else if (signed) {
+      return signed;
+    } else if (encrypted) {
+      return encrypted;
+    } else {
+      return null;
+    }
+  };
 
-  if (signed && encrypted) {
-    return new JarmOption.SignedAndEncrypted(signed, encrypted);
-  } else if (signed) {
-    return signed;
-  } else if (encrypted) {
-    return encrypted;
-  } else {
-    return null;
-  }
+  abstract jwsAlgOf(s: string): string;
+  abstract jweAlgOf(s: string): string;
+  abstract encMethodOf(s: string): string;
 }
 
-function jwsAlgOf(s: string): string {
-  // TODO: Implement this function
-  throw new Error('Not implemented');
-}
+// export function parseJarmOption(
+//   jwsAlg: string | null,
+//   jweAlg: string | null,
+//   encryptionMethod: string | null
+// ): JarmOption | null {
+//   const signed: JarmOption.Signed | null =
+//     jwsAlg && jwsAlg.trim() !== ''
+//       ? new JarmOption.Signed(jwsAlgOf(jwsAlg))
+//       : null;
+//   const encrypted: JarmOption.Encrypted | null =
+//     jweAlg &&
+//     jweAlg.trim() !== '' &&
+//     encryptionMethod &&
+//     encryptionMethod.trim() !== ''
+//       ? new JarmOption.Encrypted(
+//           jweAlgOf(jweAlg),
+//           encMethodOf(encryptionMethod)
+//         )
+//       : null;
 
-function jweAlgOf(s: string): string {
-  // TODO: Implement this function
-  throw new Error('Not implemented');
-}
-
-function encMethodOf(s: string): string {
-  // TODO: Implement this function
-  throw new Error('Not implemented');
-}
+//   if (signed && encrypted) {
+//     return new JarmOption.SignedAndEncrypted(signed, encrypted);
+//   } else if (signed) {
+//     return signed;
+//   } else if (encrypted) {
+//     return encrypted;
+//   } else {
+//     return null;
+//   }
+// }
