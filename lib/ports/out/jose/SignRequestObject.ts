@@ -23,7 +23,7 @@ import { Result } from '../../../kotlin';
 export interface SignRequestObject {
   (
     verifierConfig: VerifierConfig,
-    clock: Date,
+    clock: { now: () => Date },
     presentation: Presentation.Requested
-  ): Result<Jwt>;
+  ): Promise<Result<Jwt>>;
 }

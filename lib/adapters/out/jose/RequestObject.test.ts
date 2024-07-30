@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { requestObjectFromDomain } from './RequestObject';
 import {
   ClientIdScheme,
@@ -20,7 +20,7 @@ import { PresentationDefinition } from '../../../../mock/prex';
 describe('requestObjectFromDomain', () => {
   const mockClock = { now: () => new Date('2023-01-01T00:00:00Z') };
   const clientId = 'client123';
-  const jarSigning = new SigningConfig({ parsedX509CertChain: [] }, 'hoge');
+  const jarSigning = new SigningConfig('{}', 'RS256');
   const clientIdScheme = new ClientIdScheme.PreRegistered(clientId, jarSigning);
 
   const urlBuilder: PresentationRelatedUrlBuilder<RequestId> = (

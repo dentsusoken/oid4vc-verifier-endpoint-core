@@ -25,16 +25,16 @@ import {
   ResponseModeOption,
 } from '../../../domain';
 
-interface RequestObject {
+export interface RequestObject {
   clientIdScheme: ClientIdScheme;
   responseType: string[];
-  presentationDefinitionUri: URL | null;
-  presentationDefinition: PresentationDefinition | null;
+  presentationDefinitionUri: URL | undefined;
+  presentationDefinition: PresentationDefinition | undefined;
   scope: string[];
   idTokenType: string[];
   nonce: string;
   responseMode: string;
-  responseUri: URL | null;
+  responseUri: URL | undefined;
   aud: string[];
   state: string;
   issuedAt: Date;

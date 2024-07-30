@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Duration, runCatching } from '..';
-import {
-  DefaultJWSSignerFactory,
-  JWK,
-  JWSAlgorithm,
-  X509Certificate as X509CertificateDefault,
-} from '../../mock/crypto';
+import { Duration } from '..';
 import { RequestId } from './Presentation';
 
 export type PresentationRelatedUrlBuilder<ID> = (id: ID) => URL;
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 export interface EmbedOption<ID> {}
 
 export namespace EmbedOption {
@@ -105,23 +99,21 @@ export class ClientMetaData {
 }
 
 export class SigningConfig {
-  constructor(public key: JWK, public algorithm: JWSAlgorithm) {
-    if (JWSAlgorithm.Family.SIGNATURE.includes(algorithm)) {
-      throw new Error(`'${algorithm.name}' is not a valid signature algorithm`);
-    }
-
-    const result = runCatching(() =>
-      new DefaultJWSSignerFactory().createJWSSigner(key, algorithm)
-    );
-
-    if (typeof result.getOrNull === 'undefined') {
-      throw new Error('Invalid configuration');
-    }
+  constructor(public key: string, public algorithm: string) {
+    // if (JWSAlgorithm.Family.SIGNATURE.includes(algorithm)) {
+    //   throw new Error(`'${algorithm.name}' is not a valid signature algorithm`);
+    // }
+    // const result = runCatching(() =>
+    //   new DefaultJWSSignerFactory().createJWSSigner(key, algorithm)
+    // );
+    // if (typeof result.getOrNull === 'undefined') {
+    //   throw new Error('Invalid configuration');
+    // }
   }
 
-  certificate(): X509Certificate {
-    return this.key.parsedX509CertChain[0];
-  }
+  // certificate(): X509Certificate {
+  //   return this.key.parsedX509CertChain[0];
+  // }
 }
 
 export interface ClientIdScheme {
@@ -141,11 +133,11 @@ export namespace ClientIdScheme {
   export class X509SanDns implements ClientIdScheme {
     public name: string;
     constructor(public clientId: string, public jarSigning: SigningConfig) {
-      if (!jarSigning.certificate().containsSanDns(clientId)) {
-        throw new Error(
-          `Client Id '${clientId}' not contained in 'DNS' Subject Alternative Names of JAR Signing Certificate.`
-        );
-      }
+      // if (!jarSigning.certificate().containsSanDns(clientId)) {
+      //   throw new Error(
+      //     `Client Id '${clientId}' not contained in 'DNS' Subject Alternative Names of JAR Signing Certificate.`
+      //   );
+      // }
 
       this.name = 'x509_san_dns';
     }
@@ -154,11 +146,11 @@ export namespace ClientIdScheme {
   export class X509SanUri implements ClientIdScheme {
     public name: string;
     constructor(public clientId: string, public jarSigning: SigningConfig) {
-      if (!jarSigning.certificate().containsSanUri(clientId)) {
-        throw new Error(
-          `Client Id '${clientId}' not contained in 'URI' Subject Alternative Names of JAR Signing Certificate.`
-        );
-      }
+      // if (!jarSigning.certificate().containsSanUri(clientId)) {
+      //   throw new Error(
+      //     `Client Id '${clientId}' not contained in 'URI' Subject Alternative Names of JAR Signing Certificate.`
+      //   );
+      // }
 
       this.name = 'x509_san_uri';
     }
@@ -177,42 +169,42 @@ export class VerifierConfig {
   ) {}
 }
 
-class X509Certificate extends X509CertificateDefault {
-  containsSan(value: string, type: SanType) {
-    return this.san(type).includes(value);
-  }
-  containsSanDns(value: string) {
-    return this.containsSan(value, SanType.DNS);
-  }
-  containsSanUri(value: string) {
-    return this.containsSan(value, SanType.URI);
-  }
-  san(type: SanType): string[] {
-    const list: string[] = [];
-    X509Certificate.subjectAlternativeNames
-      ?.filter(
-        (subjectAltNames) => !!subjectAltNames && subjectAltNames.length == 2
-      )
-      ?.forEach((entry) => {
-        const altNameType = entry[0] as number;
-        if (altNameType === type.asInt()) {
-          list.push(entry[1] as string);
-        }
-      });
-    return list;
-  }
-}
+// class X509Certificate extends X509CertificateDefault {
+//   containsSan(value: string, type: SanType) {
+//     return this.san(type).includes(value);
+//   }
+//   containsSanDns(value: string) {
+//     return this.containsSan(value, SanType.DNS);
+//   }
+//   containsSanUri(value: string) {
+//     return this.containsSan(value, SanType.URI);
+//   }
+//   san(type: SanType): string[] {
+//     const list: string[] = [];
+//     X509Certificate.subjectAlternativeNames
+//       ?.filter(
+//         (subjectAltNames) => !!subjectAltNames && subjectAltNames.length == 2
+//       )
+//       ?.forEach((entry) => {
+//         const altNameType = entry[0] as number;
+//         if (altNameType === type.asInt()) {
+//           list.push(entry[1] as string);
+//         }
+//       });
+//     return list;
+//   }
+// }
 
-class SanType {
-  #value: number;
-  static URI = new SanType(6);
-  static DNS = new SanType(2);
+// class SanType {
+//   #value: number;
+//   static URI = new SanType(6);
+//   static DNS = new SanType(2);
 
-  private constructor(value: number) {
-    this.#value = value;
-  }
+//   private constructor(value: number) {
+//     this.#value = value;
+//   }
 
-  asInt() {
-    return this.#value;
-  }
-}
+//   asInt() {
+//     return this.#value;
+//   }
+// }

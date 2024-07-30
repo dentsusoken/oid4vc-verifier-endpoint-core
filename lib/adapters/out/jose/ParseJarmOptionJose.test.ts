@@ -89,7 +89,7 @@ describe('ParseJarmOptionJose', () => {
       );
     });
 
-    it('should throw an error when JWE algorithm is provided without encryption method', () => {
+    it('should throw an error when encryption method is provided without JWE algorithm', () => {
       expect(() => parseJarmOption(null, null, 'A128CBC-HS256')).toThrow(
         'JWE algorithm must be provided with Encryption method'
       );
