@@ -51,11 +51,15 @@ export class GetRequestObjectLive implements GetRequestObject {
     }
   }
 
-  private requestObjectOf(presentation: Presentation.Requested): Jwt {
-    const jwt = this.signRequestObject(
-      this.verifierConfig,
-      this.clock,
-      presentation
+  private async requestObjectOf(
+    presentation: Presentation.Requested
+  ): Promise<Jwt> {
+    const jwt = (
+      await this.signRequestObject(
+        this.verifierConfig,
+        { now: () => this.clock },
+        presentation
+      )
     ).getOrThrow();
     const updatedPresentation = presentation
       .retrieveRequestObject(this.clock)
