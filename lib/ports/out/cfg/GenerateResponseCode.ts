@@ -15,25 +15,10 @@
  */
 
 import { ResponseCode } from '../../../domain';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * A port for generating [ResponseCode]
  */
 export interface GenerateResponseCode {
   (): Promise<ResponseCode>;
-}
-
-export namespace GenerateResponseCode {
-  export const Random: GenerateResponseCode = async () => {
-    const value = uuidv4();
-    return new ResponseCode(value);
-  };
-
-  /**
-   * Fixed generator, useful input tests
-   */
-  export function fixed(code: ResponseCode): GenerateResponseCode {
-    return async () => code;
-  }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Presentation, RequestId } from '../../domain';
+import { PresentationNS, RequestId } from '../../domain';
 import { jwk } from '../../adapters/out/jose';
 import { QueryResponse } from './QueryResponse';
 import * as jose from 'jose';
@@ -37,10 +37,10 @@ export class GetJarmJwksLive implements GetJarmJwks {
   async invoke(id: RequestId): Promise<QueryResponse<JWKSet>> {
     const presentation = await this.loadPresentationByRequestId(id);
 
-    switch (presentation instanceof Presentation.RequestObjectRetrieved) {
+    switch (presentation instanceof PresentationNS.RequestObjectRetrieved) {
       case true:
         const it = await ephemeralEcPubKey(
-          presentation as Presentation.RequestObjectRetrieved
+          presentation as PresentationNS.RequestObjectRetrieved
         );
         return it ? new QueryResponse.Found(it) : QueryResponse.InvalidState;
       default:
@@ -55,7 +55,7 @@ export class GetJarmJwksLive implements GetJarmJwks {
 }
 
 export const ephemeralEcPubKey = async (
-  requestObjectRetrieved: Presentation.RequestObjectRetrieved
+  requestObjectRetrieved: PresentationNS.RequestObjectRetrieved
 ): Promise<JWKSet | undefined> => {
   if (typeof requestObjectRetrieved.ephemeralEcPrivateKey !== 'undefined') {
     const jwkSet = {

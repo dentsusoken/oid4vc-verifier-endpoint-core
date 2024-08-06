@@ -16,10 +16,10 @@
 import { Expose } from 'class-transformer';
 import { PresentationSubmission } from '../../../mock/prex';
 import {
-  Presentation,
+  PresentationNS,
   ResponseCode,
   TransactionId,
-  WalletResponse,
+  WalletResponseNS,
 } from '../../domain';
 import { QueryResponse } from './QueryResponse';
 import { LoadPresentationById } from '../out/persistence';
@@ -49,23 +49,23 @@ export class WalletResponseTO {
 }
 
 export const toTo = (instance: WalletResponse): WalletResponseTO => {
-  if (instance instanceof WalletResponse.IdToken) {
+  if (instance instanceof WalletResponseNS.IdToken) {
     return new WalletResponseTO({ idToken: instance.idToken });
   }
-  if (instance instanceof WalletResponse.VpToken) {
+  if (instance instanceof WalletResponseNS.VpToken) {
     return new WalletResponseTO({
       vpToken: instance.vpToken,
       presentationSubmission: instance.presentationSubmission,
     });
   }
-  if (instance instanceof WalletResponse.IdAndVpToken) {
+  if (instance instanceof WalletResponseNS.IdAndVpToken) {
     return new WalletResponseTO({
       idToken: instance.idToken,
       vpToken: instance.vpToken,
       presentationSubmission: instance.presentationSubmission,
     });
   }
-  if (instance instanceof WalletResponse.Error) {
+  if (instance instanceof WalletResponseNS.Error) {
     return new WalletResponseTO({
       error: instance.value,
       errorDescription: instance.description,
@@ -90,9 +90,9 @@ export class GetWalletResponseLive implements GetWalletResponse {
   ): Promise<QueryResponse<WalletResponseTO>> {
     const presentation = await this.loadPresentationById(transactionId);
 
-    switch (presentation instanceof Presentation.Submitted) {
+    switch (presentation instanceof PresentationNS.Submitted) {
       case true:
-        const presentationResCode = (presentation as Presentation.Submitted)
+        const presentationResCode = (presentation as PresentationNS.Submitted)
           .responseCode;
 
         if (
@@ -105,7 +105,7 @@ export class GetWalletResponseLive implements GetWalletResponse {
           presentationResCode?.value === responseCode?.value
         ) {
           return new QueryResponse.Found(
-            toTo((presentation as Presentation.Submitted).walletResponse)
+            toTo((presentation as PresentationNS.Submitted).walletResponse)
           );
         } else {
           return QueryResponse.InvalidState;

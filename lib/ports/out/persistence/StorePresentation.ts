@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Presentation } from '../../../domain';
+import { PresentationNS } from '../../../domain';
 
 /**
  * Stores or updates a [Presentation] to a storage

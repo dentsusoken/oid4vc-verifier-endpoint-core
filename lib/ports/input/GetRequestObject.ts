@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Jwt, Presentation, RequestId, VerifierConfig } from '../../domain';
+import { Jwt, PresentationNS, RequestId, VerifierConfig } from '../../domain';
 import { SignRequestObject } from '../out/jose';
 import {
   LoadPresentationByRequestId,
@@ -36,10 +36,10 @@ export class GetRequestObjectLive implements GetRequestObject {
 
   async invoke(requestId: RequestId): Promise<QueryResponse<Jwt>> {
     const presentation = await this.loadPresentationByRequestId(requestId);
-    switch (presentation instanceof Presentation.Requested) {
+    switch (presentation instanceof PresentationNS.Requested) {
       case true:
         return new QueryResponse.Found(
-          this.requestObjectOf(presentation as Presentation.Requested)
+          this.requestObjectOf(presentation as PresentationNS.Requested)
         );
       default:
         switch (presentation) {
@@ -52,7 +52,7 @@ export class GetRequestObjectLive implements GetRequestObject {
   }
 
   private async requestObjectOf(
-    presentation: Presentation.Requested
+    presentation: PresentationNS.Requested
   ): Promise<Jwt> {
     const jwt = (
       await this.signRequestObject(

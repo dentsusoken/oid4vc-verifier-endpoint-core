@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Duration } from '../..';
-import { TransactionId, Presentation } from '../../domain';
+import { TransactionId, PresentationNS } from '../../domain';
 import {
   LoadIncompletePresentationsOlderThan,
   StorePresentation,
@@ -42,9 +42,9 @@ export class TimeoutPresentationsLive implements TimeoutPresentations {
   private timeout(presentation: Presentation): Presentation | null | undefined {
     const timeout = (() => {
       if (
-        presentation instanceof Presentation.Requested ||
-        presentation instanceof Presentation.RequestObjectRetrieved ||
-        presentation instanceof Presentation.Submitted
+        presentation instanceof PresentationNS.Requested ||
+        presentation instanceof PresentationNS.RequestObjectRetrieved ||
+        presentation instanceof PresentationNS.Submitted
       ) {
         return presentation.timedOut(this.clock).getOrNull();
       } else {

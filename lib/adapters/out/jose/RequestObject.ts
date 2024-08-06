@@ -14,82 +14,86 @@
  * limitations under the License.
  */
 
-import { PresentationDefinition } from '../../../../mock/prex';
+import { PresentationDefinition } from 'oid4vc-prex';
+import { VerifierConfig, PresentationNS } from '../../../domain';
 import {
-  ClientIdScheme,
-  VerifierConfig,
-  Presentation,
-  PresentationType,
-  IdTokenType,
-  EmbedOption,
-  ResponseModeOption,
-} from '../../../domain';
+  getScope,
+  getIdTokenType,
+  getResponseType,
+  getAud,
+  getClientIdSchemeName,
+  getPresentationDefinition,
+  getPresentationDefinitionUri,
+  getResponseMode,
+} from './RequestObject.convert';
+import type { ClientIdSchemeName } from './RequestObject.convert';
 
+/**
+ * Represents a request object for presentation exchange.
+ */
 export interface RequestObject {
-  clientIdScheme: ClientIdScheme;
+  /** The client ID */
+  clientId: string;
+  /** The client ID scheme name*/
+  clientIdSchemeName: ClientIdSchemeName;
+  /** Array of response types */
   responseType: string[];
+  /** URI of the presentation definition, if applicable */
   presentationDefinitionUri: URL | undefined;
+  /** The presentation definition, if applicable */
   presentationDefinition: PresentationDefinition | undefined;
+  /** Array of scopes */
   scope: string[];
+  /** Array of ID token types */
   idTokenType: string[];
+  /** Nonce value */
   nonce: string;
+  /** Response mode */
   responseMode: string;
+  /** Response URI, if applicable */
   responseUri: URL | undefined;
+  /** Array of audience values */
   aud: string[];
+  /** State value */
   state: string;
+  /** Issuance date and time */
   issuedAt: Date;
 }
 
-export function requestObjectFromDomain(
+/**
+ * Creates a RequestObject from domain entities.
+ *
+ * @param verifierConfig - The verifier configuration
+ * @param at - The current date and time
+ * @param presentation - The requested presentation
+ * @returns A RequestObject constructed from the provided parameters
+ */
+export const requestObjectFromDomain = (
   verifierConfig: VerifierConfig,
-  clock: { now: () => Date },
-  presentation: Presentation.Requested
-): RequestObject {
+  at: Date,
+  presentation: PresentationNS.Requested
+): RequestObject => {
   const type = presentation.type;
-  const scope =
-    type instanceof PresentationType.IdTokenRequest ||
-    type instanceof PresentationType.IdAndVpToken
-      ? ['openid']
-      : [];
-
-  const idTokenType = (
-    type instanceof PresentationType.IdTokenRequest ||
-    type instanceof PresentationType.IdAndVpToken
-      ? type.idTokenType
-      : []
-  ).map((it) =>
-    it === IdTokenType.AttesterSigned
-      ? 'attester_signed_id_token'
-      : 'subject_signed_id_token'
+  const scope = getScope(type);
+  const idTokenType = getIdTokenType(type);
+  const responseType = getResponseType(type);
+  const aud = getAud(type);
+  const clientIdSchemeName = getClientIdSchemeName(
+    verifierConfig.clientIdScheme
   );
-
-  const maybePresentationDefinition = type.presentationDefinitionOrNull();
-  const presentationDefinitionUri = maybePresentationDefinition
-    ? presentation.presentationDefinitionMode instanceof EmbedOption.ByReference
-      ? presentation.presentationDefinitionMode.buildUrl(presentation.requestId)
-      : null
-    : null;
-
-  const presentationDefinition =
-    maybePresentationDefinition &&
-    presentation.presentationDefinitionMode instanceof EmbedOption.ByValue
-      ? maybePresentationDefinition
-      : null;
-
-  const responseType =
-    type instanceof PresentationType.IdTokenRequest
-      ? ['id_token']
-      : type instanceof PresentationType.VpTokenRequest
-      ? ['vp_token']
-      : ['vp_token', 'id_token'];
-
-  const aud =
-    type instanceof PresentationType.IdTokenRequest
-      ? []
-      : ['https://self-issued.me/v2'];
+  const presentationDefinition = getPresentationDefinition(
+    presentation.presentationDefinitionMode,
+    type
+  );
+  const presentationDefinitionUri = getPresentationDefinitionUri(
+    presentation.presentationDefinitionMode,
+    presentation.requestId
+  );
+  const responseMode = getResponseMode(presentation.responseMode);
 
   const requestObject: RequestObject = {
-    clientIdScheme: verifierConfig.clientIdScheme,
+    clientId: verifierConfig.clientIdScheme.clientId,
+    clientIdSchemeName,
     scope,
     idTokenType,
     presentationDefinitionUri,
@@ -98,13 +102,10 @@ export function requestObjectFromDomain(
     aud,
     nonce: presentation.nonce.value,
     state: presentation.requestId.value,
-    responseMode:
-      presentation.responseMode === ResponseModeOption.DirectPost
-        ? 'direct_post'
-        : 'direct_post.jwt',
+    responseMode,
     responseUri: verifierConfig.responseUriBuilder(presentation.requestId),
-    issuedAt: clock.now(),
+    issuedAt: at,
   };
 
   return requestObject;
-}
+};

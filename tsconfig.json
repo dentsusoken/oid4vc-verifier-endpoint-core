@@ -28,5 +28,6 @@
     "experimentalDecorators": true
   },
   // TODO remove mock from include
-  "include": ["lib", "mock"]
+  "include": ["lib"],
+  "exclude": ["node_modules"]
 }

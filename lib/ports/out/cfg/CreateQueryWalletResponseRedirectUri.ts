@@ -13,46 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Result, runCatching, assert } from '../../../kotlin';
-import { ResponseCode, GetWalletResponseMethod } from '../../../domain';
+import { Result } from '../../../kotlin';
+import { ResponseCode } from '../../../domain';
 
-interface CreateQueryWalletResponseRedirectUri {
-  redirectUri(template: string, responseCode: ResponseCode): Result<URL>;
+export interface CreateQueryWalletResponseRedirectUri {
+  (template: string, responseCode: ResponseCode): Result<URL>;
 }
-
-export namespace CreateQueryWalletResponseRedirectUri {
-  export const RESPONSE_CODE_PLACE_HOLDER = '{RESPONSE_CODE}';
-
-  export const Simple: CreateQueryWalletResponseRedirectUri = {
-    redirectUri(template: string, responseCode: ResponseCode): Result<URL> {
-      return runCatching(() => {
-        assert(
-          template.includes(RESPONSE_CODE_PLACE_HOLDER),
-          'Expected response_code place holder not found in template'
-        );
-        const url = template.replace(
-          RESPONSE_CODE_PLACE_HOLDER,
-          responseCode.value
-        );
-        return new URL(url);
-      });
-    },
-  };
-}
-
-export const redirectUri = (
-  redirect: GetWalletResponseMethod.Redirect,
-  responseCode: ResponseCode
-): URL => {
-  return CreateQueryWalletResponseRedirectUri.Simple.redirectUri(
-    redirect.redirectUriTemplate,
-    responseCode
-  ).getOrThrow();
-};
-
-export const isValidTemplate = (template: string): boolean => {
-  return CreateQueryWalletResponseRedirectUri.Simple.redirectUri(
-    template,
-    new ResponseCode('test')
-  ).isSuccess;
-};

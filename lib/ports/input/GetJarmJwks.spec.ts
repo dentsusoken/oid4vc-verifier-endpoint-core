@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import { GetJarmJwksLive, ephemeralEcPubKey } from './GetJarmJwks';
 import {
-  EmbedOption,
-  EphemeralEncryptionKeyPairJWK,
-  GetWalletResponseMethod,
+  EmbedOptionNS,
+  EphemeralECDHPrivateJwk,
+  GetWalletResponseMethodNS,
   Nonce,
-  Presentation,
-  PresentationType,
+  PresentationNS,
+  PresentationTypeNS,
   RequestId,
   ResponseModeOption,
   TransactionId,
@@ -50,16 +50,16 @@ describe('GetJarmJwksLive', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       requestId: RequestId
     ) =>
-      new Presentation.Requested(
+      new PresentationNS.Requested(
         new TransactionId('test'),
         new Date(),
-        new PresentationType.VpTokenRequest(new PresentationDefinition()),
+        new PresentationTypeNS.VpTokenRequest(new PresentationDefinition()),
         new RequestId('test'),
         new Nonce('test'),
-        new EphemeralEncryptionKeyPairJWK(jwkString),
+        new EphemeralEncryptionPrivateJwk(jwkString),
         ResponseModeOption.DirectPostJwt,
-        EmbedOption.ByValue,
-        GetWalletResponseMethod.Redirect
+        EmbedOptionNS.ByValue,
+        GetWalletResponseMethodNS.Redirect
       )
         .retrieveRequestObject(new Date())
         .getOrThrow();
@@ -71,16 +71,16 @@ describe('GetJarmJwksLive', () => {
     const loadPresentationByRequestId = vi
       .fn()
       .mockReturnValue(
-        new Presentation.Requested(
+        new PresentationNS.Requested(
           new TransactionId('test'),
           new Date(),
-          new PresentationType.VpTokenRequest(new PresentationDefinition()),
+          new PresentationTypeNS.VpTokenRequest(new PresentationDefinition()),
           new RequestId('test'),
           new Nonce('test'),
           undefined,
           ResponseModeOption.DirectPostJwt,
-          EmbedOption.ByValue,
-          GetWalletResponseMethod.Redirect
+          EmbedOptionNS.ByValue,
+          GetWalletResponseMethodNS.Redirect
         )
           .retrieveRequestObject(new Date())
           .getOrThrow()
@@ -94,16 +94,16 @@ describe('GetJarmJwksLive', () => {
 describe('ephemeralEcPubKey', () => {
   it('should return a public key', async () => {
     // ephemeralEcPubKey;
-    const presentation = new Presentation.Requested(
+    const presentation = new PresentationNS.Requested(
       new TransactionId('test'),
       new Date(),
-      new PresentationType.VpTokenRequest(new PresentationDefinition()),
+      new PresentationTypeNS.VpTokenRequest(new PresentationDefinition()),
       new RequestId('test'),
       new Nonce('test'),
-      new EphemeralEncryptionKeyPairJWK(jwkString),
+      new EphemeralEncryptionPrivateJwk(jwkString),
       ResponseModeOption.DirectPostJwt,
-      EmbedOption.ByValue,
-      GetWalletResponseMethod.Redirect
+      EmbedOptionNS.ByValue,
+      GetWalletResponseMethodNS.Redirect
     )
       .retrieveRequestObject(new Date())
       .getOrThrow();

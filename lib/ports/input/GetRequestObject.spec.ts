@@ -6,16 +6,16 @@ import {
 } from '../out/persistence';
 import { SignRequestObject } from '../out/jose';
 import {
-  ClientIdScheme,
+  ClientIdSchemeNS,
   ClientMetaData,
-  EmbedOption,
-  EphemeralEncryptionKeyPairJWK,
-  GetWalletResponseMethod,
-  JarmOption,
+  EmbedOptionNS,
+  EphemeralECDHPrivateJwk,
+  GetWalletResponseMethodNS,
+  JarmOptionNS,
   Nonce,
-  Presentation,
-  PresentationRelatedUrlBuilder,
-  PresentationType,
+  PresentationNS,
+  BuildUrl,
+  PresentationTypeNS,
   RequestId,
   ResponseModeOption,
   SigningConfig,
@@ -26,16 +26,16 @@ import { PresentationDefinition } from '../../../mock/prex';
 import { Result } from '../../kotlin';
 import { QueryResponse } from './QueryResponse';
 
-const presentation = new Presentation.Requested(
+const presentation = new PresentationNS.Requested(
   new TransactionId('test'),
   new Date(),
-  new PresentationType.VpTokenRequest(new PresentationDefinition()),
+  new PresentationTypeNS.VpTokenRequest(new PresentationDefinition()),
   new RequestId('test'),
   new Nonce('test'),
-  new EphemeralEncryptionKeyPairJWK('test'),
+  new EphemeralEncryptionPrivateJwk('test'),
   ResponseModeOption.DirectPostJwt,
-  EmbedOption.ByValue,
-  GetWalletResponseMethod.Redirect
+  EmbedOptionNS.ByValue,
+  GetWalletResponseMethodNS.Redirect
 );
 
 describe('GetRequestObject', () => {
@@ -44,11 +44,10 @@ describe('GetRequestObject', () => {
   const signRequestObject: SignRequestObject = (
     _verifierConfig: VerifierConfig,
     _clock: Date,
-    _presentation: Presentation.Requested
+    _presentation: PresentationNS.Requested
   ) => Result.success('jwt');
-  const urlBuilder: PresentationRelatedUrlBuilder<RequestId> = (
-    _id: RequestId
-  ) => new URL('http://localhost');
+  const urlBuilder: BuildUrl<RequestId> = (_id: RequestId) =>
+    new URL('http://localhost');
 
   it('should return QueryResponse.Found', async () => {
     const loadPresentationByRequestId: LoadPresentationByRequestId = (
@@ -56,22 +55,22 @@ describe('GetRequestObject', () => {
     ) => Promise.resolve(presentation);
 
     const verifierConfig: VerifierConfig = new VerifierConfig(
-      new ClientIdScheme.PreRegistered(
+      new ClientIdSchemeNS.PreRegistered(
         'test',
         new SigningConfig({ parsedX509CertChain: ['alg', 'enc'] }, 'alg')
       ),
-      new EmbedOption.ByValue(),
-      new EmbedOption.ByValue(),
+      new EmbedOptionNS.ByValue(),
+      new EmbedOptionNS.ByValue(),
       ResponseModeOption.DirectPostJwt,
       urlBuilder,
       10 * 60 * 1000,
       new ClientMetaData(
-        new EmbedOption.ByValue(),
+        new EmbedOptionNS.ByValue(),
         'alg',
         'alg',
         'enc',
         ['alg', 'enc'],
-        new JarmOption.Signed('alg')
+        new JarmOptionNS.Signed('alg')
       )
     );
     const clock: Date = new Date();
@@ -93,22 +92,22 @@ describe('GetRequestObject', () => {
       .mockReturnValue(undefined);
 
     const verifierConfig: VerifierConfig = new VerifierConfig(
-      new ClientIdScheme.PreRegistered(
+      new ClientIdSchemeNS.PreRegistered(
         'test',
         new SigningConfig({ parsedX509CertChain: ['alg', 'enc'] }, 'alg')
       ),
-      new EmbedOption.ByValue(),
-      new EmbedOption.ByValue(),
+      new EmbedOptionNS.ByValue(),
+      new EmbedOptionNS.ByValue(),
       ResponseModeOption.DirectPostJwt,
       urlBuilder,
       10 * 60 * 1000,
       new ClientMetaData(
-        new EmbedOption.ByValue(),
+        new EmbedOptionNS.ByValue(),
         'alg',
         'alg',
         'enc',
         ['alg', 'enc'],
-        new JarmOption.Signed('alg')
+        new JarmOptionNS.Signed('alg')
       )
     );
     const clock: Date = new Date();
@@ -130,22 +129,22 @@ describe('GetRequestObject', () => {
       .mockReturnValue({});
 
     const verifierConfig: VerifierConfig = new VerifierConfig(
-      new ClientIdScheme.PreRegistered(
+      new ClientIdSchemeNS.PreRegistered(
         'test',
         new SigningConfig({ parsedX509CertChain: ['alg', 'enc'] }, 'alg')
       ),
-      new EmbedOption.ByValue(),
-      new EmbedOption.ByValue(),
+      new EmbedOptionNS.ByValue(),
+      new EmbedOptionNS.ByValue(),
       ResponseModeOption.DirectPostJwt,
       urlBuilder,
       10 * 60 * 1000,
       new ClientMetaData(
-        new EmbedOption.ByValue(),
+        new EmbedOptionNS.ByValue(),
         'alg',
         'alg',
         'enc',
         ['alg', 'enc'],
-        new JarmOption.Signed('alg')
+        new JarmOptionNS.Signed('alg')
       )
     );
     const clock: Date = new Date();

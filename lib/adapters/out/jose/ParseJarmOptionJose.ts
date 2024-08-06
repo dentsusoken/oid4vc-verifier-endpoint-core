@@ -14,39 +14,105 @@
  * limitations under the License.
  */
 
-import {
-  AbstractParseJarmOption,
-  ParseJarmOption,
-} from '../../../ports/out/jose/';
+import { ParseJarmOption } from '../../../ports/out/jose/';
+import { JarmOptionNS } from '../../../domain';
 
-export const createParseJarmOptionJoseInvoker = (): ParseJarmOption => {
-  return (jwsAlg, jweAlg, encryptionMethod) =>
-    new ParseJarmOptionJose().invoke(jwsAlg, jweAlg, encryptionMethod);
+/**
+ * Creates a function to parse JARM options
+ * @returns {ParseJarmOption} A function that parses JARM options
+ */
+export const createParseJarmOptionJoseInvoker = (): ParseJarmOption => invoke;
+
+/**
+ * Valid JWS algorithms
+ */
+const JWS_ALGS: { [index: string]: boolean } = { ES256: true };
+
+/**
+ * Valid JWE algorithms
+ */
+const JWE_ALGS: { [index: string]: boolean } = { 'ECDH-ES+A256KW': true };
+
+/**
+ * Valid JWE encryption methods
+ */
+const JWE_ENCS: { [index: string]: boolean } = { A256GCM: true };
+
+/**
+ * Parses JARM options
+ * @param {string | null | undefined} jwsAlg - JWS algorithm
+ * @param {string | null | undefined} jweAlg - JWE algorithm
+ * @param {string | null | undefined} encryptionMethod - Encryption method
+ * @returns {JarmOptionNS.Signed | JarmOptionNS.Encrypted | JarmOptionNS.SignedAndEncrypted | null} Parsed JARM option
+ * @throws {Error} If invalid combination of parameters is provided
+ */
+const invoke: ParseJarmOption = (jwsAlg, jweAlg, encryptionMethod) => {
+  jwsAlg = (jwsAlg && jwsAlg.trim()) || null;
+  jweAlg = (jweAlg && jweAlg.trim()) || null;
+  encryptionMethod = (encryptionMethod && encryptionMethod.trim()) || null;
+
+  const signed: JarmOptionNS.Signed | null = jwsAlg
+    ? new JarmOptionNS.Signed(jwsAlgOf(jwsAlg))
+    : null;
+  const encrypted: JarmOptionNS.Encrypted | null =
+    jweAlg && encryptionMethod
+      ? new JarmOptionNS.Encrypted(
+          jweAlgOf(jweAlg),
+          encMethodOf(encryptionMethod)
+        )
+      : null;
+  if (jweAlg && !encryptionMethod) {
+    throw 'Encryption method must be provided with JWE algorithm';
+  }
+  if (!jweAlg && encryptionMethod) {
+    throw 'JWE algorithm must be provided with Encryption method';
+  }
+  if (signed && encrypted) {
+    return new JarmOptionNS.SignedAndEncrypted(signed, encrypted);
+  } else if (signed) {
+    return signed;
+  } else if (encrypted) {
+    return encrypted;
+  } else {
+    return null;
+  }
 };
 
-const JWS_ALGS: { [index: string]: boolean } = { RS256: true, ES256: true };
-const JWE_ALGS: { [index: string]: boolean } = { 'ECDH-ES': true };
-const JWE_ENCS: { [index: string]: boolean } = { 'A128CBC-HS256': true };
-
-class ParseJarmOptionJose extends AbstractParseJarmOption {
-  jwsAlgOf(s: string): string {
-    if (JWS_ALGS[s]) {
-      return s;
-    }
-    throw new Error(`Invalid JWS alg: ${s}`);
+/**
+ * Validates and returns the JWS algorithm
+ * @param {string} s - JWS algorithm string
+ * @returns {string} Validated JWS algorithm
+ * @throws {Error} If invalid JWS algorithm is provided
+ */
+const jwsAlgOf = (s: string): string => {
+  if (JWS_ALGS[s]) {
+    return s;
   }
+  throw new Error(`Invalid JWS alg: ${s}`);
+};
 
-  jweAlgOf(s: string): string {
-    if (JWE_ALGS[s]) {
-      return s;
-    }
-    throw new Error(`Invalid JWE alg: ${s}`);
+/**
+ * Validates and returns the JWE algorithm
+ * @param {string} s - JWE algorithm string
+ * @returns {string} Validated JWE algorithm
+ * @throws {Error} If invalid JWE algorithm is provided
+ */
+const jweAlgOf = (s: string): string => {
+  if (JWE_ALGS[s]) {
+    return s;
   }
+  throw new Error(`Invalid JWE alg: ${s}`);
+};
 
-  encMethodOf(s: string): string {
-    if (JWE_ENCS[s]) {
-      return s;
-    }
-    throw new Error(`Invalid JWE enc: ${s}`);
+/**
+ * Validates and returns the encryption method
+ * @param {string} s - Encryption method string
+ * @returns {string} Validated encryption method
+ * @throws {Error} If invalid encryption method is provided
+ */
+const encMethodOf = (s: string): string => {
+  if (JWE_ENCS[s]) {
+    return s;
   }
-}
+  throw new Error(`Invalid JWE enc: ${s}`);
+};

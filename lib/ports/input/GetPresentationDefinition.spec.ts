@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GetPresentationDefinitionLive } from './GetPresentationDefinition';
 import {
-  EmbedOption,
-  EphemeralEncryptionKeyPairJWK,
-  GetWalletResponseMethod,
+  EmbedOptionNS,
+  EphemeralECDHPrivateJwk,
+  GetWalletResponseMethodNS,
   Nonce,
-  Presentation,
-  PresentationType,
+  PresentationNS,
+  PresentationTypeNS,
   RequestId,
   ResponseModeOption,
   TransactionId,
@@ -35,16 +35,16 @@ describe('GetPresentationDefinitionLive', () => {
     const loadPresentationByRequestId = vi
       .fn()
       .mockReturnValue(
-        new Presentation.Requested(
+        new PresentationNS.Requested(
           new TransactionId('test'),
           new Date(),
-          new PresentationType.VpTokenRequest(new PresentationDefinition()),
+          new PresentationTypeNS.VpTokenRequest(new PresentationDefinition()),
           new RequestId('test'),
           new Nonce('test'),
-          new EphemeralEncryptionKeyPairJWK('test'),
+          new EphemeralEncryptionPrivateJwk('test'),
           ResponseModeOption.DirectPostJwt,
-          EmbedOption.ByValue,
-          GetWalletResponseMethod.Redirect
+          EmbedOptionNS.ByValue,
+          GetWalletResponseMethodNS.Redirect
         )
           .retrieveRequestObject(new Date())
           .getOrThrow()
@@ -59,16 +59,16 @@ describe('GetPresentationDefinitionLive', () => {
     const loadPresentationByRequestId = vi
       .fn()
       .mockReturnValue(
-        new Presentation.Requested(
+        new PresentationNS.Requested(
           new TransactionId('test'),
           new Date(),
-          new PresentationType.VpTokenRequest(undefined!),
+          new PresentationTypeNS.VpTokenRequest(undefined!),
           new RequestId('test'),
           new Nonce('test'),
           undefined,
           ResponseModeOption.DirectPostJwt,
-          EmbedOption.ByValue,
-          GetWalletResponseMethod.Redirect
+          EmbedOptionNS.ByValue,
+          GetWalletResponseMethodNS.Redirect
         )
           .retrieveRequestObject(new Date())
           .getOrThrow()

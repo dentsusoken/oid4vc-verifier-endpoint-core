@@ -15,19 +15,11 @@
  */
 
 import { TransactionId } from '../../../domain';
+import { Result } from '../../../kotlin';
 
 /**
  * A port for generating [TransactionId]
  */
 export interface GenerateTransactionId {
-  (): Promise<TransactionId>;
-}
-
-export namespace GenerateTransactionId {
-  /**
-   * Fixed generator, useful input tests
-   */
-  export function fixed(id: TransactionId): GenerateTransactionId {
-    return async () => id;
-  }
+  (): Promise<Result<TransactionId>>;
 }

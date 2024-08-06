@@ -1,96 +1,107 @@
 import { describe, it, expect } from 'vitest';
 import { requestObjectFromDomain } from './RequestObject';
 import {
-  ClientIdScheme,
+  ClientIdSchemeNS,
   VerifierConfig,
-  Presentation,
-  PresentationType,
+  PresentationNS,
+  PresentationTypeNS,
   IdTokenType,
-  EmbedOption,
+  EmbedOptionNS,
   ResponseModeOption,
   SigningConfig,
   TransactionId,
   RequestId,
   Nonce,
-  GetWalletResponseMethod,
-  PresentationRelatedUrlBuilder,
+  GetWalletResponseMethodNS,
+  BuildUrl,
+  StaticSigningPrivateJwk,
 } from '../../../domain';
-import { PresentationDefinition } from '../../../../mock/prex';
+import { PresentationDefinition } from 'oid4vc-prex';
 
 describe('requestObjectFromDomain', () => {
-  const mockClock = { now: () => new Date('2023-01-01T00:00:00Z') };
+  const issuedAt = new Date('2023-01-01T00:00:00Z');
   const clientId = 'client123';
-  const jarSigning = new SigningConfig('{}', 'RS256');
-  const clientIdScheme = new ClientIdScheme.PreRegistered(clientId, jarSigning);
+  const staticSigningPrivateJwk: StaticSigningPrivateJwk = {
+    value: 'hoge',
+  };
+  const jarSigning: SigningConfig = {
+    staticSigningPrivateJwk,
+    algorithm: 'ES256',
+  };
+  const clientIdScheme = new ClientIdSchemeNS.PreRegistered(
+    clientId,
+    jarSigning
+  );
 
-  const urlBuilder: PresentationRelatedUrlBuilder<RequestId> = (
-    id: RequestId
-  ) => new URL(`https://example.com/direct_post/${id.value}`);
+  const urlBuilder: BuildUrl<RequestId> = (id: RequestId) =>
+    new URL(`https://example.com/direct_post/${id.value}`);
   const mockVerifierConfig = {
     clientIdScheme,
     responseUriBuilder: urlBuilder,
   } as VerifierConfig;
 
   it('should create a RequestObject for IdTokenRequest', () => {
-    const presentation = new Presentation.Requested(
+    const presentation = new PresentationNS.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
-      new PresentationType.IdTokenRequest([IdTokenType.AttesterSigned]),
+      new PresentationTypeNS.IdTokenRequest([IdTokenType.AttesterSigned]),
       new RequestId('test-request-id'),
       new Nonce('test-nonce'),
       undefined,
       ResponseModeOption.DirectPost,
-      new EmbedOption.ByValue(),
-      new GetWalletResponseMethod.Poll()
+      undefined,
+      new GetWalletResponseMethodNS.Poll()
     );
 
     const result = requestObjectFromDomain(
       mockVerifierConfig,
-      mockClock,
+      issuedAt,
       presentation
     );
 
     expect(result).toEqual({
-      clientIdScheme,
+      clientId,
+      clientIdScheme: 'pre-registered',
       scope: ['openid'],
       idTokenType: ['attester_signed_id_token'],
-      presentationDefinitionUri: null,
-      presentationDefinition: null,
+      presentationDefinitionUri: undefined,
+      presentationDefinition: undefined,
       responseType: ['id_token'],
       aud: [],
       nonce: 'test-nonce',
       state: 'test-request-id',
       responseMode: 'direct_post',
       responseUri: new URL('https://example.com/direct_post/test-request-id'),
-      issuedAt: new Date('2023-01-01T00:00:00Z'),
+      issuedAt,
     });
   });
 
   it('should create a RequestObject for VpTokenRequest', () => {
     const mockPresentationDefinition = {} as PresentationDefinition;
-    const presentation = new Presentation.Requested(
+    const presentation = new PresentationNS.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
-      new PresentationType.VpTokenRequest(mockPresentationDefinition),
+      new PresentationTypeNS.VpTokenRequest(mockPresentationDefinition),
       new RequestId('test-request-id'),
       new Nonce('test-nonce'),
       undefined,
       ResponseModeOption.DirectPostJwt,
-      new EmbedOption.ByValue(),
-      new GetWalletResponseMethod.Poll()
+      new EmbedOptionNS.ByValue(),
+      new GetWalletResponseMethodNS.Poll()
     );
 
     const result = requestObjectFromDomain(
       mockVerifierConfig,
-      mockClock,
+      issuedAt,
       presentation
     );
 
     expect(result).toEqual({
-      clientIdScheme,
+      clientId,
+      clientIdScheme: 'pre-registered',
       scope: [],
       idTokenType: [],
-      presentationDefinitionUri: null,
+      presentationDefinitionUri: undefined,
       presentationDefinition: mockPresentationDefinition,
       responseType: ['vp_token'],
       aud: ['https://self-issued.me/v2'],
@@ -98,16 +109,16 @@ describe('requestObjectFromDomain', () => {
       state: 'test-request-id',
       responseMode: 'direct_post.jwt',
       responseUri: new URL('https://example.com/direct_post/test-request-id'),
-      issuedAt: new Date('2023-01-01T00:00:00Z'),
+      issuedAt,
     });
   });
 
   it('should create a RequestObject for IdAndVpToken', () => {
     const mockPresentationDefinition = {} as PresentationDefinition;
-    const presentation = new Presentation.Requested(
+    const presentation = new PresentationNS.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
-      new PresentationType.IdAndVpToken(
+      new PresentationTypeNS.IdAndVpTokenRequest(
         [IdTokenType.SubjectSigned],
         mockPresentationDefinition
       ),
@@ -115,21 +126,22 @@ describe('requestObjectFromDomain', () => {
       new Nonce('test-nonce'),
       undefined,
       ResponseModeOption.DirectPost,
-      new EmbedOption.ByValue(),
-      new GetWalletResponseMethod.Redirect('https://redirect.example.com')
+      new EmbedOptionNS.ByValue(),
+      new GetWalletResponseMethodNS.Redirect('https://redirect.example.com')
     );
 
     const result = requestObjectFromDomain(
       mockVerifierConfig,
-      mockClock,
+      issuedAt,
       presentation
     );
 
     expect(result).toEqual({
-      clientIdScheme,
+      clientId,
+      clientIdScheme: 'pre-registered',
       scope: ['openid'],
       idTokenType: ['subject_signed_id_token'],
-      presentationDefinitionUri: null,
+      presentationDefinitionUri: undefined,
       presentationDefinition: mockPresentationDefinition,
       responseType: ['vp_token', 'id_token'],
       aud: ['https://self-issued.me/v2'],
@@ -137,7 +149,7 @@ describe('requestObjectFromDomain', () => {
       state: 'test-request-id',
       responseMode: 'direct_post',
       responseUri: new URL('https://example.com/direct_post/test-request-id'),
-      issuedAt: new Date('2023-01-01T00:00:00Z'),
+      issuedAt,
     });
   });
 });

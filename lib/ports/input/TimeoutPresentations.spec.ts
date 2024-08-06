@@ -1,16 +1,16 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
-  EmbedOption,
-  EphemeralEncryptionKeyPairJWK,
-  GetWalletResponseMethod,
+  EmbedOptionNS,
+  EphemeralECDHPrivateJwk,
+  GetWalletResponseMethodNS,
   Nonce,
-  Presentation,
-  PresentationType,
+  PresentationNS,
+  PresentationTypeNS,
   RequestId,
   ResponseCode,
   ResponseModeOption,
   TransactionId,
-  WalletResponse,
+  WalletResponseNS,
 } from '../../domain';
 import {
   PresentationDefinition,
@@ -21,16 +21,16 @@ import { LoadIncompletePresentationsOlderThan } from '../out/persistence';
 
 const now = Date.now();
 
-const requested = new Presentation.Requested(
+const requested = new PresentationNS.Requested(
   new TransactionId('test'),
   new Date(now - 20 * 60 * 1000),
-  new PresentationType.VpTokenRequest(new PresentationDefinition()),
+  new PresentationTypeNS.VpTokenRequest(new PresentationDefinition()),
   new RequestId('test'),
   new Nonce('test'),
-  new EphemeralEncryptionKeyPairJWK('test'),
+  new EphemeralEncryptionPrivateJwk('test'),
   ResponseModeOption.DirectPostJwt,
-  EmbedOption.ByValue,
-  GetWalletResponseMethod.Redirect
+  EmbedOptionNS.ByValue,
+  GetWalletResponseMethodNS.Redirect
 );
 const retrieve = requested
   .retrieveRequestObject(new Date(now - 20 * 60 * 1000))
@@ -38,7 +38,7 @@ const retrieve = requested
 const submitted = retrieve
   .submit(
     new Date(),
-    new WalletResponse.VpToken('test', new PresentationSubmission()),
+    new WalletResponseNS.VpToken('test', new PresentationSubmission()),
     new ResponseCode('test')
   )
   .getOrThrow();

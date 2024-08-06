@@ -2,8 +2,6 @@ import 'reflect-metadata';
 export * from './domain';
 export * from './kotlin';
 
-export type Duration = number;
-
 // export class Result<T> {
 //   public isSuccess: boolean = false;
 //   public isFailure: boolean = false;

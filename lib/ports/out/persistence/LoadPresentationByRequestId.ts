@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Presentation, RequestId } from '../../../domain';
+import { PresentationNS, RequestId } from '../../../domain';
 
 /**
  * Loads a [Presentation] from a storage

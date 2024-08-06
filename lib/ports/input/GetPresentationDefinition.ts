@@ -15,7 +15,7 @@
  */
 import { PresentationDefinition } from '../../../mock/prex/PresentationDefinition';
 import { LoadPresentationByRequestId } from '../out/persistence';
-import { Presentation, RequestId } from '../../domain';
+import { PresentationNS, RequestId } from '../../domain';
 import { QueryResponse } from './QueryResponse';
 
 export interface GetPresentationDefinition {
@@ -39,10 +39,10 @@ export class GetPresentationDefinitionLive
 
     const presentation = await this.loadPresentationByRequestId(requestId);
 
-    switch (presentation instanceof Presentation.RequestObjectRetrieved) {
+    switch (presentation instanceof PresentationNS.RequestObjectRetrieved) {
       case true:
         return foundOrInvalid(
-          presentation as Presentation.RequestObjectRetrieved
+          presentation as PresentationNS.RequestObjectRetrieved
         );
       default:
         switch (presentation) {

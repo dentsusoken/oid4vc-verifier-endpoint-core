@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
+import { Result } from '../../../kotlin';
 import { RequestId } from '../../../domain';
 
 /**
  * A port for generating [RequestId]
  */
 export interface GenerateRequestId {
-  (): Promise<RequestId>;
-}
-
-export namespace GenerateRequestId {
-  /**
-   * Fixed generator, useful input tests
-   */
-  export function fixed(id: RequestId): GenerateRequestId {
-    return async () => id;
-  }
+  (): Promise<Result<RequestId>>;
 }

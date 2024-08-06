@@ -1,17 +1,17 @@
 import { describe, expect, it, vi } from 'vitest';
 import { GetWalletResponseLive, toTo } from './GetWalletResponse';
 import {
-  EmbedOption,
-  EphemeralEncryptionKeyPairJWK,
-  GetWalletResponseMethod,
+  EmbedOptionNS,
+  EphemeralECDHPrivateJwk,
+  GetWalletResponseMethodNS,
   Nonce,
-  Presentation,
-  PresentationType,
+  PresentationNS,
+  PresentationTypeNS,
   RequestId,
   ResponseCode,
   ResponseModeOption,
   TransactionId,
-  WalletResponse,
+  WalletResponseNS,
 } from '../../domain';
 import {
   PresentationDefinition,
@@ -21,7 +21,7 @@ import { QueryResponse } from './QueryResponse';
 
 describe('GetWalletResponseTO', () => {
   it('should have idToken parameter', () => {
-    const walletResponse = new WalletResponse.IdToken('test');
+    const walletResponse = new WalletResponseNS.IdToken('test');
     const result = toTo(walletResponse);
     expect(result.idToken).toBe('test');
     expect(result.vpToken).toBeUndefined();
@@ -30,7 +30,7 @@ describe('GetWalletResponseTO', () => {
     expect(result.errorDescription).toBeUndefined();
   });
   it('should have vpToken parameter', () => {
-    const walletResponse = new WalletResponse.VpToken(
+    const walletResponse = new WalletResponseNS.VpToken(
       'test',
       new PresentationSubmission()
     );
@@ -43,7 +43,7 @@ describe('GetWalletResponseTO', () => {
     expect(result.errorDescription).toBeUndefined();
   });
   it('should have IdAndVpToken parameter', () => {
-    const walletResponse = new WalletResponse.IdAndVpToken(
+    const walletResponse = new WalletResponseNS.IdAndVpToken(
       'id_test',
       'vp_test',
       new PresentationSubmission()
@@ -57,7 +57,7 @@ describe('GetWalletResponseTO', () => {
     expect(result.errorDescription).toBeUndefined();
   });
   it('should have Error parameter', () => {
-    const walletResponse = new WalletResponse.Error('error', 'description');
+    const walletResponse = new WalletResponseNS.Error('error', 'description');
     const result = toTo(walletResponse);
     expect(result.idToken).toBeUndefined();
     expect(result.vpToken).toBeUndefined();
@@ -68,23 +68,23 @@ describe('GetWalletResponseTO', () => {
 });
 
 describe('GetWalletResponseLive', () => {
-  const requestd = new Presentation.Requested(
+  const requestd = new PresentationNS.Requested(
     new TransactionId('test'),
     new Date(),
-    new PresentationType.VpTokenRequest(new PresentationDefinition()),
+    new PresentationTypeNS.VpTokenRequest(new PresentationDefinition()),
     new RequestId('test'),
     new Nonce('test'),
-    new EphemeralEncryptionKeyPairJWK('test'),
+    new EphemeralEncryptionPrivateJwk('test'),
     ResponseModeOption.DirectPostJwt,
-    EmbedOption.ByValue,
-    GetWalletResponseMethod.Redirect
+    EmbedOptionNS.ByValue,
+    GetWalletResponseMethodNS.Redirect
   );
   const retrieve = requestd.retrieveRequestObject(new Date()).getOrThrow();
   it('should return QueryResponse.Found when presentaion.responseCode === responseCode in args', async () => {
     const submitted = retrieve
       .submit(
         new Date(),
-        new WalletResponse.IdToken('test'),
+        new WalletResponseNS.IdToken('test'),
         new ResponseCode('test')
       )
       .getOrThrow();
@@ -100,7 +100,7 @@ describe('GetWalletResponseLive', () => {
   });
   it('should return QueryResponse.Found when both presentaion.responseCode and responseCode in args are undefined', async () => {
     const submitted = retrieve
-      .submit(new Date(), new WalletResponse.IdToken('test'), undefined)
+      .submit(new Date(), new WalletResponseNS.IdToken('test'), undefined)
       .getOrThrow();
 
     const loadPresentationById = vi.fn().mockReturnValue(submitted);
@@ -112,7 +112,7 @@ describe('GetWalletResponseLive', () => {
   describe('should return QueryResponse.InvalidState when presentaion.responseCode or responseCode in args are undefined', () => {
     it('presentaion.responseCode is undefined', async () => {
       const submitted = retrieve
-        .submit(new Date(), new WalletResponse.IdToken('test'), undefined)
+        .submit(new Date(), new WalletResponseNS.IdToken('test'), undefined)
         .getOrThrow();
 
       const loadPresentationById = vi.fn().mockReturnValue(submitted);
@@ -128,7 +128,7 @@ describe('GetWalletResponseLive', () => {
       const submitted = retrieve
         .submit(
           new Date(),
-          new WalletResponse.IdToken('test'),
+          new WalletResponseNS.IdToken('test'),
           new ResponseCode('test')
         )
         .getOrThrow();
