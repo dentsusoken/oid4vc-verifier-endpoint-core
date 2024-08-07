@@ -61,7 +61,7 @@ describe('requestObjectFromDomain', () => {
 
     expect(result).toEqual({
       clientId,
-      clientIdScheme: 'pre-registered',
+      clientIdSchemeName: 'pre-registered',
       scope: ['openid'],
       idTokenType: ['attester_signed_id_token'],
       presentationDefinitionUri: undefined,
@@ -98,7 +98,7 @@ describe('requestObjectFromDomain', () => {
 
     expect(result).toEqual({
       clientId,
-      clientIdScheme: 'pre-registered',
+      clientIdSchemeName: 'pre-registered',
       scope: [],
       idTokenType: [],
       presentationDefinitionUri: undefined,
@@ -138,7 +138,7 @@ describe('requestObjectFromDomain', () => {
 
     expect(result).toEqual({
       clientId,
-      clientIdScheme: 'pre-registered',
+      clientIdSchemeName: 'pre-registered',
       scope: ['openid'],
       idTokenType: ['subject_signed_id_token'],
       presentationDefinitionUri: undefined,

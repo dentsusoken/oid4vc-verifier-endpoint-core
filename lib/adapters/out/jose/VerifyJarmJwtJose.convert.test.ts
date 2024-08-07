@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { JWTDecryptResult } from 'jose';
-import { PresentationExchange, PresentationSubmission } from 'oid4vc-prex';
-//import { AuthorisationResponseTO } from '../../../ports/out/jose';
-import { Result } from '../../../kotlin';
+import { PresentationSubmission } from 'oid4vc-prex';
 import { toAuthorizationResponseTO } from './VerifyJarmJwtJose.convert';
 
 describe('toAuthorizationResponseTO', () => {
@@ -26,11 +24,8 @@ describe('toAuthorizationResponseTO', () => {
       presentationSubmission: presentationSubmissionJson,
     };
 
-    const result = await toAuthorizationResponseTO(mockPayload);
+    const authResponse = await toAuthorizationResponseTO(mockPayload);
 
-    expect(result.isSuccess).toBe(true);
-
-    const authResponse = result.getOrThrow();
     expect(authResponse.state).toBe(mockPayload.state);
     expect(authResponse.idToken).toBe(mockPayload.idToken);
     expect(authResponse.vpToken).toBe(mockPayload.vpToken);
@@ -50,11 +45,9 @@ describe('toAuthorizationResponseTO', () => {
       presentationSubmission: 'invalid-submission',
     };
 
-    const result = await toAuthorizationResponseTO(mockPayload);
-    expect(result.isSuccess).toBe(false);
-    console.log(result.exceptionOrNull()?.message);
-
-    expect(() => result.getOrThrow()).toThrow();
+    await expect(toAuthorizationResponseTO(mockPayload)).rejects.toThrow(
+      SyntaxError
+    );
   });
 
   it('should handle payload without presentationSubmission', async () => {
@@ -63,10 +56,7 @@ describe('toAuthorizationResponseTO', () => {
       idToken: 'test-id-token',
     };
 
-    const result = await toAuthorizationResponseTO(mockPayload);
-    expect(result.isSuccess).toBe(true);
-
-    const authResponse = result.getOrThrow();
+    const authResponse = await toAuthorizationResponseTO(mockPayload);
     expect(authResponse).toEqual(mockPayload);
     expect(authResponse.presentationSubmission).toBeUndefined();
   });

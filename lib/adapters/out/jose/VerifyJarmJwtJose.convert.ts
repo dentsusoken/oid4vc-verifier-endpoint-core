@@ -17,50 +17,26 @@
 import { JWTDecryptResult } from 'jose';
 import { PresentationExchange } from 'oid4vc-prex';
 import { AuthorizationResponseTO } from '../../../ports/out/jose';
-import { Result, runAsyncCatching } from '../../../kotlin';
 
 /**
- * Converts a decrypted JWT payload to an AuthorisationResponseTO object.
- *
- * This function takes the payload from a decrypted JWT and transforms it into
- * an AuthorisationResponseTO object. It handles the decoding of the presentation
- * submission if present in the payload.
- *
- * @param {JWTDecryptResult['payload']} payload - The payload from a decrypted JWT.
- * @returns {Promise<Result<AuthorizationResponseTO>>} A Promise that resolves to a Result
- * containing the AuthorisationResponseTO if successful, or an error if the conversion fails.
- *
- * @throws Will throw an error if the presentation submission decoding fails.
- *
- * @example
- * const jwtPayload = { ... }; // Decrypted JWT payload
- * const result = await toAuthorizationResponseTO(jwtPayload);
- * result.fold(
- *   (authResponse) => {
- *     // success
- *     console.log('Authorization Response:', authResponse);
- *   },
- *   (error) => {
- *     // failure
- *     console.error('Error converting to AuthorizationResponseTO:', error);
- *   }
- * );
+ * Converts the payload of a decrypted JWT to an AuthorizationResponseTO object.
+ * @param {JWTDecryptResult['payload']} payload - The payload of the decrypted JWT.
+ * @returns {Promise<AuthorizationResponseTO>} A promise that resolves to the converted AuthorizationResponseTO object.
  */
 export const toAuthorizationResponseTO = async (
   payload: JWTDecryptResult['payload']
-): Promise<Result<AuthorizationResponseTO>> =>
-  runAsyncCatching(async () => {
-    const to = {
-      ...payload,
-    } as AuthorizationResponseTO;
-    if (payload.presentationSubmission) {
-      const presentationSubmission = (
-        await PresentationExchange.jsonParse.decodePresentationSubmission(
-          payload.presentationSubmission as ReadableStream<Uint8Array> | string
-        )
-      ).getOrThrow();
-      to.presentationSubmission = presentationSubmission;
-    }
+): Promise<AuthorizationResponseTO> => {
+  const to = {
+    ...payload,
+  } as AuthorizationResponseTO;
+  if (payload.presentationSubmission) {
+    const presentationSubmission = (
+      await PresentationExchange.jsonParse.decodePresentationSubmission(
+        payload.presentationSubmission as ReadableStream<Uint8Array> | string
+      )
+    ).getOrThrow();
+    to.presentationSubmission = presentationSubmission;
+  }
 
-    return to;
-  });
+  return to;
+};

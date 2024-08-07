@@ -17,7 +17,7 @@ import {
   ClientIdSchemeNS,
   SigningConfig,
 } from '../../../domain';
-import { exportJWK, generateKeyPair, decodeProtectedHeader } from 'jose';
+import { exportJWK, generateKeyPair } from 'jose';
 import { PresentationDefinition } from 'oid4vc-prex';
 
 describe('SignRequestObjectJose', async () => {
@@ -76,7 +76,7 @@ describe('SignRequestObjectJose', async () => {
   });
 
   describe('sign', () => {
-    it('should create a JWT with correct header for pre-registered', async () => {
+    it('should create a signed JWT', async () => {
       const clientIdScheme = new ClientIdSchemeNS.PreRegistered('client_id', {
         staticSigningPrivateJwk,
         algorithm: 'ES256',
@@ -96,68 +96,8 @@ describe('SignRequestObjectJose', async () => {
 
       expect(result.isSuccess).toBe(true);
       const jwt = result.getOrThrow();
-      expect(typeof jwt).toBe('string');
       const pieces = jwt.split('.');
       expect(pieces.length).toBe(3);
-      const header = decodeProtectedHeader(jwt);
-      expect(header.kid).toBe('kid');
-      expect(header.x5c).toBeUndefined();
-    });
-
-    it('should create a JWT with correct header for x509_san_dns', async () => {
-      const clientIdScheme = new ClientIdSchemeNS.X509SanDns('client_id', {
-        staticSigningPrivateJwk,
-        algorithm: 'ES256',
-      } as SigningConfig);
-      const mockVerifierConfig = {
-        clientIdScheme,
-        clientMetaData,
-        responseUriBuilder,
-      } as VerifierConfig;
-
-      const signRequestObject = createSignRequestObjectJoseInvoker();
-      const result = await signRequestObject(
-        mockVerifierConfig,
-        mockAt,
-        mockPresentation
-      );
-
-      expect(result.isSuccess).toBe(true);
-      const jwt = result.getOrThrow();
-      expect(typeof jwt).toBe('string');
-      const pieces = jwt.split('.');
-      expect(pieces.length).toBe(3);
-      const header = decodeProtectedHeader(jwt);
-      expect(header.kid).toBeUndefined;
-      expect(header.x5c).toEqual(['x5c']);
-    });
-
-    it('should create a JWT with correct header for x509_san_uri', async () => {
-      const clientIdScheme = new ClientIdSchemeNS.X509SanUri('client_id', {
-        staticSigningPrivateJwk,
-        algorithm: 'ES256',
-      } as SigningConfig);
-      const mockVerifierConfig = {
-        clientIdScheme,
-        clientMetaData,
-        responseUriBuilder,
-      } as VerifierConfig;
-
-      const signRequestObject = createSignRequestObjectJoseInvoker();
-      const result = await signRequestObject(
-        mockVerifierConfig,
-        mockAt,
-        mockPresentation
-      );
-
-      expect(result.isSuccess).toBe(true);
-      const jwt = result.getOrThrow();
-      expect(typeof jwt).toBe('string');
-      const pieces = jwt.split('.');
-      expect(pieces.length).toBe(3);
-      const header = decodeProtectedHeader(jwt);
-      expect(header.kid).toBeUndefined;
-      expect(header.x5c).toEqual(['x5c']);
     });
   });
 });

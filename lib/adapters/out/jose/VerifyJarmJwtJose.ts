@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import { Result } from '../../../kotlin';
-import { EphemeralECDHPrivateJwk, JarmOptionNS, Jwt } from '../../../domain';
 import { VerifyJarmJwt } from '../../../ports/out/jose';
 import { decryptJarmJwt } from './VerifyJarmJwtJose.decrypt';
 import { toAuthorizationResponseTO } from './VerifyJarmJwtJose.convert';
-import { AuthorisationResponseTO } from '../../../../mock/prex';
+import { runAsyncCatching } from '../../../kotlin';
 
 export const createVerifyJarmJwtJoseInvoker = (): VerifyJarmJwt => invoke;
 
@@ -27,14 +25,15 @@ export const createVerifyJarmJwtJoseInvoker = (): VerifyJarmJwt => invoke;
  * Decrypts an encrypted JWT and maps the JWT claimSet to an AuthorisationResponseTO
  */
 const invoke: VerifyJarmJwt = async (
-  jarmOption: JarmOption,
-  ephemeralPrivateJwk: EphemeralECDHPrivateJwk | null,
-  jarmJwt: Jwt
-): Promise<Result<AuthorisationResponseTO>> => {
-  const decryptedJwt = await decryptJarmJwt(
-    jarmOption,
-    ephemeralPrivateJwk,
-    jarmJwt
-  );
-  return toAuthorizationResponseTO(decryptedJwt.payload);
-};
+  jarmOption,
+  ephemeralPrivateJwk,
+  jarmJwt
+) =>
+  runAsyncCatching(async () => {
+    const decryptedJwt = await decryptJarmJwt(
+      jarmOption,
+      ephemeralPrivateJwk,
+      jarmJwt
+    );
+    return toAuthorizationResponseTO(decryptedJwt.payload);
+  });

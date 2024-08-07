@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EphemeralECDHPrivateJwk, JarmOptionNS, Jwt } from '../../../domain';
+import { EphemeralECDHPrivateJwk, JarmOption, Jwt } from '../../../domain';
 import { Result } from '../../../kotlin';
 import { PresentationSubmission } from 'oid4vc-prex';
 
@@ -31,19 +31,16 @@ export interface AuthorizationResponseTO {
 }
 
 /**
- * Verifies a JARM (JWT Secured Authorization Response Mode) JWT.
- *
- * @interface VerifyJarmJwt
- * @function
- * @param {JarmOption} jarmOption - The JARM option configuration.
- * @param {EphemeralECDHPrivateJwk | null} ephemeralEcPrivateKey - The ephemeral EC private key used for encryption, if applicable.
+ * Verifies a JARM (JWT Authorization Response Mode) JWT and returns the decoded AuthorizationResponseTO.
+ * @param {JarmOption} jarmOption - The JARM option specifying the algorithms and encryption methods.
+ * @param {EphemeralECDHPrivateJwk | undefined} ephemeralECDHPrivateJwk - The ephemeral ECDH private JWK, if available.
  * @param {Jwt} jarmJwt - The JARM JWT to be verified.
- * @returns {Result<AuthorizationResponseTO>} A Result containing the AuthorizationResponseTO if verification is successful, or an error if verification fails.
+ * @returns {Promise<Result<AuthorizationResponseTO>>} A promise that resolves to a Result containing the decoded AuthorizationResponseTO if successful, or an error if verification fails.
  */
 export interface VerifyJarmJwt {
   (
     jarmOption: JarmOption,
-    ephemeralPrivateJwk: EphemeralECDHPrivateJwk | null,
+    ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk | undefined,
     jarmJwt: Jwt
   ): Promise<Result<AuthorizationResponseTO>>;
 }

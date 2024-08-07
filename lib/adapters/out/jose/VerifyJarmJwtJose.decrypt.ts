@@ -16,11 +16,16 @@
 
 import { JWTDecryptResult, importJWK, jwtDecrypt, JWTPayload } from 'jose';
 
-import { EphemeralECDHPrivateJwk, JarmOptionNS, Jwt } from '../../../domain';
+import {
+  EphemeralECDHPrivateJwk,
+  JarmOption,
+  JarmOptionNS,
+  Jwt,
+} from '../../../domain';
 
 export const decryptJarmJwt = async (
   jarmOption: JarmOption,
-  ephemeralPrivateJwk: EphemeralECDHPrivateJwk | null,
+  ephemeralPrivateJwk: EphemeralECDHPrivateJwk | undefined,
   jarmJwt: Jwt
 ): Promise<JWTDecryptResult<JWTPayload>> => {
   if (JarmOptionNS.isSigned(jarmOption)) {
@@ -37,7 +42,7 @@ export const decryptJarmJwt = async (
   }
 };
 
-export const decryptJarmJwtInternal = async (
+const decryptJarmJwtInternal = async (
   encrypted: JarmOptionNS.Encrypted,
   ephemeralPrivateJwk: EphemeralECDHPrivateJwk,
   jarmJwt: Jwt
