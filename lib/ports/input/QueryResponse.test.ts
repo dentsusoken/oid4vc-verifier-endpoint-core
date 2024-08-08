@@ -29,8 +29,6 @@ describe('QueryResponse', () => {
       result = 'InvalidState';
     } else if (response.__type === 'Found') {
       result = response.value;
-    } else {
-      throw new Error(`Unhandled response: ${response}`);
     }
 
     expect(result).toBe('NotFound');
@@ -46,8 +44,6 @@ describe('QueryResponse', () => {
       result = 'InvalidState';
     } else if (response.__type === 'Found') {
       result = response.value;
-    } else {
-      throw new Error(`Unhandled response: ${response}`);
     }
 
     expect(result).toBe('InvalidState');
@@ -64,8 +60,28 @@ describe('QueryResponse', () => {
       result = 'InvalidState';
     } else if (response.__type === 'Found') {
       result = response.value;
-    } else {
-      throw new Error(`Unhandled response: ${response}`);
+    }
+
+    expect(result).toBe(value);
+  });
+
+  it('should handle Found case using switch', () => {
+    const value = 'example';
+    const response: QueryResponse<string> = new QueryResponse.Found(value);
+    let result = '';
+
+    switch (response.__type) {
+      case 'NotFound':
+        result = 'NotFound';
+        break;
+      case 'InvalidState':
+        result = 'InvalidState';
+        break;
+      case 'Found':
+        result = response.value;
+        break;
+      // default:
+      //   throw new Error(`Unhandled response: ${response}`);
     }
 
     expect(result).toBe(value);
