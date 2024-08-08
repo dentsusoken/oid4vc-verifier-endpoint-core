@@ -13,44 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PresentationDefinition } from '../../../mock/prex/PresentationDefinition';
-import { LoadPresentationByRequestId } from '../out/persistence';
-import { PresentationNS, RequestId } from '../../domain';
+import { PresentationDefinition } from 'oid4vc-prex';
+import { RequestId } from '../../domain';
 import { QueryResponse } from './QueryResponse';
 
 export interface GetPresentationDefinition {
-  invoke(requestId: RequestId): Promise<QueryResponse<PresentationDefinition>>;
+  (requestId: RequestId): Promise<QueryResponse<PresentationDefinition>>;
 }
 
-export class GetPresentationDefinitionLive
-  implements GetPresentationDefinition
-{
-  constructor(
-    private loadPresentationByRequestId: LoadPresentationByRequestId
-  ) {}
+// export class GetPresentationDefinitionLive
+//   implements GetPresentationDefinition
+// {
+//   constructor(
+//     private loadPresentationByRequestId: LoadPresentationByRequestId
+//   ) {}
 
-  async invoke(
-    requestId: RequestId
-  ): Promise<QueryResponse<PresentationDefinition>> {
-    const foundOrInvalid = (p: Presentation) => {
-      const it = p.type.presentationDefinitionOrNull();
-      return it ? new QueryResponse.Found(it) : QueryResponse.InvalidState;
-    };
+//   async invoke(
+//     requestId: RequestId
+//   ): Promise<QueryResponse<PresentationDefinition>> {
+//     const foundOrInvalid = (p: Presentation) => {
+//       const it = p.type.presentationDefinitionOrNull();
+//       return it ? new QueryResponse.Found(it) : QueryResponse.InvalidState;
+//     };
 
-    const presentation = await this.loadPresentationByRequestId(requestId);
+//     const presentation = await this.loadPresentationByRequestId(requestId);
 
-    switch (presentation instanceof PresentationNS.RequestObjectRetrieved) {
-      case true:
-        return foundOrInvalid(
-          presentation as PresentationNS.RequestObjectRetrieved
-        );
-      default:
-        switch (presentation) {
-          case undefined:
-            return QueryResponse.NotFound;
-          default:
-            return QueryResponse.InvalidState;
-        }
-    }
-  }
-}
+//     switch (presentation instanceof PresentationNS.RequestObjectRetrieved) {
+//       case true:
+//         return foundOrInvalid(
+//           presentation as PresentationNS.RequestObjectRetrieved
+//         );
+//       default:
+//         switch (presentation) {
+//           case undefined:
+//             return QueryResponse.NotFound;
+//           default:
+//             return QueryResponse.InvalidState;
+//         }
+//     }
+//   }
+// }
