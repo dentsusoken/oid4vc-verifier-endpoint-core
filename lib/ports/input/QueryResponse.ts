@@ -13,11 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface QueryResponse<T> {}
+
+export interface QueryResponse<T> {
+  __type: 'NotFound' | 'InvalidState' | 'Found';
+  value: T;
+}
+
 export namespace QueryResponse {
-  export const NotFound: QueryResponse<undefined> = {};
-  export const InvalidState: QueryResponse<undefined> = {};
+  export class NotFound implements QueryResponse<never> {
+    static readonly INSTANCE: QueryResponse<never> = new NotFound();
+
+    __type = 'NotFound' as const;
+
+    private constructor() {}
+
+    get value(): never {
+      throw new Error('NotFound does not have a value');
+    }
+  }
+
+  export class InvalidState implements QueryResponse<never> {
+    static readonly INSTANCE: QueryResponse<never> = new InvalidState();
+
+    __type = 'InvalidState' as const;
+
+    private constructor() {}
+
+    get value(): never {
+      throw new Error('InvalidState does not have a value');
+    }
+  }
+
   export class Found<T> implements QueryResponse<T> {
-    constructor(public value: T) {}
+    __type = 'Found' as const;
+
+    constructor(public readonly value: T) {}
   }
 }
