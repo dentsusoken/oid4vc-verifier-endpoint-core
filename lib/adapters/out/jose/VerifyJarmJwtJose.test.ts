@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 
 import {
@@ -37,6 +38,7 @@ describe('VerifyJarmJwtJose', () => {
         keyManagementAlgorithms: ['ECDH-ES+A256KW'],
         contentEncryptionAlgorithms: ['A256GCM'],
       });
+      console.log(decrypted.protectedHeader);
 
       expect(decrypted.protectedHeader.alg).toEqual('ECDH-ES+A256KW');
       expect(decrypted.protectedHeader.enc).toEqual('A256GCM');
