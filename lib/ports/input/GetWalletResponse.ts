@@ -17,12 +17,31 @@ import { ResponseCode, TransactionId } from '../../domain';
 import { QueryResponse } from './QueryResponse';
 import { WalletResponseTO } from './GetWalletResponse.types';
 
+/**
+ * Represents a function to retrieve a wallet response based on a transaction ID.
+ *
+ * @interface GetWalletResponse
+ * @description This interface defines a function that takes a transaction ID and an optional
+ * response code, and returns a Promise resolving to a QueryResponse containing a WalletResponseTO.
+ * It is typically used to fetch the response from a wallet after a transaction has been initiated.
+ *
+ * @param {TransactionId} transactionId - The unique identifier of the transaction for which
+ * the wallet response is being requested.
+ * @param {ResponseCode} [responseCode] - An optional response code that may be used to
+ * provide additional context or filtering for the request.
+ *
+ * @returns {Promise<QueryResponse<WalletResponseTO>>} A promise that resolves to a QueryResponse
+ * containing the WalletResponseTO. The QueryResponse can be in one of three states:
+ * - NotFound: If no wallet response is found for the given transaction ID.
+ * - InvalidState: If the wallet response is in an invalid or unexpected state.
+ * - Found: Containing the WalletResponseTO with the actual wallet response data.
+ *
+ */
 export interface GetWalletResponse {
   (transactionId: TransactionId, responseCode?: ResponseCode): Promise<
     QueryResponse<WalletResponseTO>
   >;
 }
-
 //@Expose({ name: 'wallet_response' })
 // export class WalletResponseTO {
 //   @Expose({ name: 'id_token' })
