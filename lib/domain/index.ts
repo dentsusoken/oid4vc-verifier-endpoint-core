@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from './AuthorizationResponse';
 export * from './EmbedOption';
 export * from './BuildUrl';
 export * from './types';

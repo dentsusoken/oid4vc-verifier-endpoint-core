@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-import { EphemeralECDHPrivateJwk, JarmOption, Jwt } from '../../../domain';
+import {
+  EphemeralECDHPrivateJwk,
+  JarmOption,
+  Jwt,
+  AuthorizationResponseData,
+} from '../../../domain';
 import { Result } from '../../../kotlin';
-import { PresentationSubmission } from 'oid4vc-prex';
-
-/**
- * Represent the Authorization Response placed by wallet
- */
-export interface AuthorizationResponseTO {
-  state?: string; // this is the request_id
-  idToken?: string;
-  vpToken?: string;
-  presentationSubmission?: PresentationSubmission;
-  error?: string;
-  errorDescription?: string;
-}
 
 /**
  * Verifies a JARM (JWT Authorization Response Mode) JWT and returns the decoded AuthorizationResponseTO.
@@ -42,5 +34,5 @@ export interface VerifyJarmJwt {
     jarmOption: JarmOption,
     ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk | undefined,
     jarmJwt: Jwt
-  ): Promise<Result<AuthorizationResponseTO>>;
+  ): Promise<Result<AuthorizationResponseData>>;
 }

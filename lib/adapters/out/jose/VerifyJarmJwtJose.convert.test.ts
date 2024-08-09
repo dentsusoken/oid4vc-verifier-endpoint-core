@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { JWTDecryptResult } from 'jose';
 import { PresentationSubmission } from 'oid4vc-prex';
-import { toAuthorizationResponseTO } from './VerifyJarmJwtJose.convert';
+import { toAuthorizationResponseData } from './VerifyJarmJwtJose.convert';
 
 describe('toAuthorizationResponseTO', () => {
   it('should successfully convert JWT payload to AuthorisationResponseTO', async () => {
@@ -24,7 +24,7 @@ describe('toAuthorizationResponseTO', () => {
       presentationSubmission: presentationSubmissionJson,
     };
 
-    const authResponse = await toAuthorizationResponseTO(mockPayload);
+    const authResponse = await toAuthorizationResponseData(mockPayload);
 
     expect(authResponse.state).toBe(mockPayload.state);
     expect(authResponse.idToken).toBe(mockPayload.idToken);
@@ -45,7 +45,7 @@ describe('toAuthorizationResponseTO', () => {
       presentationSubmission: 'invalid-submission',
     };
 
-    await expect(toAuthorizationResponseTO(mockPayload)).rejects.toThrow(
+    await expect(toAuthorizationResponseData(mockPayload)).rejects.toThrow(
       SyntaxError
     );
   });
@@ -56,7 +56,7 @@ describe('toAuthorizationResponseTO', () => {
       idToken: 'test-id-token',
     };
 
-    const authResponse = await toAuthorizationResponseTO(mockPayload);
+    const authResponse = await toAuthorizationResponseData(mockPayload);
     expect(authResponse).toEqual(mockPayload);
     expect(authResponse.presentationSubmission).toBeUndefined();
   });

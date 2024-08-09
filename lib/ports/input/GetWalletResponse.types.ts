@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Expose, Type, Transform, instanceToPlain } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { PresentationSubmission } from 'oid4vc-prex';
 
 /**

@@ -16,7 +16,7 @@
 
 import { VerifyJarmJwt } from '../../../ports/out/jose';
 import { decryptJarmJwt } from './VerifyJarmJwtJose.decrypt';
-import { toAuthorizationResponseTO } from './VerifyJarmJwtJose.convert';
+import { toAuthorizationResponseData } from './VerifyJarmJwtJose.convert';
 import { runAsyncCatching } from '../../../kotlin';
 
 export const createVerifyJarmJwtJoseInvoker = (): VerifyJarmJwt => invoke;
@@ -35,5 +35,5 @@ const invoke: VerifyJarmJwt = async (
       ephemeralPrivateJwk,
       jarmJwt
     );
-    return toAuthorizationResponseTO(decryptedJwt.payload);
+    return toAuthorizationResponseData(decryptedJwt.payload);
   });

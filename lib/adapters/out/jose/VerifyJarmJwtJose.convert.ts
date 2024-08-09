@@ -16,27 +16,27 @@
 
 import { JWTDecryptResult } from 'jose';
 import { PresentationExchange } from 'oid4vc-prex';
-import { AuthorizationResponseTO } from '../../../ports/out/jose';
+import { AuthorizationResponseData } from '../../../domain';
 
 /**
  * Converts the payload of a decrypted JWT to an AuthorizationResponseTO object.
  * @param {JWTDecryptResult['payload']} payload - The payload of the decrypted JWT.
- * @returns {Promise<AuthorizationResponseTO>} A promise that resolves to the converted AuthorizationResponseTO object.
+ * @returns {Promise<AuthorizationResponseData>} A promise that resolves to the converted AuthorizationResponseTO object.
  */
-export const toAuthorizationResponseTO = async (
+export const toAuthorizationResponseData = async (
   payload: JWTDecryptResult['payload']
-): Promise<AuthorizationResponseTO> => {
-  const to = {
+): Promise<AuthorizationResponseData> => {
+  const data = {
     ...payload,
-  } as AuthorizationResponseTO;
+  } as AuthorizationResponseData;
   if (payload.presentationSubmission) {
     const presentationSubmission = (
       await PresentationExchange.jsonParse.decodePresentationSubmission(
         payload.presentationSubmission as ReadableStream<Uint8Array> | string
       )
     ).getOrThrow();
-    to.presentationSubmission = presentationSubmission;
+    data.presentationSubmission = presentationSubmission;
   }
 
-  return to;
+  return data;
 };
