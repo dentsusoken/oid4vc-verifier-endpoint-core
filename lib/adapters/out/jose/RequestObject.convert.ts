@@ -24,7 +24,7 @@ import {
   PresentationType,
   RequestId,
   ClientIdScheme,
-  ClientIdSchemeNS,
+  ClientIdScheme,
 } from '../../../domain';
 
 /**
@@ -99,9 +99,9 @@ export type ClientIdSchemeName =
 export const getClientIdSchemeName = (
   clientIdScheme: ClientIdScheme
 ): ClientIdSchemeName => {
-  if (ClientIdSchemeNS.isPreRegistered(clientIdScheme)) {
+  if (clientIdScheme.__type === 'PreRegistered') {
     return 'pre-registered';
-  } else if (ClientIdSchemeNS.isX509SanDns(clientIdScheme)) {
+  } else if (clientIdScheme.__type === 'X509SanDns') {
     return 'x509_san_dns';
   } else {
     return 'x509_san_uri';

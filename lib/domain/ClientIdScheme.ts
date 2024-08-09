@@ -17,9 +17,23 @@
 import { SigningConfig } from './SigningConfig';
 
 /**
+ * Represents a client ID scheme configuration.
+ * This type can be one of the following:
+ * - PreRegistered: A pre-registered client ID scheme.
+ * - X509SanDns: A client ID scheme using X.509 Subject Alternative Name DNS.
+ * - X509SanUri: A client ID scheme using X.509 Subject Alternative Name URI.
+ *
+ * @typedef {ClientIdScheme.PreRegistered | ClientIdScheme.X509SanDns | ClientIdScheme.X509SanUri} ClientIdScheme
+ */
+export type ClientIdScheme =
+  | ClientIdScheme.PreRegistered
+  | ClientIdScheme.X509SanDns
+  | ClientIdScheme.X509SanUri;
+
+/**
  * Represents the configuration for a client ID scheme.
  */
-export interface ClientIdScheme {
+interface ClientIdSchemeInterface {
   clientId: string;
   jarSigning: SigningConfig;
 }
@@ -27,54 +41,31 @@ export interface ClientIdScheme {
 /**
  * Namespace containing implementations and type guards for various ClientIdScheme types.
  */
-export namespace ClientIdSchemeNS {
+export namespace ClientIdScheme {
   /**
    * Represents a pre-registered client ID scheme.
    */
-  export class PreRegistered implements ClientIdScheme {
+  export class PreRegistered implements ClientIdSchemeInterface {
+    readonly __type = 'PreRegistered' as const;
+
     constructor(public clientId: string, public jarSigning: SigningConfig) {}
   }
 
   /**
    * Represents a client ID scheme using X.509 Subject Alternative Name DNS.
    */
-  export class X509SanDns implements ClientIdScheme {
+  export class X509SanDns implements ClientIdSchemeInterface {
+    readonly __type = 'X509SanDns' as const;
+
     constructor(public clientId: string, public jarSigning: SigningConfig) {}
   }
 
   /**
    * Represents a client ID scheme using X.509 Subject Alternative Name URI.
    */
-  export class X509SanUri implements ClientIdScheme {
+  export class X509SanUri implements ClientIdSchemeInterface {
+    readonly __type = 'X509SanUri' as const;
+
     constructor(public clientId: string, public jarSigning: SigningConfig) {}
-  }
-
-  /**
-   * Checks if a ClientIdScheme is an instance of PreRegistered.
-   * @param scheme - The ClientIdScheme to check.
-   * @returns True if the scheme is an instance of PreRegistered, false otherwise.
-   */
-  export function isPreRegistered(
-    scheme: ClientIdScheme
-  ): scheme is PreRegistered {
-    return scheme.constructor === PreRegistered;
-  }
-
-  /**
-   * Checks if a ClientIdScheme is an instance of X509SanDns.
-   * @param scheme - The ClientIdScheme to check.
-   * @returns True if the scheme is an instance of X509SanDns, false otherwise.
-   */
-  export function isX509SanDns(scheme: ClientIdScheme): scheme is X509SanDns {
-    return scheme.constructor === X509SanDns;
-  }
-
-  /**
-   * Checks if a ClientIdScheme is an instance of X509SanUri.
-   * @param scheme - The ClientIdScheme to check.
-   * @returns True if the scheme is an instance of X509SanUri, false otherwise.
-   */
-  export function isX509SanUri(scheme: ClientIdScheme): scheme is X509SanUri {
-    return scheme.constructor === X509SanUri;
   }
 }

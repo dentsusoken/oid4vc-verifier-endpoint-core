@@ -15,7 +15,7 @@ import {
   EmbedOptionNS,
   ResponseModeOption,
   RequestId,
-  ClientIdSchemeNS,
+  ClientIdScheme,
   SigningConfig,
 } from '../../../domain';
 import { PresentationDefinition } from 'oid4vc-prex';
@@ -125,7 +125,7 @@ describe('Presentation Type Utilities', () => {
 
   describe('getClientIdScheme', () => {
     it('should return "pre-registered" for PreRegistered scheme', () => {
-      const preRegisteredScheme = new ClientIdSchemeNS.PreRegistered(
+      const preRegisteredScheme = new ClientIdScheme.PreRegistered(
         'client_id',
         {} as SigningConfig
       );
@@ -133,7 +133,7 @@ describe('Presentation Type Utilities', () => {
     });
 
     it('should return "x509_san_dns" for X509SanDns scheme', () => {
-      const x509SanDnsScheme = new ClientIdSchemeNS.X509SanDns(
+      const x509SanDnsScheme = new ClientIdScheme.X509SanDns(
         'client_id',
         {} as SigningConfig
       );
@@ -141,7 +141,7 @@ describe('Presentation Type Utilities', () => {
     });
 
     it('should return "x509_san_uri" for X509SanUri scheme', () => {
-      const x509SanUriScheme = new ClientIdSchemeNS.X509SanUri(
+      const x509SanUriScheme = new ClientIdScheme.X509SanUri(
         'client_id',
         {} as SigningConfig
       );

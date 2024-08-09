@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { requestObjectFromDomain } from './RequestObject';
 import {
-  ClientIdSchemeNS,
+  ClientIdScheme,
   VerifierConfig,
   PresentationNS,
   PresentationTypeNS,
@@ -28,10 +28,7 @@ describe('requestObjectFromDomain', () => {
     staticSigningPrivateJwk,
     algorithm: 'ES256',
   };
-  const clientIdScheme = new ClientIdSchemeNS.PreRegistered(
-    clientId,
-    jarSigning
-  );
+  const clientIdScheme = new ClientIdScheme.PreRegistered(clientId, jarSigning);
 
   const urlBuilder: BuildUrl<RequestId> = (id: RequestId) =>
     new URL(`https://example.com/direct_post/${id.value}`);

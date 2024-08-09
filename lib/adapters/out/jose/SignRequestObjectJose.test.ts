@@ -14,7 +14,7 @@ import {
   Nonce,
   ResponseModeOption,
   GetWalletResponseMethodNS,
-  ClientIdSchemeNS,
+  ClientIdScheme,
   SigningConfig,
 } from '../../../domain';
 import { exportJWK, generateKeyPair } from 'jose';
@@ -77,7 +77,7 @@ describe('SignRequestObjectJose', async () => {
 
   describe('sign', () => {
     it('should create a signed JWT', async () => {
-      const clientIdScheme = new ClientIdSchemeNS.PreRegistered('client_id', {
+      const clientIdScheme = new ClientIdScheme.PreRegistered('client_id', {
         staticSigningPrivateJwk,
         algorithm: 'ES256',
       } as SigningConfig);
