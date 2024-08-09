@@ -13,110 +13,111 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Expose } from 'class-transformer';
-import { PresentationSubmission } from '../../../mock/prex';
-import {
-  PresentationNS,
-  ResponseCode,
-  TransactionId,
-  WalletResponseNS,
-} from '../../domain';
+import { ResponseCode, TransactionId } from '../../domain';
 import { QueryResponse } from './QueryResponse';
-import { LoadPresentationById } from '../out/persistence';
+import { WalletResponseTO } from './GetWalletResponse.types';
 
-@Expose({ name: 'wallet_response' })
-export class WalletResponseTO {
-  @Expose({ name: 'id_token' }) idToken?: string;
-  @Expose({ name: 'vp_token' }) vpToken?: string;
-  @Expose({ name: 'presentation_submission' })
-  presentationSubmission?: PresentationSubmission;
-  @Expose({ name: 'error' }) error?: string;
-  @Expose({ name: 'error_description' }) errorDescription?: string;
-
-  constructor(args: {
-    idToken?: string;
-    vpToken?: string;
-    presentationSubmission?: PresentationSubmission;
-    error?: string;
-    errorDescription?: string;
-  }) {
-    this.idToken = args.idToken;
-    this.vpToken = args.vpToken;
-    this.presentationSubmission = args.presentationSubmission;
-    this.error = args.error;
-    this.errorDescription = args.errorDescription;
-  }
+export interface GetWalletResponse {
+  (transactionId: TransactionId, responseCode?: ResponseCode): Promise<
+    QueryResponse<WalletResponseTO>
+  >;
 }
 
-export const toTo = (instance: WalletResponse): WalletResponseTO => {
-  if (instance instanceof WalletResponseNS.IdToken) {
-    return new WalletResponseTO({ idToken: instance.idToken });
-  }
-  if (instance instanceof WalletResponseNS.VpToken) {
-    return new WalletResponseTO({
-      vpToken: instance.vpToken,
-      presentationSubmission: instance.presentationSubmission,
-    });
-  }
-  if (instance instanceof WalletResponseNS.IdAndVpToken) {
-    return new WalletResponseTO({
-      idToken: instance.idToken,
-      vpToken: instance.vpToken,
-      presentationSubmission: instance.presentationSubmission,
-    });
-  }
-  if (instance instanceof WalletResponseNS.Error) {
-    return new WalletResponseTO({
-      error: instance.value,
-      errorDescription: instance.description,
-    });
-  }
-  throw new Error('Unsupported WalletResponse');
-};
+//@Expose({ name: 'wallet_response' })
+// export class WalletResponseTO {
+//   @Expose({ name: 'id_token' })
+//   idToken?: string;
 
-interface GetWalletResponse {
-  invoke(
-    transactionId: TransactionId,
-    responseCode?: ResponseCode
-  ): Promise<QueryResponse<WalletResponseTO>>;
-}
+//   @Expose({ name: 'vp_token' })
+//   vpToken?: string;
 
-export class GetWalletResponseLive implements GetWalletResponse {
-  constructor(private loadPresentationById: LoadPresentationById) {}
+//   @Expose({ name: 'presentation_submission' })
+//   @Type(() => PresentationSubmission)
+//   presentationSubmission?: PresentationSubmission;
 
-  async invoke(
-    transactionId: TransactionId,
-    responseCode?: ResponseCode
-  ): Promise<QueryResponse<WalletResponseTO>> {
-    const presentation = await this.loadPresentationById(transactionId);
+//   @Expose({ name: 'error' })
+//   error?: string;
 
-    switch (presentation instanceof PresentationNS.Submitted) {
-      case true:
-        const presentationResCode = (presentation as PresentationNS.Submitted)
-          .responseCode;
+//   @Expose({ name: 'error_description' })
+//   errorDescription?: string;
 
-        if (
-          (!presentationResCode && !!responseCode) ||
-          (!!presentationResCode && !responseCode)
-        ) {
-          return QueryResponse.InvalidState;
-        } else if (
-          (!presentationResCode && !responseCode) ||
-          presentationResCode?.value === responseCode?.value
-        ) {
-          return new QueryResponse.Found(
-            toTo((presentation as PresentationNS.Submitted).walletResponse)
-          );
-        } else {
-          return QueryResponse.InvalidState;
-        }
-      default:
-        switch (presentation) {
-          case undefined:
-            return QueryResponse.NotFound;
-          default:
-            return QueryResponse.InvalidState;
-        }
-    }
-  }
-}
+//   constructor(args: {
+//     idToken?: string;
+//     vpToken?: string;
+//     presentationSubmission?: PresentationSubmission;
+//     error?: string;
+//     errorDescription?: string;
+//   }) {
+//     this.idToken = args.idToken;
+//     this.vpToken = args.vpToken;
+//     this.presentationSubmission = args.presentationSubmission;
+//     this.error = args.error;
+//     this.errorDescription = args.errorDescription;
+//   }
+// }
+
+// export const toTo = (instance: WalletResponse): WalletResponseTO => {
+//   if (instance instanceof WalletResponseNS.IdToken) {
+//     return new WalletResponseTO({ idToken: instance.idToken });
+//   }
+//   if (instance instanceof WalletResponseNS.VpToken) {
+//     return new WalletResponseTO({
+//       vpToken: instance.vpToken,
+//       presentationSubmission: instance.presentationSubmission,
+//     });
+//   }
+//   if (instance instanceof WalletResponseNS.IdAndVpToken) {
+//     return new WalletResponseTO({
+//       idToken: instance.idToken,
+//       vpToken: instance.vpToken,
+//       presentationSubmission: instance.presentationSubmission,
+//     });
+//   }
+//   if (instance instanceof WalletResponseNS.Error) {
+//     return new WalletResponseTO({
+//       error: instance.value,
+//       errorDescription: instance.description,
+//     });
+//   }
+//   throw new Error('Unsupported WalletResponse');
+// };
+
+// export class GetWalletResponseLive implements GetWalletResponse {
+//   constructor(private loadPresentationById: LoadPresentationById) {}
+
+//   async invoke(
+//     transactionId: TransactionId,
+//     responseCode?: ResponseCode
+//   ): Promise<QueryResponse<WalletResponseTO>> {
+//     const presentation = await this.loadPresentationById(transactionId);
+
+//     switch (presentation instanceof PresentationNS.Submitted) {
+//       case true:
+//         const presentationResCode = (presentation as PresentationNS.Submitted)
+//           .responseCode;
+
+//         if (
+//           (!presentationResCode && !!responseCode) ||
+//           (!!presentationResCode && !responseCode)
+//         ) {
+//           return QueryResponse.InvalidState;
+//         } else if (
+//           (!presentationResCode && !responseCode) ||
+//           presentationResCode?.value === responseCode?.value
+//         ) {
+//           return new QueryResponse.Found(
+//             toTo((presentation as PresentationNS.Submitted).walletResponse)
+//           );
+//         } else {
+//           return QueryResponse.InvalidState;
+//         }
+//       default:
+//         switch (presentation) {
+//           case undefined:
+//             return QueryResponse.NotFound;
+//           default:
+//             return QueryResponse.InvalidState;
+//         }
+//     }
+//   }
+// }
