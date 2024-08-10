@@ -1,89 +1,48 @@
-import { describe, expect, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { QueryResponse } from './QueryResponse';
 
 describe('QueryResponse', () => {
-  it('should create NotFound instance', () => {
-    const response: QueryResponse<string> = QueryResponse.NotFound.INSTANCE;
-    expect(response.__type).toBe('NotFound');
+  describe('NotFound', () => {
+    it('should create a NotFound instance using the static INSTANCE', () => {
+      const notFound = QueryResponse.NotFound.INSTANCE;
+
+      expect(notFound).toBeInstanceOf(QueryResponse.NotFound);
+      expect(notFound.__type).toBe('NotFound');
+    });
   });
 
-  it('should create InvalidState instance', () => {
-    const response: QueryResponse<string> = QueryResponse.InvalidState.INSTANCE;
-    expect(response.__type).toBe('InvalidState');
+  describe('InvalidState', () => {
+    it('should create an InvalidState instance using the static INSTANCE', () => {
+      const invalidState = QueryResponse.InvalidState.INSTANCE;
+
+      expect(invalidState).toBeInstanceOf(QueryResponse.InvalidState);
+      expect(invalidState.__type).toBe('InvalidState');
+    });
   });
 
-  it('should create Found instance with value', () => {
-    const value = 'example';
-    const response: QueryResponse<string> = new QueryResponse.Found(value);
-    expect(response.__type).toBe('Found');
-    expect(response.__type === 'Found' && response.value).toBe(value);
+  describe('Found', () => {
+    it('should create a Found instance with the provided value', () => {
+      const value = 'example value';
+      const found = new QueryResponse.Found(value);
+
+      expect(found).toBeInstanceOf(QueryResponse.Found);
+      expect(found.__type).toBe('Found');
+      expect(found.value).toBe(value);
+    });
   });
 
-  it('should handle NotFound case', () => {
-    const response: QueryResponse<string> = QueryResponse.NotFound.INSTANCE;
-    let result = '';
+  describe('Type Guards', () => {
+    it('should correctly identify Found type', () => {
+      const value = 'example value';
+      const response: QueryResponse<string> = new QueryResponse.Found(value);
 
-    if (response.__type === 'NotFound') {
-      result = 'NotFound';
-    } else if (response.__type === 'InvalidState') {
-      result = 'InvalidState';
-    } else if (response.__type === 'Found') {
-      result = response.value;
-    }
-
-    expect(result).toBe('NotFound');
-  });
-
-  it('should handle InvalidState case', () => {
-    const response: QueryResponse<string> = QueryResponse.InvalidState.INSTANCE;
-    let result = '';
-
-    if (response.__type === 'NotFound') {
-      result = 'NotFound';
-    } else if (response.__type === 'InvalidState') {
-      result = 'InvalidState';
-    } else if (response.__type === 'Found') {
-      result = response.value;
-    }
-
-    expect(result).toBe('InvalidState');
-  });
-
-  it('should handle Found case', () => {
-    const value = 'example';
-    const response: QueryResponse<string> = new QueryResponse.Found(value);
-    let result = '';
-
-    if (response.__type === 'NotFound') {
-      result = 'NotFound';
-    } else if (response.__type === 'InvalidState') {
-      result = 'InvalidState';
-    } else if (response.__type === 'Found') {
-      result = response.value;
-    }
-
-    expect(result).toBe(value);
-  });
-
-  it('should handle Found case using switch', () => {
-    const value = 'example';
-    const response: QueryResponse<string> = new QueryResponse.Found(value);
-    let result = '';
-
-    switch (response.__type) {
-      case 'NotFound':
-        result = 'NotFound';
-        break;
-      case 'InvalidState':
-        result = 'InvalidState';
-        break;
-      case 'Found':
-        result = response.value;
-        break;
-      // default:
-      //   throw new Error(`Unhandled response: ${response}`);
-    }
-
-    expect(result).toBe(value);
+      if (response.__type === 'Found') {
+        expect(response).toBeInstanceOf(QueryResponse.Found);
+        expect(response.value).toBe(value);
+      } else {
+        // This branch should not be reached in this test
+        expect(true).toBe(false);
+      }
+    });
   });
 });

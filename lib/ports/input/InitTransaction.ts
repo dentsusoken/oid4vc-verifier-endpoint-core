@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+import {
+  InitTransactionTO,
+  JwtSecuredAuthorizationRequestTO,
+} from './InitTransaction.types';
+
 /**
  * This is a use case that initializes the [Presentation] process.
  *
@@ -22,12 +27,6 @@
  *
  * Use case will initialize a [Presentation] process
  */
-
-import {
-  InitTransactionTO,
-  JwtSecuredAuthorizationRequestTO,
-} from './InitTransaction.types';
-
 export interface InitTransaction {
   /**
    * Initializes the [Presentation] process.

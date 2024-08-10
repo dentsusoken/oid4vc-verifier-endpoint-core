@@ -16,13 +16,7 @@
 import 'reflect-metadata';
 import { PresentationDefinition } from 'oid4vc-prex';
 import { Expose, Type } from 'class-transformer';
-import {
-  IsEnum,
-  IsOptional,
-  IsString,
-  ValidateNested,
-  IsUrl,
-} from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
 
 /**
  * Enumeration of presentation types for the transaction.

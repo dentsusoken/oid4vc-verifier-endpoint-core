@@ -14,39 +14,108 @@
  * limitations under the License.
  */
 
+/**
+ * Represents the response of a query.
+ * @template T - The type of the value in the Found response.
+ * @typedef {QueryResponse.NotFound | QueryResponse.InvalidState | QueryResponse.Found<T>} QueryResponse
+ */
 export type QueryResponse<T> =
   | QueryResponse.NotFound
   | QueryResponse.InvalidState
   | QueryResponse.Found<T>;
 
+/**
+ * Namespace for QueryResponse related classes and types.
+ * @namespace QueryResponse
+ */
 export namespace QueryResponse {
+  /**
+   * Interface representing a QueryResponse.
+   * @interface QueryResponse
+   */
   interface QueryResponse {
+    /**
+     * The type of the QueryResponse.
+     * @type {('NotFound' | 'InvalidState' | 'Found')}
+     * @readonly
+     */
     readonly __type: 'NotFound' | 'InvalidState' | 'Found';
   }
 
+  /**
+   * Represents a NotFound response.
+   * @class NotFound
+   * @implements {QueryResponse}
+   */
   export class NotFound implements QueryResponse {
+    /**
+     * The type of the QueryResponse.
+     * @type {('NotFound')}
+     * @readonly
+     */
     readonly __type = 'NotFound';
 
+    /**
+     * The singleton instance of the NotFound class.
+     * @type {NotFound}
+     * @static
+     * @readonly
+     */
     static readonly INSTANCE = new NotFound();
 
+    /**
+     * Private constructor to enforce singleton pattern.
+     * @private
+     */
     private constructor() {}
   }
 
+  /**
+   * Represents an InvalidState response.
+   * @class InvalidState
+   * @implements {QueryResponse}
+   */
   export class InvalidState implements QueryResponse {
+    /**
+     * The type of the QueryResponse.
+     * @type {('InvalidState')}
+     * @readonly
+     */
     readonly __type = 'InvalidState';
 
+    /**
+     * The singleton instance of the InvalidState class.
+     * @type {InvalidState}
+     * @static
+     * @readonly
+     */
     static readonly INSTANCE = new InvalidState();
 
+    /**
+     * Private constructor to enforce singleton pattern.
+     * @private
+     */
     private constructor() {}
-
-    get value(): never {
-      throw new Error('InvalidState does not have a value');
-    }
   }
 
+  /**
+   * Represents a Found response with a value.
+   * @class Found
+   * @implements {QueryResponse}
+   * @template T - The type of the value.
+   */
   export class Found<T> implements QueryResponse {
+    /**
+     * The type of the QueryResponse.
+     * @type {('Found')}
+     * @readonly
+     */
     readonly __type = 'Found' as const;
 
+    /**
+     * Creates an instance of Found.
+     * @param {T} value - The value of the Found response.
+     */
     constructor(public readonly value: T) {}
   }
 }
