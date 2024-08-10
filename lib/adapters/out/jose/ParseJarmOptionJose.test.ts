@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createParseJarmOptionJoseInvoker } from './ParseJarmOptionJose';
-import { JarmOptionNS } from '../../../domain';
+import { JarmOption } from '../../../domain';
 
 describe('createParseJarmOptionJoseInvoker', () => {
   const parseJarmOption = createParseJarmOptionJoseInvoker();
@@ -17,7 +17,7 @@ describe('createParseJarmOptionJoseInvoker', () => {
 
     it('should return Signed option when only JWS algorithm is provided', () => {
       const result = parseJarmOption('ES256', null, null);
-      expect(result).toBeInstanceOf(JarmOptionNS.Signed);
+      expect(result).toBeInstanceOf(JarmOption.Signed);
       expect(result?.jwsAlg()).toBe('ES256');
       expect(result?.jweAlg()).toBeUndefined();
       expect(result?.jweEnc()).toBeUndefined;
@@ -25,7 +25,7 @@ describe('createParseJarmOptionJoseInvoker', () => {
 
     it('should return Encrypted option when JWE algorithm and encryption method are provided', () => {
       const result = parseJarmOption(null, 'ECDH-ES+A256KW', 'A256GCM');
-      expect(result).toBeInstanceOf(JarmOptionNS.Encrypted);
+      expect(result).toBeInstanceOf(JarmOption.Encrypted);
       expect(result?.jwsAlg()).toBeUndefined;
       expect(result?.jweAlg()).toBe('ECDH-ES+A256KW');
       expect(result?.jweEnc()).toBe('A256GCM');
@@ -33,7 +33,7 @@ describe('createParseJarmOptionJoseInvoker', () => {
 
     it('should return SignedAndEncrypted option when all parameters are provided', () => {
       const result = parseJarmOption('ES256', 'ECDH-ES+A256KW', 'A256GCM');
-      expect(result).toBeInstanceOf(JarmOptionNS.SignedAndEncrypted);
+      expect(result).toBeInstanceOf(JarmOption.SignedAndEncrypted);
       expect(result?.jwsAlg()).toBe('ES256');
       expect(result?.jweAlg()).toBe('ECDH-ES+A256KW');
       expect(result?.jweEnc()).toBe('A256GCM');
@@ -75,7 +75,7 @@ describe('createParseJarmOptionJoseInvoker', () => {
         ' ECDH-ES+A256KW ',
         ' A256GCM '
       );
-      expect(result).toBeInstanceOf(JarmOptionNS.SignedAndEncrypted);
+      expect(result).toBeInstanceOf(JarmOption.SignedAndEncrypted);
       expect(result?.jwsAlg()).toBe('ES256');
       expect(result?.jweAlg()).toBe('ECDH-ES+A256KW');
       expect(result?.jweEnc()).toBe('A256GCM');

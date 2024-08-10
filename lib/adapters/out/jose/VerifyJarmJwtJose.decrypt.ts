@@ -16,26 +16,21 @@
 
 import { JWTDecryptResult, importJWK, jwtDecrypt, JWTPayload } from 'jose';
 
-import {
-  EphemeralECDHPrivateJwk,
-  JarmOption,
-  JarmOptionNS,
-  Jwt,
-} from '../../../domain';
+import { EphemeralECDHPrivateJwk, JarmOption, Jwt } from '../../../domain';
 
 export const decryptJarmJwt = async (
   jarmOption: JarmOption,
   ephemeralPrivateJwk: EphemeralECDHPrivateJwk | undefined,
   jarmJwt: Jwt
 ): Promise<JWTDecryptResult<JWTPayload>> => {
-  if (JarmOptionNS.isSigned(jarmOption)) {
+  if (jarmOption.__type === 'Signed') {
     throw new Error('Signed not supported yet');
-  } else if (JarmOptionNS.isEncrypted(jarmOption)) {
+  } else if (jarmOption.__type === 'Encrypted') {
     if (!ephemeralPrivateJwk) {
       throw new Error('Missing decryption key');
     }
     return decryptJarmJwtInternal(jarmOption, ephemeralPrivateJwk, jarmJwt);
-  } else if (JarmOptionNS.isSignedAndEncrypted(jarmOption)) {
+  } else if (jarmOption.__type === 'SignedAndEncrypted') {
     throw new Error('SignedAndEncrypted not supported yet');
   } else {
     throw new Error('Unknown JarmOption type');
@@ -43,7 +38,7 @@ export const decryptJarmJwt = async (
 };
 
 const decryptJarmJwtInternal = async (
-  encrypted: JarmOptionNS.Encrypted,
+  encrypted: JarmOption.Encrypted,
   ephemeralPrivateJwk: EphemeralECDHPrivateJwk,
   jarmJwt: Jwt
 ): Promise<JWTDecryptResult<JWTPayload>> => {

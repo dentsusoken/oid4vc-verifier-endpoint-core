@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { createGenerateEphemeralECDHPrivateJwkJoseInvoker } from './GenerateEphemeralECDHPrivateJwkJose';
-import { EphemeralECDHPrivateJwk, JarmOptionNS } from '../../../domain';
 import { JWK } from 'jose';
 
 describe('GenerateEphemeralEncryptionKeyPairJose', () => {
@@ -16,6 +15,7 @@ describe('GenerateEphemeralEncryptionKeyPairJose', () => {
     const parsedJWK = JSON.parse(privateJwk.value) as JWK;
     expect(parsedJWK.kty).toBe('EC');
     expect(parsedJWK.crv).toBe('P-256');
+    expect(parsedJWK.use).toBe('enc');
     expect(parsedJWK.x).toBeDefined();
     expect(parsedJWK.y).toBeDefined();
     expect(parsedJWK.d).toBeDefined();

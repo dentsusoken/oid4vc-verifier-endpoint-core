@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { generateKeyPair, exportJWK, importJWK, CompactEncrypt } from 'jose';
 import { decryptJarmJwt } from './VerifyJarmJwtJose.decrypt';
-import { JarmOptionNS, EphemeralECDHPrivateJwk } from '../../../domain';
+import { JarmOption, EphemeralECDHPrivateJwk } from '../../../domain';
 
 describe('decryptJarmJwt', () => {
   it('should decrypt an encrypted JWT correctly', async () => {
@@ -24,7 +24,7 @@ describe('decryptJarmJwt', () => {
 
     const jarmJwt = await enc.encrypt(publicKey);
 
-    const jarmOption = new JarmOptionNS.Encrypted('ECDH-ES+A256KW', 'A256GCM');
+    const jarmOption = new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM');
     const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
       value: JSON.stringify(privateJwk),
     };
@@ -39,16 +39,16 @@ describe('decryptJarmJwt', () => {
   });
 
   it('should throw error for Signed JarmOption', async () => {
-    const signedOption = new JarmOptionNS.Signed('ES256');
+    const signedOption = new JarmOption.Signed('ES256');
     await expect(decryptJarmJwt(signedOption, undefined, '')).rejects.toThrow(
       'Signed not supported yet'
     );
   });
 
   it('should throw error for SignedAndEncrypted JarmOption', async () => {
-    const signedAndEncryptedOption = new JarmOptionNS.SignedAndEncrypted(
-      new JarmOptionNS.Signed('ES256'),
-      new JarmOptionNS.Encrypted('ECDH-ES+A256KW', 'A256GCM')
+    const signedAndEncryptedOption = new JarmOption.SignedAndEncrypted(
+      new JarmOption.Signed('ES256'),
+      new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM')
     );
     await expect(
       decryptJarmJwt(signedAndEncryptedOption, undefined, '')
@@ -56,7 +56,7 @@ describe('decryptJarmJwt', () => {
   });
 
   it('should throw error for missing decryption key', async () => {
-    const encryptedOption = new JarmOptionNS.Encrypted(
+    const encryptedOption = new JarmOption.Encrypted(
       'ECDH-ES+A256KW',
       'A256GCM'
     );

@@ -15,7 +15,7 @@
  */
 
 import { ParseJarmOption } from '../../../ports/out/jose/';
-import { JarmOptionNS } from '../../../domain';
+import { JarmOption } from '../../../domain';
 
 /**
  * Creates a function to parse JARM options
@@ -43,7 +43,7 @@ const JWE_ENCS: { [index: string]: boolean } = { A256GCM: true };
  * @param {string | null | undefined} jwsAlg - JWS algorithm
  * @param {string | null | undefined} jweAlg - JWE algorithm
  * @param {string | null | undefined} encryptionMethod - Encryption method
- * @returns {JarmOptionNS.Signed | JarmOptionNS.Encrypted | JarmOptionNS.SignedAndEncrypted | null} Parsed JARM option
+ * @returns {JarmOption.Signed | JarmOption.Encrypted | JarmOption.SignedAndEncrypted | null} Parsed JARM option
  * @throws {Error} If invalid combination of parameters is provided
  */
 const invoke: ParseJarmOption = (jwsAlg, jweAlg, encryptionMethod) => {
@@ -51,12 +51,12 @@ const invoke: ParseJarmOption = (jwsAlg, jweAlg, encryptionMethod) => {
   jweAlg = (jweAlg && jweAlg.trim()) || null;
   encryptionMethod = (encryptionMethod && encryptionMethod.trim()) || null;
 
-  const signed: JarmOptionNS.Signed | null = jwsAlg
-    ? new JarmOptionNS.Signed(jwsAlgOf(jwsAlg))
+  const signed: JarmOption.Signed | null = jwsAlg
+    ? new JarmOption.Signed(jwsAlgOf(jwsAlg))
     : null;
-  const encrypted: JarmOptionNS.Encrypted | null =
+  const encrypted: JarmOption.Encrypted | null =
     jweAlg && encryptionMethod
-      ? new JarmOptionNS.Encrypted(
+      ? new JarmOption.Encrypted(
           jweAlgOf(jweAlg),
           encMethodOf(encryptionMethod)
         )
@@ -68,7 +68,7 @@ const invoke: ParseJarmOption = (jwsAlg, jweAlg, encryptionMethod) => {
     throw 'JWE algorithm must be provided with Encryption method';
   }
   if (signed && encrypted) {
-    return new JarmOptionNS.SignedAndEncrypted(signed, encrypted);
+    return new JarmOption.SignedAndEncrypted(signed, encrypted);
   } else if (signed) {
     return signed;
   } else if (encrypted) {

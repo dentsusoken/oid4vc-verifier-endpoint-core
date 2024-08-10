@@ -9,7 +9,7 @@ import {
   importJWK,
 } from 'jose';
 import { createVerifyJarmJwtJoseInvoker } from './VerifyJarmJwtJose';
-import { EphemeralECDHPrivateJwk, JarmOptionNS } from '../../../domain';
+import { EphemeralECDHPrivateJwk, JarmOption } from '../../../domain';
 
 describe('VerifyJarmJwtJose', () => {
   describe('JWE', () => {
@@ -69,10 +69,7 @@ describe('VerifyJarmJwtJose', () => {
       ).setProtectedHeader({ alg: 'ECDH-ES+A256KW', enc: 'A256GCM' });
 
       const jarmJwt = await enc.encrypt(publicKey);
-      const jarmOption = new JarmOptionNS.Encrypted(
-        'ECDH-ES+A256KW',
-        'A256GCM'
-      );
+      const jarmOption = new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM');
       const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
         value: JSON.stringify(privateJwk),
       };
@@ -95,10 +92,7 @@ describe('VerifyJarmJwtJose', () => {
       const privateJwk = await exportJWK(recipientKeyPair.privateKey);
 
       const jarmJwt = 'invalid jarm JWT';
-      const jarmOption = new JarmOptionNS.Encrypted(
-        'ECDH-ES+A256KW',
-        'A256GCM'
-      );
+      const jarmOption = new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM');
       const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
         value: JSON.stringify(privateJwk),
       };
