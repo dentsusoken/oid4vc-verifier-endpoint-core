@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RequestId } from './Presentation';
-import { EmbedOption } from './EmbedOption';
-import { BuildUrl } from './BuildUrl';
-import { ResponseModeOption } from './types';
-import { Duration } from './Duration';
-import { ClientMetaData } from './ClientMetaData';
-import { ClientIdScheme } from './ClientIdScheme';
+import {
+  RequestId,
+  EmbedOption,
+  BuildUrl,
+  ResponseModeOption,
+  Duration,
+  ClientMetaData,
+  ClientIdScheme,
+} from '.';
 
 /**
  * Configuration class for the verifier in an authentication or authorization process.

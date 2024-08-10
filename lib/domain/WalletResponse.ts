@@ -17,24 +17,24 @@
 import { PresentationSubmission } from 'oid4vc-prex';
 import { Jwt } from '.';
 
-/**
- * Represents a response from a wallet in the authentication process.
- */
-export interface WalletResponse {}
+export type WalletResponse =
+  | WalletResponse.IdToken
+  | WalletResponse.VpToken
+  | WalletResponse.IdAndVpToken
+  | WalletResponse.WalletResponseError;
 
-/**
- * Namespace containing implementations and type guards for various WalletResponse types.
- */
-export namespace WalletResponseNS {
-  /**
-   * Represents a wallet response containing an ID token.
-   */
+export namespace WalletResponse {
+  interface WalletResponse {
+    readonly __type:
+      | 'IdToken'
+      | 'VpToken'
+      | 'IdAndVpToken'
+      | 'WalletResponseError';
+  }
+
   export class IdToken implements WalletResponse {
-    /**
-     * Creates an instance of IdToken.
-     * @param idToken - The JWT representing the ID token.
-     * @throws {WalletResponseError} If idToken is not provided.
-     */
+    readonly __type = 'IdToken';
+
     constructor(public idToken: Jwt) {
       if (!idToken) {
         throw new Error('idToken is required');
@@ -42,18 +42,11 @@ export namespace WalletResponseNS {
     }
   }
 
-  /**
-   * Represents a wallet response containing a VP token and presentation submission.
-   */
   export class VpToken implements WalletResponse {
-    /**
-     * Creates an instance of VpToken.
-     * @param vpToken - The VP token string.
-     * @param presentationSubmission - The presentation submission associated with the VP token.
-     * @throws {WalletResponseError} If vpToken is not provided.
-     */
+    readonly __type = 'VpToken';
+
     constructor(
-      public vpToken: string,
+      public vpToken: Jwt,
       public presentationSubmission: PresentationSubmission
     ) {
       if (!vpToken) {
@@ -62,20 +55,12 @@ export namespace WalletResponseNS {
     }
   }
 
-  /**
-   * Represents a wallet response containing both an ID token and a VP token.
-   */
   export class IdAndVpToken implements WalletResponse {
-    /**
-     * Creates an instance of IdAndVpToken.
-     * @param idToken - The ID token string.
-     * @param vpToken - The VP token string.
-     * @param presentationSubmission - The presentation submission associated with the VP token.
-     * @throws {WalletResponseError} If either idToken or vpToken is not provided.
-     */
+    readonly __type = 'IdAndVpToken';
+
     constructor(
-      public idToken: string,
-      public vpToken: string,
+      public idToken: Jwt,
+      public vpToken: Jwt,
       public presentationSubmission: PresentationSubmission
     ) {
       if (!idToken) {
@@ -87,55 +72,9 @@ export namespace WalletResponseNS {
     }
   }
 
-  /**
-   * Represents an error response from the wallet.
-   */
   export class WalletResponseError implements WalletResponse {
-    /**
-     * Creates an instance of Error.
-     * @param value - The error value or code.
-     * @param description - Optional description of the error.
-     */
+    readonly __type = 'WalletResponseError';
+
     constructor(public value: string, public description?: string) {}
-  }
-
-  /**
-   * Checks if a WalletResponse is an instance of IdToken.
-   * @param response - The WalletResponse to check.
-   * @returns True if the response is an instance of IdToken, false otherwise.
-   */
-  export function isIdToken(response: WalletResponse): response is IdToken {
-    return response.constructor === IdToken;
-  }
-
-  /**
-   * Checks if a WalletResponse is an instance of VpToken.
-   * @param response - The WalletResponse to check.
-   * @returns True if the response is an instance of VpToken, false otherwise.
-   */
-  export function isVpToken(response: WalletResponse): response is VpToken {
-    return response.constructor === VpToken;
-  }
-
-  /**
-   * Checks if a WalletResponse is an instance of IdAndVpToken.
-   * @param response - The WalletResponse to check.
-   * @returns True if the response is an instance of IdAndVpToken, false otherwise.
-   */
-  export function isIdAndVpToken(
-    response: WalletResponse
-  ): response is IdAndVpToken {
-    return response.constructor === IdAndVpToken;
-  }
-
-  /**
-   * Checks if a WalletResponse is an instance of WalletResponseError.
-   * @param response - The WalletResponse to check.
-   * @returns True if the response is an instance of WalletResponseError, false otherwise.
-   */
-  export function isWalletResponseError(
-    response: WalletResponse
-  ): response is WalletResponseError {
-    return response.constructor === WalletResponseError;
   }
 }

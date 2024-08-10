@@ -1,133 +1,282 @@
 import { describe, it, expect } from 'vitest';
-import { WalletResponse, WalletResponseNS } from './WalletResponse';
 import { PresentationSubmission } from 'oid4vc-prex';
-import { Jwt } from '.';
+import { Jwt, WalletResponse } from '.';
 
-describe('WalletResponseNS', () => {
-  const mockJwt: Jwt = 'mock.jwt.token';
-  const mockVpToken = 'mock_vp_token';
-  const mockPresentationSubmission = {} as PresentationSubmission;
-
+describe('WalletResponse', () => {
   describe('IdToken', () => {
-    it('should create an instance with valid idToken', () => {
-      const idToken = new WalletResponseNS.IdToken(mockJwt);
-      expect(idToken.idToken).toBe(mockJwt);
+    it('should have the correct __type', () => {
+      const idToken = 'id-token';
+      const walletResponse = new WalletResponse.IdToken(idToken);
+      expect(walletResponse.__type).toBe('IdToken');
+    });
+
+    it('should store the idToken', () => {
+      const idToken = 'id-token';
+      const walletResponse = new WalletResponse.IdToken(idToken);
+      expect(walletResponse.idToken).toBe(idToken);
     });
 
     it('should throw an error if idToken is not provided', () => {
-      expect(() => new WalletResponseNS.IdToken(null as never)).toThrow(
+      expect(() => new WalletResponse.IdToken('')).toThrowError(
         'idToken is required'
       );
     });
   });
 
   describe('VpToken', () => {
-    it('should create an instance with valid vpToken and presentationSubmission', () => {
-      const vpToken = new WalletResponseNS.VpToken(
-        mockVpToken,
-        mockPresentationSubmission
+    it('should have the correct __type', () => {
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const walletResponse = new WalletResponse.VpToken(
+        vpToken,
+        presentationSubmission
       );
-      expect(vpToken.vpToken).toBe(mockVpToken);
-      expect(vpToken.presentationSubmission).toBe(mockPresentationSubmission);
+      expect(walletResponse.__type).toBe('VpToken');
+    });
+
+    it('should store the vpToken and presentationSubmission', () => {
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const walletResponse = new WalletResponse.VpToken(
+        vpToken,
+        presentationSubmission
+      );
+      expect(walletResponse.vpToken).toBe(vpToken);
+      expect(walletResponse.presentationSubmission).toBe(
+        presentationSubmission
+      );
     });
 
     it('should throw an error if vpToken is not provided', () => {
+      const presentationSubmission = {} as PresentationSubmission;
       expect(
-        () =>
-          new WalletResponseNS.VpToken(
-            null as never,
-            mockPresentationSubmission
-          )
-      ).toThrow('vpToken is required');
+        () => new WalletResponse.VpToken('', presentationSubmission)
+      ).toThrowError('vpToken is required');
     });
   });
 
   describe('IdAndVpToken', () => {
-    it('should create an instance with valid idToken, vpToken, and presentationSubmission', () => {
-      const idAndVpToken = new WalletResponseNS.IdAndVpToken(
-        mockJwt,
-        mockVpToken,
-        mockPresentationSubmission
+    it('should have the correct __type', () => {
+      const idToken = 'id-token';
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const walletResponse = new WalletResponse.IdAndVpToken(
+        idToken,
+        vpToken,
+        presentationSubmission
       );
-      expect(idAndVpToken.idToken).toBe(mockJwt);
-      expect(idAndVpToken.vpToken).toBe(mockVpToken);
-      expect(idAndVpToken.presentationSubmission).toBe(
-        mockPresentationSubmission
+      expect(walletResponse.__type).toBe('IdAndVpToken');
+    });
+
+    it('should store the idToken, vpToken, and presentationSubmission', () => {
+      const idToken = 'id-token';
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const walletResponse = new WalletResponse.IdAndVpToken(
+        idToken,
+        vpToken,
+        presentationSubmission
+      );
+      expect(walletResponse.idToken).toBe(idToken);
+      expect(walletResponse.vpToken).toBe(vpToken);
+      expect(walletResponse.presentationSubmission).toBe(
+        presentationSubmission
       );
     });
 
     it('should throw an error if idToken is not provided', () => {
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
       expect(
         () =>
-          new WalletResponseNS.IdAndVpToken(
-            null as never,
-            mockVpToken,
-            mockPresentationSubmission
+          new WalletResponse.IdAndVpToken(
+            undefined as unknown as Jwt,
+            vpToken,
+            presentationSubmission
           )
-      ).toThrow('idToken is required');
+      ).toThrowError('idToken is required');
     });
 
     it('should throw an error if vpToken is not provided', () => {
+      const idToken = 'id-token';
+      const presentationSubmission = {} as PresentationSubmission;
       expect(
         () =>
-          new WalletResponseNS.IdAndVpToken(
-            mockJwt,
-            undefined as unknown as string,
-            mockPresentationSubmission
+          new WalletResponse.IdAndVpToken(
+            idToken,
+            undefined as unknown as Jwt,
+            presentationSubmission
           )
-      ).toThrow('vpToken is required');
+      ).toThrowError('vpToken is required');
     });
   });
 
-  describe('Error', () => {
-    it('should create an instance with value and description', () => {
-      const error = new WalletResponseNS.WalletResponseError(
-        'error_code',
-        'Error description'
+  describe('WalletResponseError', () => {
+    it('should have the correct __type', () => {
+      const value = 'error';
+      const description = 'error description';
+      const walletResponse = new WalletResponse.WalletResponseError(
+        value,
+        description
       );
-      expect(error.value).toBe('error_code');
-      expect(error.description).toBe('Error description');
+      expect(walletResponse.__type).toBe('WalletResponseError');
     });
 
-    it('should create an instance with only value', () => {
-      const error = new WalletResponseNS.WalletResponseError('error_code');
-      expect(error.value).toBe('error_code');
-      expect(error.description).toBeUndefined();
+    it('should store the value and description', () => {
+      const value = 'error';
+      const description = 'error description';
+      const walletResponse = new WalletResponse.WalletResponseError(
+        value,
+        description
+      );
+      expect(walletResponse.value).toBe(value);
+      expect(walletResponse.description).toBe(description);
     });
   });
 
-  describe('Type guards', () => {
-    it('isIdToken should return true for IdToken instances', () => {
-      const idToken = new WalletResponseNS.IdToken(mockJwt);
-      expect(WalletResponseNS.isIdToken(idToken)).toBe(true);
-      expect(WalletResponseNS.isIdToken({} as WalletResponse)).toBe(false);
+  describe('type guard', () => {
+    it('should correctly identify IdToken using if statement', () => {
+      const idToken = 'id-token';
+      const walletResponse: WalletResponse = new WalletResponse.IdToken(
+        idToken
+      );
+
+      if (walletResponse.__type === 'IdToken') {
+        expect(walletResponse.idToken).toBe(idToken);
+      } else {
+        throw new Error('Expected walletResponse to be of type IdToken');
+      }
     });
 
-    it('isVpToken should return true for VpToken instances', () => {
-      const vpToken = new WalletResponseNS.VpToken(
-        mockVpToken,
-        mockPresentationSubmission
+    it('should correctly identify VpToken using if statement', () => {
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const walletResponse: WalletResponse = new WalletResponse.VpToken(
+        vpToken,
+        presentationSubmission
       );
-      expect(WalletResponseNS.isVpToken(vpToken)).toBe(true);
-      expect(WalletResponseNS.isVpToken({} as WalletResponse)).toBe(false);
+
+      if (walletResponse.__type === 'VpToken') {
+        expect(walletResponse.vpToken).toBe(vpToken);
+        expect(walletResponse.presentationSubmission).toBe(
+          presentationSubmission
+        );
+      } else {
+        throw new Error('Expected walletResponse to be of type VpToken');
+      }
     });
 
-    it('isIdAndVpToken should return true for IdAndVpToken instances', () => {
-      const idAndVpToken = new WalletResponseNS.IdAndVpToken(
-        mockJwt,
-        mockVpToken,
-        mockPresentationSubmission
+    it('should correctly identify IdAndVpToken using if statement', () => {
+      const idToken = 'id-token';
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const walletResponse: WalletResponse = new WalletResponse.IdAndVpToken(
+        idToken,
+        vpToken,
+        presentationSubmission
       );
-      expect(WalletResponseNS.isIdAndVpToken(idAndVpToken)).toBe(true);
-      expect(WalletResponseNS.isIdAndVpToken({} as WalletResponse)).toBe(false);
+
+      if (walletResponse.__type === 'IdAndVpToken') {
+        expect(walletResponse.idToken).toBe(idToken);
+        expect(walletResponse.vpToken).toBe(vpToken);
+        expect(walletResponse.presentationSubmission).toBe(
+          presentationSubmission
+        );
+      } else {
+        throw new Error('Expected walletResponse to be of type IdAndVpToken');
+      }
     });
 
-    it('isError should return true for Error instances', () => {
-      const error = new WalletResponseNS.WalletResponseError('error_code');
-      expect(WalletResponseNS.isWalletResponseError(error)).toBe(true);
-      expect(WalletResponseNS.isWalletResponseError({} as WalletResponse)).toBe(
-        false
+    it('should correctly identify WalletResponseError using if statement', () => {
+      const value = 'error';
+      const description = 'error description';
+      const walletResponse: WalletResponse =
+        new WalletResponse.WalletResponseError(value, description);
+
+      if (walletResponse.__type === 'WalletResponseError') {
+        expect(walletResponse.value).toBe(value);
+        expect(walletResponse.description).toBe(description);
+      } else {
+        throw new Error(
+          'Expected walletResponse to be of type WalletResponseError'
+        );
+      }
+    });
+
+    it('should correctly identify IdToken using switch statement', () => {
+      const idToken = 'id-token';
+      const walletResponse: WalletResponse = new WalletResponse.IdToken(
+        idToken
       );
+
+      switch (walletResponse.__type) {
+        case 'IdToken':
+          expect(walletResponse.idToken).toBe(idToken);
+          break;
+        default:
+          throw new Error('Expected walletResponse to be of type IdToken');
+      }
+    });
+
+    it('should correctly identify VpToken using switch statement', () => {
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const walletResponse: WalletResponse = new WalletResponse.VpToken(
+        vpToken,
+        presentationSubmission
+      );
+
+      switch (walletResponse.__type) {
+        case 'VpToken':
+          expect(walletResponse.vpToken).toBe(vpToken);
+          expect(walletResponse.presentationSubmission).toBe(
+            presentationSubmission
+          );
+          break;
+        default:
+          throw new Error('Expected walletResponse to be of type VpToken');
+      }
+    });
+
+    it('should correctly identify IdAndVpToken using switch statement', () => {
+      const idToken = 'id-token';
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const walletResponse: WalletResponse = new WalletResponse.IdAndVpToken(
+        idToken,
+        vpToken,
+        presentationSubmission
+      );
+
+      switch (walletResponse.__type) {
+        case 'IdAndVpToken':
+          expect(walletResponse.idToken).toBe(idToken);
+          expect(walletResponse.vpToken).toBe(vpToken);
+          expect(walletResponse.presentationSubmission).toBe(
+            presentationSubmission
+          );
+          break;
+        default:
+          throw new Error('Expected walletResponse to be of type IdAndVpToken');
+      }
+    });
+
+    it('should correctly identify WalletResponseError using switch statement', () => {
+      const value = 'error';
+      const description = 'error description';
+      const walletResponse: WalletResponse =
+        new WalletResponse.WalletResponseError(value, description);
+
+      switch (walletResponse.__type) {
+        case 'WalletResponseError':
+          expect(walletResponse.value).toBe(value);
+          expect(walletResponse.description).toBe(description);
+          break;
+        default:
+          throw new Error(
+            'Expected walletResponse to be of type WalletResponseError'
+          );
+      }
     });
   });
 });

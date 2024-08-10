@@ -7,7 +7,7 @@ import {
   PresentationType,
   IdTokenType,
   Presentation,
-  WalletResponseNS,
+  WalletResponse,
 } from '.';
 
 describe('Submitted', () => {
@@ -17,7 +17,7 @@ describe('Submitted', () => {
   const requestId = new RequestId('request-id');
   const requestObjectRetrievedAt = new Date('2023-06-01T10:01:00Z');
   const submittedAt = new Date('2023-06-01T10:02:00Z');
-  const walletResponse = new WalletResponseNS.IdToken('aa');
+  const walletResponse = new WalletResponse.IdToken('aa');
   const nonce = new Nonce('nonce');
   const responseCode = new ResponseCode('hoge');
 

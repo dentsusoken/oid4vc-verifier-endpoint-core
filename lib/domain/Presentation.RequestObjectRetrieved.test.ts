@@ -10,7 +10,7 @@ import {
   Presentation,
   PresentationType,
   ResponseCode,
-  WalletResponseNS,
+  WalletResponse,
 } from '.';
 
 describe('RequestObjectRetrieved', () => {
@@ -111,7 +111,7 @@ describe('RequestObjectRetrieved', () => {
     );
 
     const submittedAt = new Date('2023-06-08T11:00:00Z');
-    const walletResponse = new WalletResponseNS.IdToken('token');
+    const walletResponse = new WalletResponse.IdToken('token');
     const responseCode: ResponseCode = {
       value: 'success',
     };
