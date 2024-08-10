@@ -7,7 +7,7 @@ import {
   ClientMetaDataTO,
 } from './SignRequestObjectJose.convert';
 import {
-  EmbedOptionNS,
+  EmbedOption,
   RequestId,
   ClientMetaData,
   EphemeralECDHPrivateJwk,
@@ -18,7 +18,7 @@ import { PresentationDefinition } from 'oid4vc-prex';
 describe('JWKS and Payload Utilities', () => {
   describe('getJwks', () => {
     it('should return JWKS when jwkOption is ByValue and privateJwk is provided', () => {
-      const jwkOption = new EmbedOptionNS.ByValue();
+      const jwkOption = EmbedOption.ByValue.INSTANCE;
       const privateJwk: EphemeralECDHPrivateJwk = {
         value:
           '{"kty":"EC","crv":"P-256","x":"abc","y":"def","d":"secret","use":"sig"}',
@@ -30,7 +30,7 @@ describe('JWKS and Payload Utilities', () => {
     });
 
     it('should return undefined when jwkOption is not ByValue', () => {
-      const jwkOption = new EmbedOptionNS.ByReference(
+      const jwkOption = new EmbedOption.ByReference(
         () => new URL('https://example.com')
       );
       const privateJwk: EphemeralECDHPrivateJwk = { value: '{}' };
@@ -41,16 +41,16 @@ describe('JWKS and Payload Utilities', () => {
 
   describe('getJwksUri', () => {
     it('should return JWKS URI when jwkOption is ByReference', () => {
-      const jwkOption = new EmbedOptionNS.ByReference(
-        (id: RequestId) => new URL(`https://example.com/jwks/${id.value}`)
-      );
+      const buildUrl = (id: RequestId) =>
+        new URL(`https://example.com/jwks/${id.value}`);
+      const jwkOption = new EmbedOption.ByReference(buildUrl);
       const requestId = new RequestId('test-id');
       const result = getJwksUri(jwkOption, requestId);
       expect(result).toBe('https://example.com/jwks/test-id');
     });
 
     it('should return undefined when jwkOption is not ByReference', () => {
-      const jwkOption = new EmbedOptionNS.ByValue();
+      const jwkOption = EmbedOption.ByValue.INSTANCE;
       const requestId = new RequestId('test-id');
       const result = getJwksUri(jwkOption, requestId);
       expect(result).toBeUndefined();
@@ -65,7 +65,7 @@ describe('JWKS and Payload Utilities', () => {
         idTokenEncryptedResponseAlg: 'RSA-OAEP',
         idTokenEncryptedResponseEnc: 'A256GCM',
         subjectSyntaxTypesSupported: ['urn:ietf:params:oauth:jwk-thumbprint'],
-        jwkOption: new EmbedOptionNS.ByValue(),
+        jwkOption: EmbedOption.ByValue.INSTANCE,
         jarmOption: {
           jwsAlg: () => 'ES256',
           jweAlg: () => 'ECDH-ES+A256KW',

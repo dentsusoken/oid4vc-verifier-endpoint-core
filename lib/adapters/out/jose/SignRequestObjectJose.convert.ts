@@ -18,7 +18,6 @@ import {
   ClientMetaData,
   EphemeralECDHPrivateJwk,
   RequestId,
-  EmbedOptionNS,
   EmbedOption,
 } from '../../../domain';
 import { RequestObject } from './RequestObject';
@@ -76,7 +75,7 @@ export const getJwks = (
   jwkOption: EmbedOption,
   privateJwk: EphemeralECDHPrivateJwk | undefined
 ): Jwks | undefined => {
-  if (EmbedOptionNS.isByValue(jwkOption) && privateJwk) {
+  if (jwkOption.__type === 'ByValue' && privateJwk) {
     const jwk = JSON.parse(privateJwk.value);
     delete jwk.d;
     delete jwk.use;
@@ -99,7 +98,7 @@ export const getJwksUri = (
   jwkOption: EmbedOption<RequestId>,
   requestId: RequestId
 ): string | undefined => {
-  if (EmbedOptionNS.isByReference(jwkOption)) {
+  if (jwkOption.__type === 'ByReference') {
     return jwkOption.buildUrl(requestId).href;
   }
 

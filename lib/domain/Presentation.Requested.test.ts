@@ -6,7 +6,6 @@ import {
   EphemeralECDHPrivateJwk,
   ResponseModeOption,
   EmbedOption,
-  EmbedOptionNS,
   GetWalletResponseMethodNS,
   IdTokenType,
   PresentationNS,
@@ -26,7 +25,7 @@ describe('Requested', () => {
   };
   const responseMode = ResponseModeOption.DirectPostJwt;
   const presentationDefinitionMode: EmbedOption<RequestId> =
-    new EmbedOptionNS.ByValue();
+    EmbedOption.ByValue.INSTANCE;
   const getWalletResponseMethod = new GetWalletResponseMethodNS.Redirect(
     'http://example.com/{requestId}'
   );

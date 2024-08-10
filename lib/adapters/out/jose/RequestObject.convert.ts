@@ -19,11 +19,9 @@ import {
   PresentationTypeNS,
   IdTokenType,
   EmbedOption,
-  EmbedOptionNS,
   ResponseModeOption,
   PresentationType,
   RequestId,
-  ClientIdScheme,
   ClientIdScheme,
 } from '../../../domain';
 
@@ -121,7 +119,7 @@ export const getPresentationDefinition = (
   if (!presentationDefinitionMode) {
     return undefined;
   }
-  return EmbedOptionNS.isByValue(presentationDefinitionMode) &&
+  return presentationDefinitionMode.__type == 'ByValue' &&
     (PresentationTypeNS.isVpTokenRequest(type) ||
       PresentationTypeNS.isIdAndVpTokenRequest(type))
     ? type.presentationDefinition
@@ -129,19 +127,23 @@ export const getPresentationDefinition = (
 };
 
 /**
- * Get the presentation definition URI based on the embed option and request ID
- * @param {EmbedOption<RequestId> | undefined} presentationDefinitionMode - The embed option for the presentation definition
- * @param {RequestId} requestId - The request ID
- * @returns {URL | undefined} The presentation definition URI or undefined
+ * Retrieves the presentation definition URI based on the given embedding option and request ID.
+ *
+ * @param {EmbedOption | undefined} presentationDefinitionMode - The embedding option which determines how the presentation definition should be retrieved.
+ *   - If 'ByReference', the function attempts to build and return the URI.
+ *   - If 'ByValue' or undefined, the function returns undefined.
+ * @param {RequestId} requestId - The request ID used to build the URI when the embedding option is 'ByReference'.
+ * @returns {URL | undefined} The constructed URL if the embedding option is 'ByReference', otherwise undefined.
+ *
  */
 export const getPresentationDefinitionUri = (
-  presentationDefinitionMode: EmbedOption<RequestId> | undefined,
+  presentationDefinitionMode: EmbedOption | undefined,
   requestId: RequestId
 ): URL | undefined => {
   if (!presentationDefinitionMode) {
     return undefined;
   }
-  return EmbedOptionNS.isByReference(presentationDefinitionMode)
+  return presentationDefinitionMode.__type == 'ByReference'
     ? presentationDefinitionMode.buildUrl(requestId)
     : undefined;
 };

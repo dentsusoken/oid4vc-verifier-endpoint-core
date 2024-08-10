@@ -1,55 +1,51 @@
 import { describe, it, expect } from 'vitest';
 import { BuildUrl } from './BuildUrl';
-import { EmbedOptionNS } from './EmbedOption';
+import { EmbedOption } from './EmbedOption';
 
 describe('EmbedOption', () => {
   describe('ByValue', () => {
-    it('should create an instance of ByValue', () => {
-      const embedOption = new EmbedOptionNS.ByValue();
-      expect(embedOption).toBeInstanceOf(EmbedOptionNS.ByValue);
-    });
+    it('should create a ByValue instance using the static INSTANCE', () => {
+      const byValue = EmbedOption.ByValue.INSTANCE;
 
-    it('should be identified as ByValue by isByValue function', () => {
-      const embedOption = new EmbedOptionNS.ByValue();
-      expect(EmbedOptionNS.isByValue(embedOption)).toBe(true);
-    });
-
-    it('should not be identified as ByReference by isByReference function', () => {
-      const embedOption = new EmbedOptionNS.ByValue();
-      expect(EmbedOptionNS.isByReference(embedOption)).toBe(false);
+      expect(byValue).toBeInstanceOf(EmbedOption.ByValue);
+      expect(byValue.__type).toBe('ByValue');
     });
   });
 
   describe('ByReference', () => {
-    it('should create an instance of ByReference with a BuildUrl function', () => {
-      const buildUrl: BuildUrl<string> = (id: string) =>
-        new URL(`https://example.com/items/${id}`);
-      const embedOption = new EmbedOptionNS.ByReference(buildUrl);
-      expect(embedOption).toBeInstanceOf(EmbedOptionNS.ByReference);
-      expect(embedOption.buildUrl).toBe(buildUrl);
+    it('should create a ByReference instance', () => {
+      const buildUrl = {} as BuildUrl<string>;
+      const byReference = new EmbedOption.ByReference(buildUrl);
+
+      expect(byReference).toBeInstanceOf(EmbedOption.ByReference);
+      expect(byReference.__type).toBe('ByReference');
+      expect(byReference.buildUrl).toBe(buildUrl);
+    });
+  });
+
+  describe('Type Guards', () => {
+    it('should correctly identify ByValue type', () => {
+      const option: EmbedOption = EmbedOption.ByValue.INSTANCE;
+
+      if (option.__type === 'ByValue') {
+        expect(option).toBeInstanceOf(EmbedOption.ByValue);
+      } else {
+        // This branch should not be reached in this test
+        expect(true).toBe(false);
+      }
     });
 
-    it('should build URL using the provided BuildUrl function', () => {
-      const buildUrl: BuildUrl<number> = (id: number) =>
-        new URL(`https://example.com/items/${id}`);
-      const embedOption = new EmbedOptionNS.ByReference(buildUrl);
-      const id = 123;
-      const expectedUrl = `https://example.com/items/${id}`;
-      expect(embedOption.buildUrl(id).toString()).toBe(expectedUrl);
-    });
+    it('should correctly identify ByReference type', () => {
+      const buildUrl = {} as BuildUrl<string>;
+      const option: EmbedOption = new EmbedOption.ByReference(buildUrl);
 
-    it('should not be identified as ByValue by isByValue function', () => {
-      const buildUrl: BuildUrl<string> = (id: string) =>
-        new URL(`https://example.com/items/${id}`);
-      const embedOption = new EmbedOptionNS.ByReference(buildUrl);
-      expect(EmbedOptionNS.isByValue(embedOption)).toBe(false);
-    });
-
-    it('should be identified as ByReference by isByReference function', () => {
-      const buildUrl: BuildUrl<string> = (id: string) =>
-        new URL(`https://example.com/items/${id}`);
-      const embedOption = new EmbedOptionNS.ByReference(buildUrl);
-      expect(EmbedOptionNS.isByReference(embedOption)).toBe(true);
+      if (option.__type === 'ByReference') {
+        expect(option).toBeInstanceOf(EmbedOption.ByReference);
+        expect(option.buildUrl).toBe(buildUrl);
+      } else {
+        // This branch should not be reached in this test
+        expect(true).toBe(false);
+      }
     });
   });
 });

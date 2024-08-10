@@ -6,14 +6,13 @@ import {
   PresentationNS,
   PresentationTypeNS,
   IdTokenType,
-  EmbedOptionNS,
+  EmbedOption,
   ResponseModeOption,
   SigningConfig,
   TransactionId,
   RequestId,
   Nonce,
   GetWalletResponseMethodNS,
-  BuildUrl,
   StaticSigningPrivateJwk,
 } from '../../../domain';
 import { PresentationDefinition } from 'oid4vc-prex';
@@ -30,7 +29,7 @@ describe('requestObjectFromDomain', () => {
   };
   const clientIdScheme = new ClientIdScheme.PreRegistered(clientId, jarSigning);
 
-  const urlBuilder: BuildUrl<RequestId> = (id: RequestId) =>
+  const urlBuilder = (id: RequestId) =>
     new URL(`https://example.com/direct_post/${id.value}`);
   const mockVerifierConfig = {
     clientIdScheme,
@@ -83,7 +82,7 @@ describe('requestObjectFromDomain', () => {
       new Nonce('test-nonce'),
       undefined,
       ResponseModeOption.DirectPostJwt,
-      new EmbedOptionNS.ByValue(),
+      EmbedOption.ByValue.INSTANCE,
       new GetWalletResponseMethodNS.Poll()
     );
 
@@ -123,7 +122,7 @@ describe('requestObjectFromDomain', () => {
       new Nonce('test-nonce'),
       undefined,
       ResponseModeOption.DirectPost,
-      new EmbedOptionNS.ByValue(),
+      EmbedOption.ByValue.INSTANCE,
       new GetWalletResponseMethodNS.Redirect('https://redirect.example.com')
     );
 

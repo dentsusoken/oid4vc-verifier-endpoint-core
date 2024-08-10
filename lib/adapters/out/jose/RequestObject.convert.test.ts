@@ -12,7 +12,7 @@ import {
 import {
   PresentationTypeNS,
   IdTokenType,
-  EmbedOptionNS,
+  EmbedOption,
   ResponseModeOption,
   RequestId,
   ClientIdScheme,
@@ -163,7 +163,7 @@ describe('Presentation Type Utilities', () => {
       const type = new PresentationTypeNS.VpTokenRequest(
         mockPresentationDefinition
       );
-      const mode = new EmbedOptionNS.ByValue();
+      const mode = EmbedOption.ByValue.INSTANCE;
       expect(getPresentationDefinition(mode, type)).toBe(
         mockPresentationDefinition
       );
@@ -174,7 +174,7 @@ describe('Presentation Type Utilities', () => {
         [],
         mockPresentationDefinition
       );
-      const mode = new EmbedOptionNS.ByValue();
+      const mode = EmbedOption.ByValue.INSTANCE;
       expect(getPresentationDefinition(mode, type)).toBe(
         mockPresentationDefinition
       );
@@ -190,7 +190,7 @@ describe('Presentation Type Utilities', () => {
       const type = new PresentationTypeNS.VpTokenRequest(
         mockPresentationDefinition
       );
-      const mode = new EmbedOptionNS.ByReference(
+      const mode = new EmbedOption.ByReference(
         () => new URL('https://example.com')
       );
       expect(getPresentationDefinition(mode, type)).toBeUndefined();
@@ -208,12 +208,12 @@ describe('Presentation Type Utilities', () => {
 
     it('should return URL when mode is ByReference', () => {
       const mockUrl = new URL('https://example.com');
-      const mode = new EmbedOptionNS.ByReference(() => mockUrl);
+      const mode = new EmbedOption.ByReference(() => mockUrl);
       expect(getPresentationDefinitionUri(mode, mockRequestId)).toBe(mockUrl);
     });
 
     it('should return undefined when mode is ByValue', () => {
-      const mode = new EmbedOptionNS.ByValue();
+      const mode = EmbedOption.ByValue.INSTANCE;
       expect(getPresentationDefinitionUri(mode, mockRequestId)).toBeUndefined();
     });
   });

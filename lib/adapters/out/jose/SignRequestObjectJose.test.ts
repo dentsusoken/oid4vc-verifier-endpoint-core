@@ -7,7 +7,7 @@ import {
   ClientMetaData,
   StaticSigningPrivateJwk,
   EphemeralECDHPrivateJwk,
-  EmbedOptionNS,
+  EmbedOption,
   BuildUrl,
   PresentationTypeNS,
   TransactionId,
@@ -41,7 +41,7 @@ describe('SignRequestObjectJose', async () => {
     idTokenEncryptedResponseAlg: 'ECDH-ES+A256KW',
     idTokenEncryptedResponseEnc: 'A256GCM',
     subjectSyntaxTypesSupported: ['urn:ietf:params:oauth:jwk-thumbprint'],
-    jwkOption: new EmbedOptionNS.ByValue(),
+    jwkOption: EmbedOption.ByValue.INSTANCE,
     jarmOption: {
       jwsAlg: () => 'ES256',
       jweAlg: () => 'ECDH-ES+A256KW',
@@ -65,7 +65,7 @@ describe('SignRequestObjectJose', async () => {
     new Nonce('test-nonce'),
     ephemeralECDHPrivateJwk,
     ResponseModeOption.DirectPost,
-    new EmbedOptionNS.ByValue(),
+    EmbedOption.ByValue.INSTANCE,
     getWalletResponseMethod
   );
 

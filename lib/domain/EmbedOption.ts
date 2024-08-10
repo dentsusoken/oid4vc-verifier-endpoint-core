@@ -16,56 +16,22 @@
 
 import { BuildUrl } from './BuildUrl';
 
-/**
- * Represents an embed option for a resource.
- * @template ID - The type of the resource identifier.
- */
-// @ts-expect-error: No problem
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface EmbedOption<ID = unknown> {}
+export type EmbedOption<ID = never> =
+  | EmbedOption.ByValue
+  | EmbedOption.ByReference<ID>;
 
-/**
- * Namespace for embed option related classes and functions.
- */
-export namespace EmbedOptionNS {
-  /**
-   * Represents an embed option where the resource is embedded by value.
-   */
-  export class ByValue implements EmbedOption {}
+export namespace EmbedOption {
+  export class ByValue {
+    static readonly INSTANCE = new ByValue();
 
-  /**
-   * Represents an embed option where the resource is embedded by reference.
-   * @template ID - The type of the resource identifier.
-   */
-  export class ByReference<ID> implements EmbedOption<ID> {
-    /**
-     * Creates an instance of ByReference.
-     * @param buildUrl - The function to build the URL for the resource.
-     */
+    readonly __type = 'ByValue' as const;
+
+    private constructor() {}
+  }
+
+  export class ByReference<ID> {
+    readonly __type = 'ByReference' as const;
+
     constructor(public buildUrl: BuildUrl<ID>) {}
-  }
-
-  /**
-   * Checks if an embed option is an instance of ByValue.
-   * @template ID - The type of the resource identifier.
-   * @param embedOption - The embed option to check.
-   * @returns True if the embed option is an instance of ByValue, false otherwise.
-   */
-  export function isByValue<ID>(
-    embedOption: EmbedOption<ID>
-  ): embedOption is ByValue {
-    return embedOption.constructor === ByValue;
-  }
-
-  /**
-   * Checks if an embed option is an instance of ByReference.
-   * @template ID - The type of the resource identifier.
-   * @param embedOption - The embed option to check.
-   * @returns True if the embed option is an instance of ByReference, false otherwise.
-   */
-  export function isByReference<ID>(
-    embedOption: EmbedOption<ID>
-  ): embedOption is ByReference<ID> {
-    return embedOption.constructor === ByReference;
   }
 }
