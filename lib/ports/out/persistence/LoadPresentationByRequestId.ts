@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-import { PresentationNS, RequestId } from '../../../domain';
+import { Presentation, RequestId } from '../../../domain';
 
 /**
- * Loads a [Presentation] from a storage
+ * Interface for loading a presentation by its request ID.
+ * @interface LoadPresentationByRequestId
  */
 export interface LoadPresentationByRequestId {
   /**
-   * @param requestId The [RequestId] used to load the [Presentation]
-   * @returns A Promise that resolves to the [Presentation] or null if not found
+   * Loads a presentation by its request ID.
+   * @function
+   * @name LoadPresentationByRequestId
+   * @param {RequestId} requestId - The request ID used to load the presentation.
+   * @returns {Promise<Presentation | undefined>} A promise that resolves to the loaded presentation or undefined if not found.
    */
-  (requestId: RequestId): Promise<Presentation | null>;
+  (requestId: RequestId): Promise<Presentation | undefined>;
 }

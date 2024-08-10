@@ -8,7 +8,7 @@ import {
   EmbedOption,
   GetWalletResponseMethod,
   IdTokenType,
-  PresentationNS,
+  Presentation,
   PresentationType,
 } from '.';
 
@@ -29,7 +29,7 @@ describe('Requested', () => {
   );
 
   it('should create an instance of Requested', () => {
-    const requested = new PresentationNS.Requested(
+    const requested = new Presentation.Requested(
       id,
       initiatedAt,
       type,
@@ -55,7 +55,7 @@ describe('Requested', () => {
   });
 
   it('should check if the presentation is expired', () => {
-    const requested = new PresentationNS.Requested(
+    const requested = new Presentation.Requested(
       id,
       initiatedAt,
       type,
@@ -75,7 +75,7 @@ describe('Requested', () => {
   });
 
   it('should retrieve the request object', () => {
-    const requested = new PresentationNS.Requested(
+    const requested = new Presentation.Requested(
       id,
       initiatedAt,
       type,
@@ -93,7 +93,7 @@ describe('Requested', () => {
     expect(result.isSuccess).toBe(true);
     const requestObjectRetrieved = result.getOrThrow();
     expect(requestObjectRetrieved.constructor).toBe(
-      PresentationNS.RequestObjectRetrieved
+      Presentation.RequestObjectRetrieved
     );
     expect(requestObjectRetrieved.id).toBe(id);
     expect(requestObjectRetrieved.initiatedAt).toBe(initiatedAt);
@@ -108,7 +108,7 @@ describe('Requested', () => {
   });
 
   it('should handle timeout', () => {
-    const requested = new PresentationNS.Requested(
+    const requested = new Presentation.Requested(
       id,
       initiatedAt,
       type,
@@ -125,7 +125,7 @@ describe('Requested', () => {
 
     expect(result.isSuccess).toBe(true);
     const timedOut = result.getOrThrow();
-    expect(timedOut.constructor).toBe(PresentationNS.TimedOut);
+    expect(timedOut.constructor).toBe(Presentation.TimedOut);
     expect(timedOut.id).toBe(id);
     expect(timedOut.initiatedAt).toBe(initiatedAt);
     expect(timedOut.type).toBe(type);
@@ -135,7 +135,7 @@ describe('Requested', () => {
   });
 
   it('should throw an error if initiatedAt is later than timeout date', () => {
-    const requested = new PresentationNS.Requested(
+    const requested = new Presentation.Requested(
       id,
       initiatedAt,
       type,
@@ -155,5 +155,77 @@ describe('Requested', () => {
     expect(result.exceptionOrUndefined()?.message).toBe(
       'initiatedAt must be earlier than at'
     );
+  });
+
+  describe('type guard', () => {
+    it('should correctly identify Requested using if statement', () => {
+      const presentation: Presentation = new Presentation.Requested(
+        id,
+        initiatedAt,
+        type,
+        requestId,
+        nonce,
+        ephemeralECDHPrivateJwk,
+        responseMode,
+        presentationDefinitionMode,
+        getWalletResponseMethod
+      );
+
+      if (presentation.__type === 'Requested') {
+        expect(presentation.id).toBe(id);
+        expect(presentation.initiatedAt).toBe(initiatedAt);
+        expect(presentation.type).toBe(type);
+        expect(presentation.requestId).toBe(requestId);
+        expect(presentation.nonce).toBe(nonce);
+        expect(presentation.ephemeralECDHPrivateJwk).toBe(
+          ephemeralECDHPrivateJwk
+        );
+        expect(presentation.responseMode).toBe(responseMode);
+        expect(presentation.presentationDefinitionMode).toBe(
+          presentationDefinitionMode
+        );
+        expect(presentation.getWalletResponseMethod).toBe(
+          getWalletResponseMethod
+        );
+      } else {
+        throw new Error('Expected presentation to be of type Requested');
+      }
+    });
+
+    it('should correctly identify Requested using switch statement', () => {
+      const presentation: Presentation = new Presentation.Requested(
+        id,
+        initiatedAt,
+        type,
+        requestId,
+        nonce,
+        ephemeralECDHPrivateJwk,
+        responseMode,
+        presentationDefinitionMode,
+        getWalletResponseMethod
+      );
+
+      switch (presentation.__type) {
+        case 'Requested':
+          expect(presentation.id).toBe(id);
+          expect(presentation.initiatedAt).toBe(initiatedAt);
+          expect(presentation.type).toBe(type);
+          expect(presentation.requestId).toBe(requestId);
+          expect(presentation.nonce).toBe(nonce);
+          expect(presentation.ephemeralECDHPrivateJwk).toBe(
+            ephemeralECDHPrivateJwk
+          );
+          expect(presentation.responseMode).toBe(responseMode);
+          expect(presentation.presentationDefinitionMode).toBe(
+            presentationDefinitionMode
+          );
+          expect(presentation.getWalletResponseMethod).toBe(
+            getWalletResponseMethod
+          );
+          break;
+        default:
+          throw new Error('Expected presentation to be of type Requested');
+      }
+    });
   });
 });

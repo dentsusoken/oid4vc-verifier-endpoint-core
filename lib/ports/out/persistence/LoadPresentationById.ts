@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-import { PresentationNS, TransactionId } from '../../../domain';
+import { Presentation, TransactionId } from '../../../domain';
 
 /**
- * Loads a [Presentation] from a storage
+ * Interface for loading a presentation by its transaction ID.
+ * @interface LoadPresentationById
  */
 export interface LoadPresentationById {
-  (presentationProcessById: TransactionId): Promise<Presentation | null>;
+  /**
+   * Loads a presentation by its transaction ID.
+   * @function
+   * @name LoadPresentationById
+   * @param {TransactionId} presentationProcessById - The transaction ID of the presentation to load.
+   * @returns {Promise<Presentation | undefined>} A promise that resolves to the loaded presentation or undefined if not found.
+   */
+  (presentationProcessById: TransactionId): Promise<Presentation | undefined>;
 }

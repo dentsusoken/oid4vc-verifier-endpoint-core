@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createSignRequestObjectJoseInvoker } from './SignRequestObjectJose';
 import {
-  PresentationNS,
+  Presentation,
   RequestId,
   VerifierConfig,
   ClientMetaData,
@@ -57,7 +57,7 @@ describe('SignRequestObjectJose', async () => {
   const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
     'http://example.com/{requestId}'
   );
-  const mockPresentation = new PresentationNS.Requested(
+  const mockPresentation = new Presentation.Requested(
     new TransactionId('test-transaction-id'),
     new Date('2023-06-08T09:00:00Z'),
     presentationType,

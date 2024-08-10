@@ -15,7 +15,7 @@
  */
 
 import { PresentationDefinition } from 'oid4vc-prex';
-import { VerifierConfig, PresentationNS } from '../../../domain';
+import { VerifierConfig, Presentation } from '../../../domain';
 import {
   getScope,
   getIdTokenType,
@@ -71,7 +71,7 @@ export interface RequestObject {
 export const requestObjectFromDomain = (
   verifierConfig: VerifierConfig,
   at: Date,
-  presentation: PresentationNS.Requested
+  presentation: Presentation.Requested
 ): RequestObject => {
   const type = presentation.type;
   const scope = getScope(type);

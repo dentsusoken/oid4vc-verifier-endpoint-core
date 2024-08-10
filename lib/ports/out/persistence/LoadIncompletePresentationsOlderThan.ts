@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { PresentationNS } from '../../../domain';
+import { Presentation } from '../../../domain';
 
 export interface LoadIncompletePresentationsOlderThan {
   (at: Date): Promise<Presentation[]>;

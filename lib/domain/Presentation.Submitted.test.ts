@@ -6,7 +6,7 @@ import {
   ResponseCode,
   PresentationType,
   IdTokenType,
-  PresentationNS,
+  Presentation,
   WalletResponseNS,
 } from '.';
 
@@ -22,7 +22,7 @@ describe('Submitted', () => {
   const responseCode = new ResponseCode('hoge');
 
   it('should create a Submitted instance', () => {
-    const submitted = new PresentationNS.Submitted(
+    const submitted = new Presentation.Submitted(
       id,
       initiatedAt,
       type,
@@ -49,7 +49,7 @@ describe('Submitted', () => {
     const futureDate = new Date(Date.now() + 1000);
 
     expect(() => {
-      new PresentationNS.Submitted(
+      new Presentation.Submitted(
         id,
         futureDate,
         type,
@@ -64,7 +64,7 @@ describe('Submitted', () => {
   });
 
   it('should check if the presentation is expired', () => {
-    const submitted = new PresentationNS.Submitted(
+    const submitted = new Presentation.Submitted(
       id,
       initiatedAt,
       type,
@@ -84,7 +84,7 @@ describe('Submitted', () => {
   });
 
   it('should timeout the presentation', () => {
-    const submitted = new PresentationNS.Submitted(
+    const submitted = new Presentation.Submitted(
       id,
       initiatedAt,
       type,
@@ -101,7 +101,7 @@ describe('Submitted', () => {
 
     expect(result.isSuccess).toBe(true);
     const timedOut = result.getOrThrow();
-    expect(timedOut.constructor).toBe(PresentationNS.TimedOut);
+    expect(timedOut.constructor).toBe(Presentation.TimedOut);
     expect(timedOut.id).toBe(id);
     expect(timedOut.initiatedAt).toBe(initiatedAt);
     expect(timedOut.type).toBe(type);
@@ -111,7 +111,7 @@ describe('Submitted', () => {
   });
 
   it('should return a failure result if initiatedAt is later than timeout date', () => {
-    const submitted = new PresentationNS.Submitted(
+    const submitted = new Presentation.Submitted(
       id,
       initiatedAt,
       type,
@@ -131,5 +131,69 @@ describe('Submitted', () => {
     expect(result.exceptionOrUndefined()?.message).toBe(
       'initiatedAt must be earlier than at'
     );
+  });
+
+  describe('type guard', () => {
+    it('should correctly identify Submitted using if statement', () => {
+      const presentation = new Presentation.Submitted(
+        id,
+        initiatedAt,
+        type,
+        requestId,
+        requestObjectRetrievedAt,
+        submittedAt,
+        walletResponse,
+        nonce,
+        responseCode
+      );
+
+      if (presentation.__type === 'Submitted') {
+        expect(presentation.id).toBe(id);
+        expect(presentation.initiatedAt).toBe(initiatedAt);
+        expect(presentation.type).toBe(type);
+        expect(presentation.requestId).toBe(requestId);
+        expect(presentation.requestObjectRetrievedAt).toBe(
+          requestObjectRetrievedAt
+        );
+        expect(presentation.submittedAt).toBe(submittedAt);
+        expect(presentation.walletResponse).toBe(walletResponse);
+        expect(presentation.nonce).toBe(nonce);
+        expect(presentation.responseCode).toBe(responseCode);
+      } else {
+        throw new Error('Expected presentation to be of type Submitted');
+      }
+    });
+
+    it('should correctly identify Submitted using switch statement', () => {
+      const presentation = new Presentation.Submitted(
+        id,
+        initiatedAt,
+        type,
+        requestId,
+        requestObjectRetrievedAt,
+        submittedAt,
+        walletResponse,
+        nonce,
+        responseCode
+      );
+
+      switch (presentation.__type) {
+        case 'Submitted':
+          expect(presentation.id).toBe(id);
+          expect(presentation.initiatedAt).toBe(initiatedAt);
+          expect(presentation.type).toBe(type);
+          expect(presentation.requestId).toBe(requestId);
+          expect(presentation.requestObjectRetrievedAt).toBe(
+            requestObjectRetrievedAt
+          );
+          expect(presentation.submittedAt).toBe(submittedAt);
+          expect(presentation.walletResponse).toBe(walletResponse);
+          expect(presentation.nonce).toBe(nonce);
+          expect(presentation.responseCode).toBe(responseCode);
+          break;
+        default:
+          throw new Error('Expected presentation to be of type Submitted');
+      }
+    });
   });
 });

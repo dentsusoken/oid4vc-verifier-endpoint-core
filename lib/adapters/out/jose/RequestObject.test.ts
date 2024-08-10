@@ -3,7 +3,7 @@ import { requestObjectFromDomain } from './RequestObject';
 import {
   ClientIdScheme,
   VerifierConfig,
-  PresentationNS,
+  Presentation,
   PresentationType,
   IdTokenType,
   EmbedOption,
@@ -37,7 +37,7 @@ describe('requestObjectFromDomain', () => {
   } as VerifierConfig;
 
   it('should create a RequestObject for IdTokenRequest', () => {
-    const presentation = new PresentationNS.Requested(
+    const presentation = new Presentation.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
       new PresentationType.IdTokenRequest([IdTokenType.AttesterSigned]),
@@ -74,7 +74,7 @@ describe('requestObjectFromDomain', () => {
 
   it('should create a RequestObject for VpTokenRequest', () => {
     const mockPresentationDefinition = {} as PresentationDefinition;
-    const presentation = new PresentationNS.Requested(
+    const presentation = new Presentation.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
       new PresentationType.VpTokenRequest(mockPresentationDefinition),
@@ -111,7 +111,7 @@ describe('requestObjectFromDomain', () => {
 
   it('should create a RequestObject for IdAndVpToken', () => {
     const mockPresentationDefinition = {} as PresentationDefinition;
-    const presentation = new PresentationNS.Requested(
+    const presentation = new Presentation.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
       new PresentationType.IdAndVpTokenRequest(

@@ -28,31 +28,65 @@ import {
 import { Result, runCatching } from '../kotlin';
 
 /**
- * Presentation interface
+ * Represents a presentation.
+ * @typedef {Presentation.Requested | Presentation.RequestObjectRetrieved | Presentation.Submitted | Presentation.TimedOut} Presentation
  */
-export interface Presentation {
-  /** Transaction ID */
-  id: TransactionId;
-  /** Initiation date and time */
-  initiatedAt: Date;
-  /** Presentation type */
-  type: PresentationType;
-  /**
-   * Check if the presentation is expired at the specified date and time
-   * @param at Date and time to check
-   * @returns true if expired, false otherwise
-   */
-  isExpired(at: Date): boolean;
-}
+export type Presentation =
+  | Presentation.Requested
+  | Presentation.RequestObjectRetrieved
+  | Presentation.Submitted
+  | Presentation.TimedOut;
 
-export namespace PresentationNS {
+export namespace Presentation {
   /**
-   * Requested presentation class
+   * Interface representing a presentation.
+   * @interface Presentation
    */
+  export interface Presentation {
+    /**
+     * The type of the presentation.
+     * @type {('Requested' | 'RequestObjectRetrieved' | 'Submitted' | 'TimedOut')}
+     * @readonly
+     */
+    readonly __type:
+      | 'Requested'
+      | 'RequestObjectRetrieved'
+      | 'Submitted'
+      | 'TimedOut';
+
+    /**
+     * The transaction ID.
+     * @type {TransactionId}
+     */
+    id: TransactionId;
+
+    /**
+     * The initiation date and time.
+     * @type {Date}
+     */
+    initiatedAt: Date;
+
+    /**
+     * The presentation type.
+     * @type {PresentationType}
+     */
+    type: PresentationType;
+
+    /**
+     * Checks if the presentation is expired at the specified date and time.
+     * @param {Date} at - The date and time to check.
+     * @returns {boolean} True if expired, false otherwise.
+     */
+    isExpired(at: Date): boolean;
+  }
+
   /**
-   * Requested presentation class
+   * Represents a requested presentation.
+   * @class Requested
+   * @implements {Presentation}
    */
   export class Requested implements Presentation {
+    readonly __type = 'Requested';
     /**
      * Constructorq
      * @param id Transaction ID
@@ -78,9 +112,9 @@ export namespace PresentationNS {
     ) {}
 
     /**
-     * Check if the presentation is expired at the specified date and time
-     * @param at Date and time to check
-     * @returns true if expired, false otherwise
+     * Checks if the presentation is expired at the specified date and time.
+     * @param {Date} at - The date and time to check.
+     * @returns {boolean} True if expired, false otherwise.
      */
     isExpired(at: Date): boolean {
       const initiatedAtEpoc = this.initiatedAt.getTime();
@@ -89,9 +123,9 @@ export namespace PresentationNS {
     }
 
     /**
-     * Retrieve the request object
-     * @param at Retrieval date and time
-     * @returns Result containing the retrieved request object
+     * Retrieves the request object.
+     * @param {Date} at - The retrieval date and time.
+     * @returns {Result} The result containing the retrieved request object.
      */
     retrieveRequestObject(at: Date): Result<RequestObjectRetrieved> {
       return runCatching(
@@ -111,9 +145,9 @@ export namespace PresentationNS {
     }
 
     /**
-     * Timeout processing
-     * @param at Timeout date and time
-     * @returns Result containing the timed out presentation
+     * Performs timeout processing.
+     * @param {Date} at - The timeout date and time.
+     * @returns {Result} The result containing the timed out presentation.
      */
     timedOut(at: Date): Result<TimedOut> {
       return runCatching(() => {
@@ -137,20 +171,29 @@ export namespace PresentationNS {
   }
 
   /**
-   * Request object retrieved presentation class
+   * Represents a request object retrieved presentation.
+   * @class RequestObjectRetrieved
+   * @implements {Presentation}
    */
   export class RequestObjectRetrieved implements Presentation {
     /**
-     * Constructor
-     * @param id Transaction ID
-     * @param initiatedAt Initiation date and time
-     * @param type Presentation type
-     * @param requestId Request ID
-     * @param requestObjectRetrievedAt Request object retrieval date and time
-     * @param nonce Nonce
-     * @param ephemeralEcPrivateKey Ephemeral EC private key in JWK format
-     * @param responseMode Response mode option
-     * @param getWalletResponseMethod Method to get wallet response
+     * The type of the presentation.
+     * @type {('RequestObjectRetrieved')}
+     * @readonly
+     */
+    readonly __type = 'RequestObjectRetrieved';
+
+    /**
+     * Creates an instance of RequestObjectRetrieved.
+     * @param {TransactionId} id - The transaction ID.
+     * @param {Date} initiatedAt - The initiation date and time.
+     * @param {PresentationType} type - The presentation type.
+     * @param {RequestId} requestId - The request ID.
+     * @param {Date} requestObjectRetrievedAt - The request object retrieval date and time.
+     * @param {Nonce} nonce - The nonce.
+     * @param {EphemeralECDHPrivateJwk | undefined} ephemeralEcPrivateKey - The ephemeral EC private key in JWK format.
+     * @param {ResponseModeOption} responseMode - The response mode option.
+     * @param {GetWalletResponseMethod} getWalletResponseMethod - The method to get wallet response.
      */
     constructor(
       public id: TransactionId,
@@ -174,9 +217,9 @@ export namespace PresentationNS {
     }
 
     /**
-     * Check if the presentation is expired at the specified date and time
-     * @param at Date and time to check
-     * @returns true if expired, false otherwise
+     * Checks if the presentation is expired at the specified date and time.
+     * @param {Date} at - The date and time to check.
+     * @returns {boolean} True if expired, false otherwise.
      */
     isExpired(at: Date): boolean {
       const requestObjectRetrievedAtEpoc =
@@ -186,20 +229,20 @@ export namespace PresentationNS {
     }
 
     /**
-     * Submit the presentation
-     * @param at Submission date and time
-     * @param walletResponse Wallet response
-     * @param responseCode Response code
-     * @returns Result containing the submitted presentation
+     * Submits the presentation.
+     * @param {Date} at - The submission date and time.
+     * @param {WalletResponse} walletResponse - The wallet response.
+     * @param {ResponseCode | undefined} responseCode - The response code.
+     * @returns {Result} The result containing the submitted presentation.
      */
     submit(
       at: Date,
       walletResponse: WalletResponse,
       responseCode: ResponseCode | undefined
-    ): Result<PresentationNS.Submitted> {
+    ): Result<Presentation.Submitted> {
       return runCatching(
         () =>
-          new PresentationNS.Submitted(
+          new Presentation.Submitted(
             this.id,
             this.initiatedAt,
             this.type,
@@ -214,11 +257,11 @@ export namespace PresentationNS {
     }
 
     /**
-     * Timeout processing
-     * @param at Timeout date and time
-     * @returns Result containing the timed out presentation
+     * Performs timeout processing.
+     * @param {Date} at - The timeout date and time.
+     * @returns {Result} The result containing the timed out presentation.
      */
-    timedOut(at: Date): Result<PresentationNS.TimedOut> {
+    timedOut(at: Date): Result<Presentation.TimedOut> {
       return runCatching(() => {
         const initiatedAtEpoc = this.initiatedAt.getTime();
         const atEpoc = at.getTime();
@@ -226,7 +269,7 @@ export namespace PresentationNS {
         if (initiatedAtEpoc > atEpoc) {
           throw new Error('initiatedAt must be earlier than at');
         }
-        return new PresentationNS.TimedOut(
+        return new Presentation.TimedOut(
           this.id,
           this.initiatedAt,
           this.type,
@@ -239,20 +282,29 @@ export namespace PresentationNS {
   }
 
   /**
-   * Submitted presentation class
+   * Represents a submitted presentation.
+   * @class Submitted
+   * @implements {Presentation}
    */
   export class Submitted implements Presentation {
     /**
-     * Constructor
-     * @param id Transaction ID
-     * @param initiatedAt Initiation date and time
-     * @param type Presentation type
-     * @param requestId Request ID
-     * @param requestObjectRetrievedAt Request object retrieval date and time
-     * @param submittedAt Submission date and time
-     * @param walletResponse Wallet response
-     * @param nonce Nonce
-     * @param responseCode Response code
+     * The type of the presentation.
+     * @type {('Submitted')}
+     * @readonly
+     */
+    readonly __type = 'Submitted';
+
+    /**
+     * Creates an instance of Submitted.
+     * @param {TransactionId} id - The transaction ID.
+     * @param {Date} initiatedAt - The initiation date and time.
+     * @param {PresentationType} type - The presentation type.
+     * @param {RequestId} requestId - The request ID.
+     * @param {Date} requestObjectRetrievedAt - The request object retrieval date and time.
+     * @param {Date} submittedAt - The submission date and time.
+     * @param {WalletResponse} walletResponse - The wallet response.
+     * @param {Nonce} nonce - The nonce.
+     * @param {ResponseCode | undefined} responseCode - The response code.
      */
     constructor(
       public id: TransactionId,
@@ -274,9 +326,9 @@ export namespace PresentationNS {
     }
 
     /**
-     * Check if the presentation is expired at the specified date and time
-     * @param at Date and time to check
-     * @returns true if expired, false otherwise
+     * Checks if the presentation is expired at the specified date and time.
+     * @param {Date} at - The date and time to check.
+     * @returns {boolean} True if expired, false otherwise.
      */
     isExpired(at: Date): boolean {
       const initiatedAtEpoc = this.initiatedAt.getTime();
@@ -285,11 +337,11 @@ export namespace PresentationNS {
     }
 
     /**
-     * Timeout processing
-     * @param at Timeout date and time
-     * @returns Result containing the timed out presentation
+     * Performs timeout processing.
+     * @param {Date} at - The timeout date and time.
+     * @returns {Result} The result containing the timed out presentation.
      */
-    timedOut(at: Date): Result<PresentationNS.TimedOut> {
+    timedOut(at: Date): Result<Presentation.TimedOut> {
       return runCatching(() => {
         const initiatedAtEpoc = this.initiatedAt.getTime();
         const atEpoc = at.getTime();
@@ -298,7 +350,7 @@ export namespace PresentationNS {
           throw new Error('initiatedAt must be earlier than at');
         }
 
-        return new PresentationNS.TimedOut(
+        return new Presentation.TimedOut(
           this.id,
           this.initiatedAt,
           this.type,
@@ -311,17 +363,25 @@ export namespace PresentationNS {
   }
 
   /**
-   * Timed out presentation class
+   * Represents a timed out presentation.
+   * @class TimedOut
+   * @implements {Presentation}
    */
   export class TimedOut implements Presentation {
     /**
-     * Constructor
-     * @param id Transaction ID
-     * @param initiatedAt Initiation date and time
-     * @param type Presentation type
-     * @param requestObjectRetrievedAt Request object retrieval date and time
-     * @param submittedAt Submission date and time
-     * @param timedOutAt Timeout date and time
+     * The type of the presentation.
+     * @type {('TimedOut')}
+     * @readonly
+     */
+    readonly __type = 'TimedOut';
+    /**
+     * Creates an instance of TimedOut.
+     * @param {TransactionId} id - The transaction ID.
+     * @param {Date} initiatedAt - The initiation date and time.
+     * @param {PresentationType} type - The presentation type.
+     * @param {Date | undefined} [requestObjectRetrievedAt=undefined] - The request object retrieval date and time.
+     * @param {Date | undefined} [submittedAt=undefined] - The submission date and time.
+     * @param {Date} timedOutAt - The timeout date and time.
      */
     constructor(
       public id: TransactionId,
@@ -333,9 +393,9 @@ export namespace PresentationNS {
     ) {}
 
     /**
-     * Check if the presentation is expired at the specified date and time
-     * @param _ Date and time to check (unused)
-     * @returns Always returns false
+     * Checks if the presentation is expired at the specified date and time.
+     * @param {Date} _ - The date and time to check (unused).
+     * @returns {boolean} Always returns false.
      */
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     isExpired(_: Date): boolean {

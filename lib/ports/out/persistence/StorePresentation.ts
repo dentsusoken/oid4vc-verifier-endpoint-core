@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-import { PresentationNS } from '../../../domain';
+import { Presentation } from '../../../domain';
 
 /**
- * Stores or updates a [Presentation] to a storage
+ * Interface for storing or updating a presentation.
+ * @interface StorePresentation
  */
 export interface StorePresentation {
   /**
-   * @param presentation The [Presentation] to be stored or updated
-   * @returns A Promise that resolves when the operation is complete
+   * Stores or updates a presentation.
+   * @function
+   * @name StorePresentation
+   * @param {Presentation} presentation - The presentation to be stored or updated.
+   * @returns {Promise<void>} A promise that resolves when the operation is complete.
    */
   (presentation: Presentation): Promise<void>;
 }

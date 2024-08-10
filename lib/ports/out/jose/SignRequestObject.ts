@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Jwt, PresentationNS, VerifierConfig } from '../../../domain';
+import { Jwt, Presentation, VerifierConfig } from '../../../domain';
 import { Result } from '../../../kotlin';
 
 /**
@@ -24,6 +24,6 @@ export interface SignRequestObject {
   (
     verifierConfig: VerifierConfig,
     at: Date,
-    presentation: PresentationNS.Requested
+    presentation: Presentation.Requested
   ): Promise<Result<Jwt>>;
 }
