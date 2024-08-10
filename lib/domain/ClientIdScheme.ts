@@ -31,21 +31,32 @@ export type ClientIdScheme =
   | ClientIdScheme.X509SanUri;
 
 /**
- * Represents the configuration for a client ID scheme.
- */
-interface ClientIdSchemeInterface {
-  clientId: string;
-  jarSigning: SigningConfig;
-}
-
-/**
  * Namespace containing implementations and type guards for various ClientIdScheme types.
  */
 export namespace ClientIdScheme {
   /**
+   * ClientIdScheme interface represents the scheme used for client identification.
+   * It specifies the type of client ID scheme, the client ID value, and the JAR signing configuration.
+   *
+   * @interface ClientIdScheme
+   * @property {('PreRegistered' | 'X509SanDns' | 'X509SanUri')} __type - The type of the client ID scheme.
+   * It can be one of the following values:
+   * - 'PreRegistered': Indicates that the client ID is pre-registered.
+   * - 'X509SanDns': Indicates that the client ID is based on the X.509 Subject Alternative Name (SAN) DNS entry.
+   * - 'X509SanUri': Indicates that the client ID is based on the X.509 Subject Alternative Name (SAN) URI entry.
+   * @property {string} clientId - The client ID value.
+   * @property {SigningConfig} jarSigning - The configuration for JAR signing.
+   */
+  interface ClientIdScheme {
+    __type: 'PreRegistered' | 'X509SanDns' | 'X509SanUri';
+    clientId: string;
+    jarSigning: SigningConfig;
+  }
+
+  /**
    * Represents a pre-registered client ID scheme.
    */
-  export class PreRegistered implements ClientIdSchemeInterface {
+  export class PreRegistered implements ClientIdScheme {
     readonly __type = 'PreRegistered' as const;
 
     constructor(public clientId: string, public jarSigning: SigningConfig) {}
@@ -54,7 +65,7 @@ export namespace ClientIdScheme {
   /**
    * Represents a client ID scheme using X.509 Subject Alternative Name DNS.
    */
-  export class X509SanDns implements ClientIdSchemeInterface {
+  export class X509SanDns implements ClientIdScheme {
     readonly __type = 'X509SanDns' as const;
 
     constructor(public clientId: string, public jarSigning: SigningConfig) {}
@@ -63,7 +74,7 @@ export namespace ClientIdScheme {
   /**
    * Represents a client ID scheme using X.509 Subject Alternative Name URI.
    */
-  export class X509SanUri implements ClientIdSchemeInterface {
+  export class X509SanUri implements ClientIdScheme {
     readonly __type = 'X509SanUri' as const;
 
     constructor(public clientId: string, public jarSigning: SigningConfig) {}

@@ -5,7 +5,7 @@ import {
   Nonce,
   EphemeralECDHPrivateJwk,
   ResponseModeOption,
-  GetWalletResponseMethodNS,
+  GetWalletResponseMethod,
   IdTokenType,
   PresentationNS,
   PresentationTypeNS,
@@ -26,7 +26,7 @@ describe('RequestObjectRetrieved', () => {
     value: 'hoge',
   };
   const responseMode = ResponseModeOption.DirectPostJwt;
-  const getWalletResponseMethod = new GetWalletResponseMethodNS.Redirect(
+  const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
     'http://example.com/{requestId}'
   );
 

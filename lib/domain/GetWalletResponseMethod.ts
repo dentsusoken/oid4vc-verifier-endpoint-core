@@ -14,59 +14,26 @@
  * limitations under the License.
  */
 
-/**
- * Represents a method for getting the wallet response.
- *
- * @interface GetWalletResponseMethod
- */
-export interface GetWalletResponseMethod {}
+export type GetWalletResponseMethod =
+  | GetWalletResponseMethod.Poll
+  | GetWalletResponseMethod.Redirect;
 
-export namespace GetWalletResponseMethodNS {
-  /**
-   * Represents the poll method for getting the wallet response.
-   *
-   * @class Poll
-   * @implements {GetWalletResponseMethod}
-   */
-  export class Poll implements GetWalletResponseMethod {}
+export namespace GetWalletResponseMethod {
+  interface GetWalletResponseMethod {
+    readonly __type: 'Poll' | 'Redirect';
+  }
 
-  /**
-   * Represents the redirect method for getting the wallet response.
-   *
-   * @class Redirect
-   * @implements {GetWalletResponseMethod}
-   *
-   * @param {string} redirectUriTemplate - The template for the redirect URI.
-   */
+  export class Poll implements GetWalletResponseMethod {
+    static readonly INSTANCE = new Poll();
+
+    readonly __type = 'Poll';
+
+    private constructor() {}
+  }
+
   export class Redirect implements GetWalletResponseMethod {
+    readonly __type = 'Redirect';
+
     constructor(public redirectUriTemplate: string) {}
-  }
-
-  /**
-   * Checks if the given method is an instance of the Poll class.
-   *
-   * @function isPoll
-   *
-   * @param {GetWalletResponseMethod} method - The method to check.
-   *
-   * @returns {boolean} True if the method is an instance of Poll, false otherwise.
-   */
-  export function isPoll(method: GetWalletResponseMethod): method is Poll {
-    return method.constructor === Poll;
-  }
-
-  /**
-   * Checks if the given method is an instance of the Redirect class.
-   *
-   * @function isRedirect
-   *
-   * @param {GetWalletResponseMethod} method - The method to check.
-   *
-   * @returns {boolean} True if the method is an instance of Redirect, false otherwise.
-   */
-  export function isRedirect(
-    method: GetWalletResponseMethod
-  ): method is Redirect {
-    return method.constructor === Redirect;
   }
 }

@@ -1,81 +1,62 @@
 import { describe, it, expect } from 'vitest';
-import { GetWalletResponseMethodNS } from './GetWalletResponseMethod';
+import { GetWalletResponseMethod } from './GetWalletResponseMethod';
 
 describe('GetWalletResponseMethod', () => {
   describe('Poll', () => {
-    it('should create an instance of Poll', () => {
-      // When
-      const poll = new GetWalletResponseMethodNS.Poll();
+    it('should have the correct __type', () => {
+      expect(GetWalletResponseMethod.Poll.INSTANCE.__type).toBe('Poll');
+    });
 
-      // Then
-      expect(poll).toBeDefined();
+    it('should be a singleton', () => {
+      expect(GetWalletResponseMethod.Poll.INSTANCE).toBe(
+        GetWalletResponseMethod.Poll.INSTANCE
+      );
     });
   });
 
   describe('Redirect', () => {
-    it('should create an instance of Redirect with the provided redirectUriTemplate', () => {
-      // Given
+    it('should have the correct __type', () => {
       const redirectUriTemplate = 'https://example.com/redirect';
-
-      // When
-      const redirect = new GetWalletResponseMethodNS.Redirect(
+      const redirect = new GetWalletResponseMethod.Redirect(
         redirectUriTemplate
       );
+      expect(redirect.__type).toBe('Redirect');
+    });
 
-      // Then
+    it('should store the redirectUriTemplate', () => {
+      const redirectUriTemplate = 'https://example.com/redirect';
+      const redirect = new GetWalletResponseMethod.Redirect(
+        redirectUriTemplate
+      );
       expect(redirect.redirectUriTemplate).toBe(redirectUriTemplate);
     });
   });
 
-  describe('isPoll', () => {
-    it('should return true for an instance of Poll', () => {
-      // Given
-      const poll = new GetWalletResponseMethodNS.Poll();
+  describe('type guard', () => {
+    it('should correctly identify Redirect using if statement', () => {
+      const redirectUriTemplate = 'https://example.com/redirect';
+      const responseMethod: GetWalletResponseMethod =
+        new GetWalletResponseMethod.Redirect(redirectUriTemplate);
 
-      // When
-      const result = GetWalletResponseMethodNS.isPoll(poll);
-
-      // Then
-      expect(result).toBe(true);
+      if (responseMethod.__type === 'Redirect') {
+        expect(responseMethod.redirectUriTemplate).toBe(redirectUriTemplate);
+      } else {
+        throw new Error('Expected responseMethod to be of type Redirect');
+      }
     });
 
-    it('should return false for an instance of Redirect', () => {
-      // Given
-      const redirect = new GetWalletResponseMethodNS.Redirect(
-        'https://example.com/redirect'
-      );
+    it('should correctly identify Redirect using switch statement', () => {
+      const redirectUriTemplate = 'https://example.com/redirect';
+      const responseMethod: GetWalletResponseMethod =
+        new GetWalletResponseMethod.Redirect(redirectUriTemplate);
 
-      // When
-      const result = GetWalletResponseMethodNS.isPoll(redirect);
-
-      // Then
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('isRedirect', () => {
-    it('should return true for an instance of Redirect', () => {
-      // Given
-      const redirect = new GetWalletResponseMethodNS.Redirect(
-        'https://example.com/redirect'
-      );
-
-      // When
-      const result = GetWalletResponseMethodNS.isRedirect(redirect);
-
-      // Then
-      expect(result).toBe(true);
-    });
-
-    it('should return false for an instance of Poll', () => {
-      // Given
-      const poll = new GetWalletResponseMethodNS.Poll();
-
-      // When
-      const result = GetWalletResponseMethodNS.isRedirect(poll);
-
-      // Then
-      expect(result).toBe(false);
+      switch (responseMethod.__type) {
+        case 'Redirect':
+          expect(responseMethod.redirectUriTemplate).toBe(redirectUriTemplate);
+          break;
+        default:
+          throw new Error('Expected responseMethod to be of type Redirect');
+      }
     });
   });
 });

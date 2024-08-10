@@ -12,7 +12,7 @@ import {
   TransactionId,
   RequestId,
   Nonce,
-  GetWalletResponseMethodNS,
+  GetWalletResponseMethod,
   StaticSigningPrivateJwk,
 } from '../../../domain';
 import { PresentationDefinition } from 'oid4vc-prex';
@@ -46,7 +46,7 @@ describe('requestObjectFromDomain', () => {
       undefined,
       ResponseModeOption.DirectPost,
       undefined,
-      new GetWalletResponseMethodNS.Poll()
+      GetWalletResponseMethod.Poll.INSTANCE
     );
 
     const result = requestObjectFromDomain(
@@ -83,7 +83,7 @@ describe('requestObjectFromDomain', () => {
       undefined,
       ResponseModeOption.DirectPostJwt,
       EmbedOption.ByValue.INSTANCE,
-      new GetWalletResponseMethodNS.Poll()
+      GetWalletResponseMethod.Poll.INSTANCE
     );
 
     const result = requestObjectFromDomain(
@@ -123,7 +123,7 @@ describe('requestObjectFromDomain', () => {
       undefined,
       ResponseModeOption.DirectPost,
       EmbedOption.ByValue.INSTANCE,
-      new GetWalletResponseMethodNS.Redirect('https://redirect.example.com')
+      new GetWalletResponseMethod.Redirect('https://redirect.example.com')
     );
 
     const result = requestObjectFromDomain(

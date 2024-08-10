@@ -13,7 +13,7 @@ import {
   TransactionId,
   Nonce,
   ResponseModeOption,
-  GetWalletResponseMethodNS,
+  GetWalletResponseMethod,
   ClientIdScheme,
   SigningConfig,
 } from '../../../domain';
@@ -54,7 +54,7 @@ describe('SignRequestObjectJose', async () => {
   const mockAt = new Date('2023-06-08T10:00:00Z');
   const pd = {} as PresentationDefinition;
   const presentationType = new PresentationTypeNS.VpTokenRequest(pd);
-  const getWalletResponseMethod = new GetWalletResponseMethodNS.Redirect(
+  const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
     'http://example.com/{requestId}'
   );
   const mockPresentation = new PresentationNS.Requested(

@@ -44,9 +44,22 @@ export type AuthorizationResponse =
 
 export namespace AuthorizationResponse {
   /**
+   * AuthorizationResponse interface represents the response from an authorization endpoint.
+   * It can be either a 'DirectPost' or 'DirectPostJwt' response type.
+   *
+   * @interface AuthorizationResponse
+   * @property {('DirectPost' | 'DirectPostJwt')} __type - The type of the authorization response.
+   * It can be one of the following values:
+   * - 'DirectPost': Indicates that the response is a direct POST response.
+   * - 'DirectPostJwt': Indicates that the response is a direct POST response with a JWT (JSON Web Token).
+   */
+  interface AuthorizationResponse {
+    __type: 'DirectPost' | 'DirectPostJwt';
+  }
+  /**
    * Represents a direct post authorization response.
    */
-  export class DirectPost {
+  export class DirectPost implements AuthorizationResponse {
     /** Discriminator for the DirectPost type. */
     readonly __type = 'DirectPost' as const;
 
@@ -60,7 +73,7 @@ export namespace AuthorizationResponse {
   /**
    * Represents a direct post JWT authorization response.
    */
-  export class DirectPostJwt {
+  export class DirectPostJwt implements AuthorizationResponse {
     /** Discriminator for the DirectPostJwt type. */
     readonly __type = 'DirectPostJwt' as const;
 
