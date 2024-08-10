@@ -14,26 +14,77 @@
  * limitations under the License.
  */
 
+/**
+ * Represents the method to get the wallet response.
+ * @typedef {GetWalletResponseMethod.Poll | GetWalletResponseMethod.Redirect} GetWalletResponseMethod
+ */
 export type GetWalletResponseMethod =
   | GetWalletResponseMethod.Poll
   | GetWalletResponseMethod.Redirect;
 
+/**
+ * Namespace for GetWalletResponseMethod related classes and functions.
+ * @namespace GetWalletResponseMethod
+ */
 export namespace GetWalletResponseMethod {
+  /**
+   * Interface representing a GetWalletResponseMethod.
+   * @interface GetWalletResponseMethod
+   */
   interface GetWalletResponseMethod {
+    /**
+     * The type of the GetWalletResponseMethod.
+     * @type {('Poll' | 'Redirect')}
+     * @readonly
+     */
     readonly __type: 'Poll' | 'Redirect';
   }
 
+  /**
+   * Represents a polling method to get the wallet response.
+   * @class Poll
+   * @implements {GetWalletResponseMethod}
+   */
   export class Poll implements GetWalletResponseMethod {
+    /**
+     * The singleton instance of the Poll class.
+     * @type {Poll}
+     * @static
+     * @readonly
+     */
     static readonly INSTANCE = new Poll();
 
+    /**
+     * The type of the GetWalletResponseMethod.
+     * @type {('Poll')}
+     * @readonly
+     */
     readonly __type = 'Poll';
 
+    /**
+     * Private constructor to enforce singleton pattern.
+     * @private
+     */
     private constructor() {}
   }
 
+  /**
+   * Represents a redirect method to get the wallet response.
+   * @class Redirect
+   * @implements {GetWalletResponseMethod}
+   */
   export class Redirect implements GetWalletResponseMethod {
+    /**
+     * The type of the GetWalletResponseMethod.
+     * @type {('Redirect')}
+     * @readonly
+     */
     readonly __type = 'Redirect';
 
+    /**
+     * Creates an instance of Redirect.
+     * @param {string} redirectUriTemplate - The redirect URI template.
+     */
     constructor(public redirectUriTemplate: string) {}
   }
 }

@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-export interface QueryResponse<T> {
-  __type: 'NotFound' | 'InvalidState' | 'Found';
-  value: T;
-}
+export type QueryResponse<T> =
+  | QueryResponse.NotFound
+  | QueryResponse.InvalidState
+  | QueryResponse.Found<T>;
 
 export namespace QueryResponse {
-  export class NotFound implements QueryResponse<never> {
-    static readonly INSTANCE: QueryResponse<never> = new NotFound();
-
-    __type = 'NotFound' as const;
-
-    private constructor() {}
-
-    get value(): never {
-      throw new Error('NotFound does not have a value');
-    }
+  interface QueryResponse {
+    readonly __type: 'NotFound' | 'InvalidState' | 'Found';
   }
 
-  export class InvalidState implements QueryResponse<never> {
-    static readonly INSTANCE: QueryResponse<never> = new InvalidState();
+  export class NotFound implements QueryResponse {
+    readonly __type = 'NotFound';
 
-    __type = 'InvalidState' as const;
+    static readonly INSTANCE = new NotFound();
+
+    private constructor() {}
+  }
+
+  export class InvalidState implements QueryResponse {
+    readonly __type = 'InvalidState';
+
+    static readonly INSTANCE = new InvalidState();
 
     private constructor() {}
 
@@ -44,8 +44,8 @@ export namespace QueryResponse {
     }
   }
 
-  export class Found<T> implements QueryResponse<T> {
-    __type = 'Found' as const;
+  export class Found<T> implements QueryResponse {
+    readonly __type = 'Found' as const;
 
     constructor(public readonly value: T) {}
   }
