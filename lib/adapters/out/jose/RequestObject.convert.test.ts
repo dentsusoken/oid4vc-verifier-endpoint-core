@@ -10,7 +10,7 @@ import {
   getResponseMode,
 } from './RequestObject.convert';
 import {
-  PresentationTypeNS,
+  PresentationType,
   IdTokenType,
   EmbedOption,
   ResponseModeOption,
@@ -25,14 +25,14 @@ describe('Presentation Type Utilities', () => {
 
   describe('getScope', () => {
     it('should return ["openid"] for IdTokenRequest', () => {
-      const type = new PresentationTypeNS.IdTokenRequest([
+      const type = new PresentationType.IdTokenRequest([
         IdTokenType.SubjectSigned,
       ]);
       expect(getScope(type)).toEqual(['openid']);
     });
 
     it('should return ["openid"] for IdAndVpTokenRequest', () => {
-      const type = new PresentationTypeNS.IdAndVpTokenRequest(
+      const type = new PresentationType.IdAndVpTokenRequest(
         [IdTokenType.SubjectSigned],
         mockPresentationDefinition
       );
@@ -40,7 +40,7 @@ describe('Presentation Type Utilities', () => {
     });
 
     it('should return an empty array for VpTokenRequest', () => {
-      const type = new PresentationTypeNS.VpTokenRequest(
+      const type = new PresentationType.VpTokenRequest(
         mockPresentationDefinition
       );
       expect(getScope(type)).toEqual([]);
@@ -49,7 +49,7 @@ describe('Presentation Type Utilities', () => {
 
   describe('getIdTokenType', () => {
     it('should return correct array for IdTokenRequest', () => {
-      const type = new PresentationTypeNS.IdTokenRequest([
+      const type = new PresentationType.IdTokenRequest([
         IdTokenType.AttesterSigned,
         IdTokenType.SubjectSigned,
       ]);
@@ -60,7 +60,7 @@ describe('Presentation Type Utilities', () => {
     });
 
     it('should return correct array for IdAndVpTokenRequest', () => {
-      const type = new PresentationTypeNS.IdAndVpTokenRequest(
+      const type = new PresentationType.IdAndVpTokenRequest(
         [IdTokenType.AttesterSigned],
         mockPresentationDefinition
       );
@@ -68,7 +68,7 @@ describe('Presentation Type Utilities', () => {
     });
 
     it('should return an empty array for VpTokenRequest', () => {
-      const type = new PresentationTypeNS.VpTokenRequest(
+      const type = new PresentationType.VpTokenRequest(
         mockPresentationDefinition
       );
       expect(getIdTokenType(type)).toEqual([]);
@@ -77,21 +77,21 @@ describe('Presentation Type Utilities', () => {
 
   describe('getResponseType', () => {
     it('should return ["id_token"] for IdTokenRequest', () => {
-      const type = new PresentationTypeNS.IdTokenRequest([
+      const type = new PresentationType.IdTokenRequest([
         IdTokenType.SubjectSigned,
       ]);
       expect(getResponseType(type)).toEqual(['id_token']);
     });
 
     it('should return ["vp_token"] for VpTokenRequest', () => {
-      const type = new PresentationTypeNS.VpTokenRequest(
+      const type = new PresentationType.VpTokenRequest(
         mockPresentationDefinition
       );
       expect(getResponseType(type)).toEqual(['vp_token']);
     });
 
     it('should return ["vp_token", "id_token"] for IdAndVpTokenRequest', () => {
-      const type = new PresentationTypeNS.IdAndVpTokenRequest(
+      const type = new PresentationType.IdAndVpTokenRequest(
         [IdTokenType.SubjectSigned],
         mockPresentationDefinition
       );
@@ -101,21 +101,21 @@ describe('Presentation Type Utilities', () => {
 
   describe('getAud', () => {
     it('should return an empty array for IdTokenRequest', () => {
-      const type = new PresentationTypeNS.IdTokenRequest([
+      const type = new PresentationType.IdTokenRequest([
         IdTokenType.SubjectSigned,
       ]);
       expect(getAud(type)).toEqual([]);
     });
 
     it('should return ["https://self-issued.me/v2"] for VpTokenRequest', () => {
-      const type = new PresentationTypeNS.VpTokenRequest(
+      const type = new PresentationType.VpTokenRequest(
         mockPresentationDefinition
       );
       expect(getAud(type)).toEqual(['https://self-issued.me/v2']);
     });
 
     it('should return ["https://self-issued.me/v2"] for IdAndVpTokenRequest', () => {
-      const type = new PresentationTypeNS.IdAndVpTokenRequest(
+      const type = new PresentationType.IdAndVpTokenRequest(
         [IdTokenType.SubjectSigned],
         mockPresentationDefinition
       );
@@ -153,14 +153,14 @@ describe('Presentation Type Utilities', () => {
     const mockPresentationDefinition = {} as PresentationDefinition;
 
     it('should return undefined when presentationDefinitionMode is undefined', () => {
-      const type = new PresentationTypeNS.VpTokenRequest(
+      const type = new PresentationType.VpTokenRequest(
         mockPresentationDefinition
       );
       expect(getPresentationDefinition(undefined, type)).toBeUndefined();
     });
 
     it('should return presentationDefinition for VpTokenRequest when mode is ByValue', () => {
-      const type = new PresentationTypeNS.VpTokenRequest(
+      const type = new PresentationType.VpTokenRequest(
         mockPresentationDefinition
       );
       const mode = EmbedOption.ByValue.INSTANCE;
@@ -170,7 +170,7 @@ describe('Presentation Type Utilities', () => {
     });
 
     it('should return presentationDefinition for IdAndVpTokenRequest when mode is ByValue', () => {
-      const type = new PresentationTypeNS.IdAndVpTokenRequest(
+      const type = new PresentationType.IdAndVpTokenRequest(
         [],
         mockPresentationDefinition
       );
@@ -181,13 +181,13 @@ describe('Presentation Type Utilities', () => {
     });
 
     it('should return undefined for IdTokenRequest when mode is ByValue', () => {
-      const type = new PresentationTypeNS.IdTokenRequest([]);
+      const type = new PresentationType.IdTokenRequest([]);
       const mode = undefined;
       expect(getPresentationDefinition(mode, type)).toBeUndefined();
     });
 
     it('should return undefined when mode is ByReference', () => {
-      const type = new PresentationTypeNS.VpTokenRequest(
+      const type = new PresentationType.VpTokenRequest(
         mockPresentationDefinition
       );
       const mode = new EmbedOption.ByReference(

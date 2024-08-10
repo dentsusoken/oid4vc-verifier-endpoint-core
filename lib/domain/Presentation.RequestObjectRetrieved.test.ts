@@ -8,7 +8,7 @@ import {
   GetWalletResponseMethod,
   IdTokenType,
   PresentationNS,
-  PresentationTypeNS,
+  PresentationType,
   ResponseCode,
   WalletResponseNS,
 } from '.';
@@ -16,9 +16,7 @@ import {
 describe('RequestObjectRetrieved', () => {
   const id = new TransactionId('transaction-id');
   const initiatedAt = new Date('2023-06-08T10:00:00Z');
-  const type = new PresentationTypeNS.IdTokenRequest([
-    IdTokenType.SubjectSigned,
-  ]);
+  const type = new PresentationType.IdTokenRequest([IdTokenType.SubjectSigned]);
   const requestId = new RequestId('request-id');
   const requestObjectRetrievedAt = new Date('2023-06-08T10:30:00Z');
   const nonce = new Nonce('nonce');

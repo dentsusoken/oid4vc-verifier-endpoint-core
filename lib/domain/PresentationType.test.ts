@@ -1,77 +1,175 @@
 import { describe, it, expect } from 'vitest';
 import { PresentationDefinition } from 'oid4vc-prex';
-import { PresentationType, PresentationTypeNS } from './PresentationType';
+import { PresentationType } from './PresentationType';
 import { IdTokenType } from '.';
 
-describe('PresentationTypeNS', () => {
-  const mockPresentationDefinition = {} as PresentationDefinition;
-  const mockIdTokenTypes: IdTokenType[] = [IdTokenType.SubjectSigned];
-
+describe('PresentationType', () => {
   describe('IdTokenRequest', () => {
-    it('should create an instance with correct properties', () => {
-      const idTokenRequest = new PresentationTypeNS.IdTokenRequest(
-        mockIdTokenTypes
-      );
-      expect(idTokenRequest.idTokenType).toEqual(mockIdTokenTypes);
+    it('should have the correct __type', () => {
+      const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
+      const idTokenRequest = new PresentationType.IdTokenRequest(idTokenType);
+      expect(idTokenRequest.__type).toBe('IdTokenRequest');
+    });
+
+    it('should store the idTokenType', () => {
+      const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
+      const idTokenRequest = new PresentationType.IdTokenRequest(idTokenType);
+      expect(idTokenRequest.idTokenType).toBe(idTokenType);
     });
   });
 
   describe('VpTokenRequest', () => {
-    it('should create an instance with correct properties', () => {
-      const vpTokenRequest = new PresentationTypeNS.VpTokenRequest(
-        mockPresentationDefinition
+    it('should have the correct __type', () => {
+      const presentationDefinition: PresentationDefinition = {};
+      const vpTokenRequest = new PresentationType.VpTokenRequest(
+        presentationDefinition
+      );
+      expect(vpTokenRequest.__type).toBe('VpTokenRequest');
+    });
+
+    it('should store the presentationDefinition', () => {
+      const presentationDefinition: PresentationDefinition = {};
+      const vpTokenRequest = new PresentationType.VpTokenRequest(
+        presentationDefinition
       );
       expect(vpTokenRequest.presentationDefinition).toBe(
-        mockPresentationDefinition
+        presentationDefinition
       );
     });
   });
 
   describe('IdAndVpTokenRequest', () => {
-    it('should create an instance with correct properties', () => {
-      const idAndVpTokenRequest = new PresentationTypeNS.IdAndVpTokenRequest(
-        mockIdTokenTypes,
-        mockPresentationDefinition
+    it('should have the correct __type', () => {
+      const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
+      const presentationDefinition: PresentationDefinition = {};
+      const idAndVpTokenRequest = new PresentationType.IdAndVpTokenRequest(
+        idTokenType,
+        presentationDefinition
       );
-      expect(idAndVpTokenRequest.idTokenType).toEqual(mockIdTokenTypes);
+      expect(idAndVpTokenRequest.__type).toBe('IdAndVpTokenRequest');
+    });
+
+    it('should store the idTokenType and presentationDefinition', () => {
+      const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
+      const presentationDefinition: PresentationDefinition = {};
+      const idAndVpTokenRequest = new PresentationType.IdAndVpTokenRequest(
+        idTokenType,
+        presentationDefinition
+      );
+      expect(idAndVpTokenRequest.idTokenType).toBe(idTokenType);
       expect(idAndVpTokenRequest.presentationDefinition).toBe(
-        mockPresentationDefinition
+        presentationDefinition
       );
     });
   });
 
-  describe('Type guards', () => {
-    it('isIdTokenRequest should return true for IdTokenRequest instances', () => {
-      const idTokenRequest = new PresentationTypeNS.IdTokenRequest(
-        mockIdTokenTypes
-      );
-      expect(PresentationTypeNS.isIdTokenRequest(idTokenRequest)).toBe(true);
-      expect(PresentationTypeNS.isIdTokenRequest({} as PresentationType)).toBe(
-        false
-      );
+  describe('type guard', () => {
+    it('should correctly identify IdTokenRequest using if statement', () => {
+      const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
+      const presentationType: PresentationType =
+        new PresentationType.IdTokenRequest(idTokenType);
+
+      if (presentationType.__type === 'IdTokenRequest') {
+        expect(presentationType.idTokenType).toBe(idTokenType);
+      } else {
+        throw new Error(
+          'Expected presentationType to be of type IdTokenRequest'
+        );
+      }
     });
 
-    it('isVpTokenRequest should return true for VpTokenRequest instances', () => {
-      const vpTokenRequest = new PresentationTypeNS.VpTokenRequest(
-        mockPresentationDefinition
-      );
-      expect(PresentationTypeNS.isVpTokenRequest(vpTokenRequest)).toBe(true);
-      expect(PresentationTypeNS.isVpTokenRequest({} as PresentationType)).toBe(
-        false
-      );
+    it('should correctly identify VpTokenRequest using if statement', () => {
+      const presentationDefinition: PresentationDefinition = {};
+      const presentationType: PresentationType =
+        new PresentationType.VpTokenRequest(presentationDefinition);
+
+      if (presentationType.__type === 'VpTokenRequest') {
+        expect(presentationType.presentationDefinition).toBe(
+          presentationDefinition
+        );
+      } else {
+        throw new Error(
+          'Expected presentationType to be of type VpTokenRequest'
+        );
+      }
     });
 
-    it('isIdAndVpTokenRequest should return true for IdAndVpTokenRequest instances', () => {
-      const idAndVpTokenRequest = new PresentationTypeNS.IdAndVpTokenRequest(
-        mockIdTokenTypes,
-        mockPresentationDefinition
-      );
-      expect(
-        PresentationTypeNS.isIdAndVpTokenRequest(idAndVpTokenRequest)
-      ).toBe(true);
-      expect(
-        PresentationTypeNS.isIdAndVpTokenRequest({} as PresentationType)
-      ).toBe(false);
+    it('should correctly identify IdAndVpTokenRequest using if statement', () => {
+      const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
+      const presentationDefinition: PresentationDefinition = {};
+      const presentationType: PresentationType =
+        new PresentationType.IdAndVpTokenRequest(
+          idTokenType,
+          presentationDefinition
+        );
+
+      if (presentationType.__type === 'IdAndVpTokenRequest') {
+        expect(presentationType.idTokenType).toBe(idTokenType);
+        expect(presentationType.presentationDefinition).toBe(
+          presentationDefinition
+        );
+      } else {
+        throw new Error(
+          'Expected presentationType to be of type IdAndVpTokenRequest'
+        );
+      }
+    });
+
+    it('should correctly identify IdTokenRequest using switch statement', () => {
+      const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
+      const presentationType: PresentationType =
+        new PresentationType.IdTokenRequest(idTokenType);
+
+      switch (presentationType.__type) {
+        case 'IdTokenRequest':
+          expect(presentationType.idTokenType).toBe(idTokenType);
+          break;
+        default:
+          throw new Error(
+            'Expected presentationType to be of type IdTokenRequest'
+          );
+      }
+    });
+
+    it('should correctly identify VpTokenRequest using switch statement', () => {
+      const presentationDefinition: PresentationDefinition = {};
+      const presentationType: PresentationType =
+        new PresentationType.VpTokenRequest(presentationDefinition);
+
+      switch (presentationType.__type) {
+        case 'VpTokenRequest':
+          expect(presentationType.presentationDefinition).toBe(
+            presentationDefinition
+          );
+          break;
+        default:
+          throw new Error(
+            'Expected presentationType to be of type VpTokenRequest'
+          );
+      }
+    });
+
+    it('should correctly identify IdAndVpTokenRequest using switch statement', () => {
+      const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
+      const presentationDefinition: PresentationDefinition = {};
+      const presentationType: PresentationType =
+        new PresentationType.IdAndVpTokenRequest(
+          idTokenType,
+          presentationDefinition
+        );
+
+      switch (presentationType.__type) {
+        case 'IdAndVpTokenRequest':
+          expect(presentationType.idTokenType).toBe(idTokenType);
+          expect(presentationType.presentationDefinition).toBe(
+            presentationDefinition
+          );
+          break;
+        default:
+          throw new Error(
+            'Expected presentationType to be of type IdAndVpTokenRequest'
+          );
+      }
     });
   });
 });

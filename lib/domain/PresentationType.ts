@@ -18,18 +18,30 @@ import { PresentationDefinition } from 'oid4vc-prex';
 import { IdTokenType } from '.';
 
 /**
- * Represents a type of presentation in the authentication process.
+ * Represents the type of presentation request.
+ * @typedef {PresentationType.IdTokenRequest | PresentationType.VpTokenRequest | PresentationType.IdAndVpTokenRequest} PresentationType
  */
-export interface PresentationType {}
+export type PresentationType =
+  | PresentationType.IdTokenRequest
+  | PresentationType.VpTokenRequest
+  | PresentationType.IdAndVpTokenRequest;
 
 /**
  * Namespace containing implementations and type guards for various PresentationType.
  */
-export namespace PresentationTypeNS {
+export namespace PresentationType {
+  interface PresentationType {
+    readonly __type:
+      | 'IdTokenRequest'
+      | 'VpTokenRequest'
+      | 'IdAndVpTokenRequest';
+  }
+
   /**
    * Represents a request for an ID token.
    */
   export class IdTokenRequest implements PresentationType {
+    readonly __type = 'IdTokenRequest' as const;
     /**
      * Creates an instance of IdTokenRequest.
      * @param idTokenType - An array of ID token types.
@@ -41,6 +53,8 @@ export namespace PresentationTypeNS {
    * Represents a request for a VP token.
    */
   export class VpTokenRequest implements PresentationType {
+    readonly __type = 'VpTokenRequest' as const;
+
     /**
      * Creates an instance of VpTokenRequest.
      * @param presentationDefinition - The presentation definition for the VP token.
@@ -52,6 +66,8 @@ export namespace PresentationTypeNS {
    * Represents a request for both an ID token and a VP token.
    */
   export class IdAndVpTokenRequest implements PresentationType {
+    readonly __type = 'IdAndVpTokenRequest' as const;
+
     /**
      * Creates an instance of IdAndVpTokenRequest.
      * @param idTokenType - An array of ID token types.
@@ -61,38 +77,5 @@ export namespace PresentationTypeNS {
       public idTokenType: IdTokenType[],
       public presentationDefinition: PresentationDefinition
     ) {}
-  }
-
-  /**
-   * Type guard to check if a PresentationType is an IdTokenRequest.
-   * @param type - The PresentationType to check.
-   * @returns True if the type is an IdTokenRequest, false otherwise.
-   */
-  export function isIdTokenRequest(
-    type: PresentationType
-  ): type is IdTokenRequest {
-    return type.constructor === IdTokenRequest;
-  }
-
-  /**
-   * Type guard to check if a PresentationType is a VpTokenRequest.
-   * @param type - The PresentationType to check.
-   * @returns True if the type is a VpTokenRequest, false otherwise.
-   */
-  export function isVpTokenRequest(
-    type: PresentationType
-  ): type is VpTokenRequest {
-    return type.constructor === VpTokenRequest;
-  }
-
-  /**
-   * Type guard to check if a PresentationType is an IdAndVpTokenRequest.
-   * @param type - The PresentationType to check.
-   * @returns True if the type is an IdAndVpTokenRequest, false otherwise.
-   */
-  export function isIdAndVpTokenRequest(
-    type: PresentationType
-  ): type is IdAndVpTokenRequest {
-    return type.constructor === IdAndVpTokenRequest;
   }
 }

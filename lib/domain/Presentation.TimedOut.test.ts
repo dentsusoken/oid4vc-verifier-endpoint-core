@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   TransactionId,
-  PresentationTypeNS,
+  PresentationType,
   PresentationNS,
   IdTokenType,
 } from '.';
@@ -9,9 +9,7 @@ import {
 describe('TimedOut', () => {
   const id = new TransactionId('transaction-id');
   const initiatedAt = new Date('2023-06-01T10:00:00Z');
-  const type = new PresentationTypeNS.IdTokenRequest([
-    IdTokenType.SubjectSigned,
-  ]);
+  const type = new PresentationType.IdTokenRequest([IdTokenType.SubjectSigned]);
   const requestObjectRetrievedAt = new Date('2023-06-01T10:01:00Z');
   const submittedAt = new Date('2023-06-01T10:02:00Z');
   const timedOutAt = new Date('2023-06-01T10:03:00Z');

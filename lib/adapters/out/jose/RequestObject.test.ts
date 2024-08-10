@@ -4,7 +4,7 @@ import {
   ClientIdScheme,
   VerifierConfig,
   PresentationNS,
-  PresentationTypeNS,
+  PresentationType,
   IdTokenType,
   EmbedOption,
   ResponseModeOption,
@@ -40,7 +40,7 @@ describe('requestObjectFromDomain', () => {
     const presentation = new PresentationNS.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
-      new PresentationTypeNS.IdTokenRequest([IdTokenType.AttesterSigned]),
+      new PresentationType.IdTokenRequest([IdTokenType.AttesterSigned]),
       new RequestId('test-request-id'),
       new Nonce('test-nonce'),
       undefined,
@@ -77,7 +77,7 @@ describe('requestObjectFromDomain', () => {
     const presentation = new PresentationNS.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
-      new PresentationTypeNS.VpTokenRequest(mockPresentationDefinition),
+      new PresentationType.VpTokenRequest(mockPresentationDefinition),
       new RequestId('test-request-id'),
       new Nonce('test-nonce'),
       undefined,
@@ -114,7 +114,7 @@ describe('requestObjectFromDomain', () => {
     const presentation = new PresentationNS.Requested(
       new TransactionId('transaction-id'),
       new Date('2023-01-01T00:00:00Z'),
-      new PresentationTypeNS.IdAndVpTokenRequest(
+      new PresentationType.IdAndVpTokenRequest(
         [IdTokenType.SubjectSigned],
         mockPresentationDefinition
       ),

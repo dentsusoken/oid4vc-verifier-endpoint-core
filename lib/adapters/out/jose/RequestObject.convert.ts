@@ -16,7 +16,6 @@
 
 import { PresentationDefinition } from 'oid4vc-prex';
 import {
-  PresentationTypeNS,
   IdTokenType,
   EmbedOption,
   ResponseModeOption,
@@ -31,8 +30,8 @@ import {
  * @returns {string[]} An array of scopes
  */
 export const getScope = (type: PresentationType): string[] => {
-  return PresentationTypeNS.isIdTokenRequest(type) ||
-    PresentationTypeNS.isIdAndVpTokenRequest(type)
+  return type.__type === 'IdTokenRequest' ||
+    type.__type === 'IdAndVpTokenRequest'
     ? ['openid']
     : [];
 };
@@ -44,8 +43,7 @@ export const getScope = (type: PresentationType): string[] => {
  */
 export const getIdTokenType = (type: PresentationType): string[] => {
   return (
-    PresentationTypeNS.isIdTokenRequest(type) ||
-    PresentationTypeNS.isIdAndVpTokenRequest(type)
+    type.__type === 'IdTokenRequest' || type.__type === 'IdAndVpTokenRequest'
       ? type.idTokenType
       : []
   ).map((it) =>
@@ -61,9 +59,9 @@ export const getIdTokenType = (type: PresentationType): string[] => {
  * @returns {string[]} An array of response types
  */
 export const getResponseType = (type: PresentationType): string[] => {
-  if (PresentationTypeNS.isIdTokenRequest(type)) {
+  if (type.__type === 'IdTokenRequest') {
     return ['id_token'];
-  } else if (PresentationTypeNS.isVpTokenRequest(type)) {
+  } else if (type.__type === 'VpTokenRequest') {
     return ['vp_token'];
   } else return ['vp_token', 'id_token'];
 };
@@ -74,7 +72,7 @@ export const getResponseType = (type: PresentationType): string[] => {
  * @returns {string[]} An array of audiences
  */
 export const getAud = (type: PresentationType): string[] => {
-  if (PresentationTypeNS.isIdTokenRequest(type)) {
+  if (type.__type === 'IdTokenRequest') {
     return [];
   }
   return ['https://self-issued.me/v2'];
@@ -120,8 +118,7 @@ export const getPresentationDefinition = (
     return undefined;
   }
   return presentationDefinitionMode.__type == 'ByValue' &&
-    (PresentationTypeNS.isVpTokenRequest(type) ||
-      PresentationTypeNS.isIdAndVpTokenRequest(type))
+    (type.__type === 'VpTokenRequest' || type.__type === 'IdAndVpTokenRequest')
     ? type.presentationDefinition
     : undefined;
 };
@@ -129,7 +126,7 @@ export const getPresentationDefinition = (
 /**
  * Retrieves the presentation definition URI based on the given embedding option and request ID.
  *
- * @param {EmbedOption | undefined} presentationDefinitionMode - The embedding option which determines how the presentation definition should be retrieved.
+ * @param {EmbedOption<RequestId> | undefined} presentationDefinitionMode - The embedding option which determines how the presentation definition should be retrieved.
  *   - If 'ByReference', the function attempts to build and return the URI.
  *   - If 'ByValue' or undefined, the function returns undefined.
  * @param {RequestId} requestId - The request ID used to build the URI when the embedding option is 'ByReference'.
@@ -137,7 +134,7 @@ export const getPresentationDefinition = (
  *
  */
 export const getPresentationDefinitionUri = (
-  presentationDefinitionMode: EmbedOption | undefined,
+  presentationDefinitionMode: EmbedOption<RequestId> | undefined,
   requestId: RequestId
 ): URL | undefined => {
   if (!presentationDefinitionMode) {

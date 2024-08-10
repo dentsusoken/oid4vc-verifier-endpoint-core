@@ -9,15 +9,13 @@ import {
   GetWalletResponseMethod,
   IdTokenType,
   PresentationNS,
-  PresentationTypeNS,
+  PresentationType,
 } from '.';
 
 describe('Requested', () => {
   const id = new TransactionId('transaction-id');
   const initiatedAt = new Date('2023-06-08T10:00:00Z');
-  const type = new PresentationTypeNS.IdTokenRequest([
-    IdTokenType.SubjectSigned,
-  ]);
+  const type = new PresentationType.IdTokenRequest([IdTokenType.SubjectSigned]);
   const requestId = new RequestId('request-id');
   const nonce = new Nonce('nonce');
   const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {

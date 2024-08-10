@@ -9,7 +9,7 @@ import {
   EphemeralECDHPrivateJwk,
   EmbedOption,
   BuildUrl,
-  PresentationTypeNS,
+  PresentationType,
   TransactionId,
   Nonce,
   ResponseModeOption,
@@ -53,7 +53,7 @@ describe('SignRequestObjectJose', async () => {
 
   const mockAt = new Date('2023-06-08T10:00:00Z');
   const pd = {} as PresentationDefinition;
-  const presentationType = new PresentationTypeNS.VpTokenRequest(pd);
+  const presentationType = new PresentationType.VpTokenRequest(pd);
   const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
     'http://example.com/{requestId}'
   );
