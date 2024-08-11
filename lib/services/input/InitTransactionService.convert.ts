@@ -17,10 +17,12 @@
 import { PresentationDefinition } from 'oid4vc-prex';
 import {
   EmbedOption,
+  GetWalletResponseMethod,
   IdTokenType,
   Nonce,
   PresentationType,
   RequestId,
+  ResponseCode,
   ResponseModeOption,
 } from '../../domain';
 import {
@@ -29,6 +31,7 @@ import {
   PresentationTypeTO,
   ResponseModeTO,
 } from '../../ports/input/InitTransaction.types';
+import { CreateQueryWalletResponseRedirectUri } from '../../ports/out/cfg';
 
 /**
  * Converts an IdTokenTypeTO value to an array of IdTokenType values.
@@ -139,4 +142,31 @@ export const toResponseModeOption = (
   }
 
   return ResponseModeOption.DirectPostJwt;
+};
+
+/**
+ * Converts a redirect URI template to a GetWalletResponseMethod.
+ * @param {string | undefined} redirectUriTemplate - The redirect URI template.
+ * @param {CreateQueryWalletResponseRedirectUri} createRedirectUri - The function to create a redirect URI.
+ * @returns {GetWalletResponseMethod} The GetWalletResponseMethod instance.
+ * @throws {Error} If the redirectUriTemplate is undefined or if the createRedirectUri function returns a failure result.
+ */
+export const toGetWalletResponseMethod = (
+  redirectUriTemplate: string | undefined,
+  createRedirectUri: CreateQueryWalletResponseRedirectUri
+): GetWalletResponseMethod => {
+  if (!redirectUriTemplate) {
+    throw new Error('Missing redirect uri template');
+  }
+
+  const result = createRedirectUri(
+    redirectUriTemplate,
+    new ResponseCode('test')
+  );
+
+  if (result.isFailure) {
+    throw new Error('Invalid wallet response template');
+  }
+
+  return new GetWalletResponseMethod.Redirect(redirectUriTemplate);
 };

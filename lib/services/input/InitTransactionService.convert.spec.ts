@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { PresentationDefinition } from 'oid4vc-prex';
+import { Result } from '../../kotlin';
 import {
   toIdTokenTypes,
   toNonce,
   toPresentationType,
   toEmbedOption,
   toResponseModeOption,
+  toGetWalletResponseMethod,
 } from './InitTransactionService.convert';
 import {
   IdTokenType,
@@ -14,6 +16,7 @@ import {
   EmbedOption,
   RequestId,
   ResponseModeOption,
+  GetWalletResponseMethod,
 } from '../../domain';
 import {
   IdTokenTypeTO,
@@ -21,6 +24,7 @@ import {
   EmbedModeTO,
   ResponseModeTO,
 } from '../../ports/input/InitTransaction.types';
+import { CreateQueryWalletResponseRedirectUri } from '../../ports/out/cfg';
 
 describe('InitTransactionService.convert', () => {
   describe('toIdTokenTypes', () => {
@@ -181,6 +185,46 @@ describe('InitTransactionService.convert', () => {
         defaultOption
       );
       expect(result).toEqual(ResponseModeOption.DirectPostJwt);
+    });
+  });
+
+  describe('toGetWalletResponseMethod', () => {
+    const createRedirectUri: CreateQueryWalletResponseRedirectUri = (
+      redirectUriTemplate,
+      responseCode
+    ) => {
+      if (redirectUriTemplate === 'valid-template') {
+        return Result.success(
+          new URL(`https://example/com/redirect/${responseCode.value}`)
+        );
+      } else {
+        return Result.failure(new Error('error'));
+      }
+    };
+
+    it('should return GetWalletResponseMethod.Redirect when redirectUriTemplate is valid', () => {
+      const redirectUriTemplate = 'valid-template';
+      const result = toGetWalletResponseMethod(
+        redirectUriTemplate,
+        createRedirectUri
+      );
+      expect(result).toBeInstanceOf(GetWalletResponseMethod.Redirect);
+      expect(result.__type === 'Redirect' && result.redirectUriTemplate).toBe(
+        redirectUriTemplate
+      );
+    });
+
+    it('should throw an error when redirectUriTemplate is undefined', () => {
+      expect(() =>
+        toGetWalletResponseMethod(undefined, createRedirectUri)
+      ).toThrowError('Missing redirect uri template');
+    });
+
+    it('should throw an error when createRedirectUri returns failure', () => {
+      const redirectUriTemplate = 'invalid-template';
+      expect(() =>
+        toGetWalletResponseMethod(redirectUriTemplate, createRedirectUri)
+      ).toThrowError('Invalid wallet response template');
     });
   });
 });
