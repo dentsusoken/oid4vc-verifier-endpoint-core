@@ -5,6 +5,7 @@ import {
   toNonce,
   toPresentationType,
   toEmbedOption,
+  toResponseModeOption,
 } from './InitTransactionService.convert';
 import {
   IdTokenType,
@@ -12,11 +13,13 @@ import {
   PresentationType,
   EmbedOption,
   RequestId,
+  ResponseModeOption,
 } from '../../domain';
 import {
   IdTokenTypeTO,
   PresentationTypeTO,
   EmbedModeTO,
+  ResponseModeTO,
 } from '../../ports/input/InitTransaction.types';
 
 describe('InitTransactionService.convert', () => {
@@ -153,6 +156,31 @@ describe('InitTransactionService.convert', () => {
         defaultOption
       );
       expect(result).toEqual(byReference);
+    });
+  });
+
+  describe('toResponseModeOption', () => {
+    const defaultOption = ResponseModeOption.DirectPost;
+
+    it('should return the default option when input is undefined', () => {
+      const result = toResponseModeOption(undefined, defaultOption);
+      expect(result).toEqual(defaultOption);
+    });
+
+    it('should return ResponseModeOption.DirectPost when input is ResponseModeTO.DirectPost', () => {
+      const result = toResponseModeOption(
+        ResponseModeTO.DirectPost,
+        defaultOption
+      );
+      expect(result).toEqual(ResponseModeOption.DirectPost);
+    });
+
+    it('should return ResponseModeOption.DirectPostJwt when input is ResponseModeTO.DirectPostJwt', () => {
+      const result = toResponseModeOption(
+        ResponseModeTO.DirectPostJwt,
+        defaultOption
+      );
+      expect(result).toEqual(ResponseModeOption.DirectPostJwt);
     });
   });
 });

@@ -21,11 +21,13 @@ import {
   Nonce,
   PresentationType,
   RequestId,
+  ResponseModeOption,
 } from '../../domain';
 import {
   EmbedModeTO,
   IdTokenTypeTO,
   PresentationTypeTO,
+  ResponseModeTO,
 } from '../../ports/input/InitTransaction.types';
 
 /**
@@ -116,4 +118,25 @@ export const toEmbedOption = (
   }
 
   return byReference;
+};
+
+/**
+ * Converts a ResponseModeTO value to a ResponseModeOption.
+ * @param {ResponseModeTO | undefined} to - The ResponseModeTO value to convert.
+ * @param {ResponseModeOption} defaultOption - The default ResponseModeOption to use when 'to' is undefined.
+ * @returns {ResponseModeOption} The corresponding ResponseModeOption.
+ */
+export const toResponseModeOption = (
+  to: ResponseModeTO | undefined,
+  defaultOption: ResponseModeOption
+): ResponseModeOption => {
+  if (!to) {
+    return defaultOption;
+  }
+
+  if (to === ResponseModeTO.DirectPost) {
+    return ResponseModeOption.DirectPost;
+  }
+
+  return ResponseModeOption.DirectPostJwt;
 };
