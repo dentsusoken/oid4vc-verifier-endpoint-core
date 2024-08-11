@@ -37,12 +37,12 @@ export const createSignRequestObjectJoseInvoker = (): SignRequestObject =>
  */
 const invoke: SignRequestObject = async (
   verifierConfig,
-  at,
+  now,
   presentation
 ): Promise<Result<Jwt>> => {
   const requestObject = requestObjectFromDomain(
     verifierConfig,
-    at,
+    now,
     presentation
   );
   const clientMetaDataTO = toClientMetaDataTO(

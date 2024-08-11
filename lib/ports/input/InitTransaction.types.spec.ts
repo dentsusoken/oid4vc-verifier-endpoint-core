@@ -1,8 +1,7 @@
 import 'reflect-metadata';
 import { describe, expect, it } from 'vitest';
 import { plainToInstance, instanceToPlain } from 'class-transformer';
-import { validateSync } from 'class-validator';
-import { InputDescriptor, PresentationDefinition, Id } from 'oid4vc-prex';
+import { PresentationDefinition } from 'oid4vc-prex';
 import {
   PresentationTypeTO,
   IdTokenTypeTO,
@@ -80,39 +79,6 @@ describe('InitTransactionTO', () => {
       'https://example.com/callback'
     );
   });
-
-  it('should validate the class instance', () => {
-    const instance = new InitTransactionTO(
-      PresentationTypeTO.IdTokenRequest,
-      IdTokenTypeTO.AttesterSigned,
-      {} as PresentationDefinition,
-      'xyz789',
-      ResponseModeTO.DirectPost,
-      EmbedModeTO.ByValue,
-      EmbedModeTO.ByReference,
-      'https://example.com/callback'
-    );
-
-    const errors = validateSync(instance);
-    expect(errors.length).toBe(0);
-  });
-
-  it('should fail validation for invalid enum values', () => {
-    const instance = new InitTransactionTO(
-      'invalid_type' as PresentationTypeTO,
-      'invalid_id_token_type' as IdTokenTypeTO,
-      {} as PresentationDefinition,
-      'xyz789',
-      'invalid_response_mode' as ResponseModeTO,
-      'invalid_jar_mode' as EmbedModeTO,
-      'invalid_presentation_definition_mode' as EmbedModeTO,
-      'https://example.com/callback'
-    );
-
-    const errors = validateSync(instance);
-    //console.log(errors);
-    expect(errors.length).toBeGreaterThan(0);
-  });
 });
 
 describe('JwtSecuredAuthorizationRequestTO', () => {
@@ -140,8 +106,8 @@ describe('JwtSecuredAuthorizationRequestTO', () => {
     const instance = new JwtSecuredAuthorizationRequestTO(
       'xyz789',
       'client2',
-      'https://example.com/request2',
-      'request_data2'
+      'request_data2',
+      'https://example.com/request2'
     );
 
     const plainObject = instanceToPlain(instance);
@@ -150,31 +116,5 @@ describe('JwtSecuredAuthorizationRequestTO', () => {
     expect(plainObject.client_id).toBe('client2');
     expect(plainObject.request).toBe('request_data2');
     expect(plainObject.request_uri).toBe('https://example.com/request2');
-  });
-
-  it('should validate the class instance', () => {
-    const instance = new JwtSecuredAuthorizationRequestTO(
-      'abc123',
-      'client1',
-      'https://example.com/request',
-      'request_data'
-    );
-
-    const errors = validateSync(instance);
-    expect(errors.length).toBe(0);
-  });
-
-  it('should fail validation for missing required properties', () => {
-    const instance = new JwtSecuredAuthorizationRequestTO();
-
-    const errors = validateSync(instance);
-    expect(errors.length).toBeGreaterThan(0);
-  });
-
-  it('should fail validation for invalid property types', () => {
-    const instance = new JwtSecuredAuthorizationRequestTO();
-
-    const errors = validateSync(instance);
-    expect(errors.length).toBeGreaterThan(0);
   });
 });

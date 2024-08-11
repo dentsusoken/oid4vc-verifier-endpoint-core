@@ -52,6 +52,7 @@ describe('SignRequestObjectJose', async () => {
     new URL(`https://example.com/response/${requestId.value}`);
 
   const mockAt = new Date('2023-06-08T10:00:00Z');
+  const now = () => mockAt;
   const pd = {} as PresentationDefinition;
   const presentationType = new PresentationType.VpTokenRequest(pd);
   const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
@@ -90,7 +91,7 @@ describe('SignRequestObjectJose', async () => {
       const signRequestObject = createSignRequestObjectJoseInvoker();
       const result = await signRequestObject(
         mockVerifierConfig,
-        mockAt,
+        now,
         mockPresentation
       );
 

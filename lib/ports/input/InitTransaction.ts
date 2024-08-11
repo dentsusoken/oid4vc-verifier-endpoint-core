@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Result } from '../../kotlin';
 import {
   InitTransactionTO,
   JwtSecuredAuthorizationRequestTO,
@@ -34,7 +35,7 @@ export interface InitTransaction {
    * @param {InitTransactionTO} initTransactionTO - The initialization transaction transfer object.
    * @returns {Promise<JwtSecuredAuthorizationRequestTO>} A promise that resolves to the JWT secured authorization request transfer object.
    */
-  (
-    initTransactionTO: InitTransactionTO
-  ): Promise<JwtSecuredAuthorizationRequestTO>;
+  (initTransactionTO: InitTransactionTO): Promise<
+    Result<JwtSecuredAuthorizationRequestTO>
+  >;
 }

@@ -19,6 +19,7 @@ import { PresentationDefinition } from 'oid4vc-prex';
 
 describe('requestObjectFromDomain', () => {
   const issuedAt = new Date('2023-01-01T00:00:00Z');
+  const now = () => issuedAt;
   const clientId = 'client123';
   const staticSigningPrivateJwk: StaticSigningPrivateJwk = {
     value: 'hoge',
@@ -51,7 +52,7 @@ describe('requestObjectFromDomain', () => {
 
     const result = requestObjectFromDomain(
       mockVerifierConfig,
-      issuedAt,
+      now,
       presentation
     );
 
@@ -88,7 +89,7 @@ describe('requestObjectFromDomain', () => {
 
     const result = requestObjectFromDomain(
       mockVerifierConfig,
-      issuedAt,
+      now,
       presentation
     );
 
@@ -128,7 +129,7 @@ describe('requestObjectFromDomain', () => {
 
     const result = requestObjectFromDomain(
       mockVerifierConfig,
-      issuedAt,
+      now,
       presentation
     );
 

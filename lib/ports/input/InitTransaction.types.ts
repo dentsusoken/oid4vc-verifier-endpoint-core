@@ -16,7 +16,6 @@
 import 'reflect-metadata';
 import { PresentationDefinition } from 'oid4vc-prex';
 import { Expose, Type } from 'class-transformer';
-import { IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
 
 /**
  * Enumeration of presentation types for the transaction.
@@ -65,7 +64,6 @@ export class InitTransactionTO {
    * @default PresentationTypeTO.IdAndVpTokenRequest
    */
   @Expose({ name: 'type' })
-  @IsEnum(PresentationTypeTO)
   type: PresentationTypeTO = PresentationTypeTO.IdAndVpTokenRequest;
 
   /**
@@ -74,8 +72,6 @@ export class InitTransactionTO {
    * @optional
    */
   @Expose({ name: 'id_token_type' })
-  @IsOptional()
-  @IsEnum(IdTokenTypeTO)
   idTokenType?: IdTokenTypeTO;
 
   /**
@@ -84,8 +80,6 @@ export class InitTransactionTO {
    * @optional
    */
   @Expose({ name: 'presentation_definition' })
-  @IsOptional()
-  //@ValidateNested()
   @Type(() => PresentationDefinition)
   presentationDefinition?: PresentationDefinition;
 
@@ -95,8 +89,6 @@ export class InitTransactionTO {
    * @optional
    */
   @Expose({ name: 'nonce' })
-  @IsOptional()
-  @IsString()
   nonce?: string;
 
   /**
@@ -105,8 +97,6 @@ export class InitTransactionTO {
    * @optional
    */
   @Expose({ name: 'response_mode' })
-  @IsOptional()
-  @IsEnum(ResponseModeTO)
   responseMode?: ResponseModeTO;
 
   /**
@@ -115,8 +105,6 @@ export class InitTransactionTO {
    * @optional
    */
   @Expose({ name: 'jar_mode' })
-  @IsOptional()
-  @IsEnum(EmbedModeTO)
   jarMode?: EmbedModeTO;
 
   /**
@@ -125,8 +113,6 @@ export class InitTransactionTO {
    * @optional
    */
   @Expose({ name: 'presentation_definition_mode' })
-  @IsOptional()
-  @IsEnum(EmbedModeTO)
   presentationDefinitionMode?: EmbedModeTO;
 
   /**
@@ -135,8 +121,6 @@ export class InitTransactionTO {
    * @optional
    */
   @Expose({ name: 'wallet_response_redirect_uri_template' })
-  @IsOptional()
-  @IsString()
   redirectUriTemplate?: string;
 
   /**
@@ -177,28 +161,20 @@ export class InitTransactionTO {
 export class JwtSecuredAuthorizationRequestTO {
   /**
    * The transaction ID.
-   * @type {string}
    */
   @Expose({ name: 'presentation_id' })
-  @IsString()
   transactionId?: string;
 
   /**
    * The client ID.
-   * @type {string}
    */
   @Expose({ name: 'client_id' })
-  @IsString()
   clientId?: string;
 
   /**
-   * The optional request.
-   * @type {string}
-   * @optional
+   * The request.
    */
-  @Expose({ name: 'request' })
-  @IsOptional()
-  @IsString()
+  @Expose()
   request?: string;
 
   /**
@@ -206,32 +182,31 @@ export class JwtSecuredAuthorizationRequestTO {
    * @type {string}
    */
   @Expose({ name: 'request_uri' })
-  @IsUrl()
   requestUri?: string;
 
   /**
    * Creates an instance of JwtSecuredAuthorizationRequestTO.
    * @param {string} transactionId - The transaction ID.
    * @param {string} clientId - The client ID.
+   * @param {string} [request] - The request.
    * @param {string} requestUri - The request URI.
-   * @param {string} [request] - The optional request.
    */
   constructor();
   constructor(
     transactionId: string,
     clientId: string,
-    requestUri: string,
-    request?: string
+    request?: string,
+    requestUri?: string
   );
   constructor(
     transactionId?: string,
     clientId?: string,
-    requestUri?: string,
-    request?: string
+    request?: string,
+    requestUri?: string
   ) {
     this.transactionId = transactionId;
     this.clientId = clientId;
-    this.requestUri = requestUri;
     this.request = request;
+    this.requestUri = requestUri;
   }
 }

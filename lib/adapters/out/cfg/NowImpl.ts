@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-import { Jwt, Presentation, VerifierConfig } from '../../../domain';
-import { Result } from '../../../kotlin';
-import { Now } from '../cfg';
+import { Now } from '../../../ports/out/cfg';
 
 /**
- * An out port that signs a [Presentation.Requested]
+ * Creates a function that returns the current date and time.
+ * @function
+ * @name createNowInvoker
+ * @returns {Now} A function that returns the current date and time.
  */
-export interface SignRequestObject {
-  (
-    verifierConfig: VerifierConfig,
-    now: Now,
-    presentation: Presentation.Requested
-  ): Promise<Result<Jwt>>;
-}
+export const createNowInvoker = (): Now => () => new Date();
