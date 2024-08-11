@@ -61,6 +61,16 @@ type CreateJwtSecuredAuthorizationRequestTORet = {
   presentation: Presentation;
 };
 
+/**
+ * Creates a JWT-secured authorization request transfer object (TO) and corresponding presentation.
+ * @param {Presentation.Requested} requested - The requested presentation.
+ * @param {EmbedOption<RequestId>} jarOption - The JAR (JWT Authz Request) embed option.
+ * @param {SignRequestObject} signRequestObject - The function to sign the request object.
+ * @param {VerifierConfig} verifierConfig - The verifier configuration.
+ * @param {Now} now - The function to get the current date and time.
+ * @returns {Promise<CreateJwtSecuredAuthorizationRequestTORet>} A promise that resolves to an object containing the JWT-secured authorization request TO and the corresponding presentation.
+ * @throws {Error} If an error occurs during the process.
+ */
 export const createJwtSecuredAuthorizationRequestTO = async (
   requested: Presentation.Requested,
   jarOption: EmbedOption<RequestId>,

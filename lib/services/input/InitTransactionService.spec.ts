@@ -8,14 +8,8 @@ import {
   ClientIdScheme,
   SigningConfig,
   VerifierConfig,
-  TransactionId,
   RequestId,
-  Nonce,
-  PresentationType,
-  IdTokenType,
-  ResponseModeOption,
   BuildUrl,
-  GetWalletResponseMethod,
 } from '../../domain';
 import { PresentationDefinition } from 'oid4vc-prex';
 import {
@@ -47,14 +41,6 @@ describe('createInitTransactionServiceInvoker', async () => {
     value: JSON.stringify(staticSigningPrivateExportedJwk),
   };
 
-  const ephemeralECDHPrivateKey = (await generateKeyPair('ES256')).privateKey;
-  const ephemeralECDHPrivateExportedJwk = await exportJWK(
-    ephemeralECDHPrivateKey
-  );
-  const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
-    value: JSON.stringify(ephemeralECDHPrivateExportedJwk),
-  };
-
   const clientMetaData = {
     idTokenSignedResponseAlg: 'ES256',
     idTokenEncryptedResponseAlg: 'ECDH-ES+A256KW',
@@ -80,30 +66,8 @@ describe('createInitTransactionServiceInvoker', async () => {
     responseUriBuilder,
   } as VerifierConfig;
 
-  const id = new TransactionId('transaction-id');
-  const initiatedAt = new Date('2023-06-08T10:00:00Z');
-  const type = new PresentationType.IdTokenRequest([IdTokenType.SubjectSigned]);
-  const requestId = new RequestId('request-id');
-  const nonce = new Nonce('nonce');
-  const responseMode = ResponseModeOption.DirectPostJwt;
-  const presentationDefinitionMode: EmbedOption<RequestId> =
-    EmbedOption.ByValue.INSTANCE;
-  const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
-    'http://example.com/{requestId}'
-  );
   const now = () => new Date();
 
-  const requested = new Presentation.Requested(
-    id,
-    initiatedAt,
-    type,
-    requestId,
-    nonce,
-    ephemeralECDHPrivateJwk,
-    responseMode,
-    presentationDefinitionMode,
-    getWalletResponseMethod
-  );
   const generateTransactionId = createGenerateTransactionIdInvoker();
   const generateRequestId = createGenerateRequestIdHoseInvoker();
   let storedPresentation: Presentation;

@@ -63,6 +63,21 @@ type CreateParams = {
   createQueryWalletResponseRedirectUri: CreateQueryWalletResponseRedirectUri;
 };
 
+/**
+ * Creates a function that initiates a transaction based on the provided parameters.
+ * @param {Object} params - The parameters for creating the InitTransaction function.
+ * @param {GenerateTransactionId} params.generateTransactionId - Function to generate a transaction ID.
+ * @param {GenerateRequestId} params.generateRequestId - Function to generate a request ID.
+ * @param {StorePresentation} params.storePresentation - Function to store a presentation.
+ * @param {SignRequestObject} params.signRequestObject - Function to sign a request object.
+ * @param {VerifierConfig} params.verifierConfig - The verifier configuration.
+ * @param {Now} params.now - Function to get the current date and time.
+ * @param {GenerateEphemeralECDHPrivateJwk} params.generateEphemeralECDHPrivateJwk - Function to generate an ephemeral ECDH private JWK.
+ * @param {EmbedOption.ByReference<RequestId>} params.jarByReference - Option to embed JAR by reference.
+ * @param {EmbedOption.ByReference<RequestId>} params.presentationDefinitionByReference - Option to embed presentation definition by reference.
+ * @param {CreateQueryWalletResponseRedirectUri} params.createQueryWalletResponseRedirectUri - Function to create a query wallet response redirect URI.
+ * @returns {InitTransaction} A function that initiates a transaction based on the provided InitTransactionTO.
+ */
 export const createInitTransactionServiceInvoker =
   ({
     generateTransactionId,
