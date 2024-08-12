@@ -46,6 +46,15 @@ export const getRequestId = (
     return new RequestId(state);
   });
 
+/**
+ * Converts an AuthorizationResponse to AuthorizationResponseData.
+ * @param {AuthorizationResponse} response - The authorization response object.
+ * @param {VerifyJarmJwt} verifyJarmJwt - Function to verify the JARM JWT.
+ * @param {JarmOption} jarmOption - The JARM option used for verification.
+ * @param {EphemeralECDHPrivateJwk} ephemeralECDHPrivateJwk - The ephemeral ECDH private key in JWK format.
+ * @returns {Promise<Result<AuthorizationResponseData>>} A promise that resolves to a Result object containing the AuthorizationResponseData if successful, or an error if the verification fails or the state is incorrect.
+ * @throws {Error} If the state in the verified data does not match the state in the response.
+ */
 export const toAuthorizationResponseData = (
   response: AuthorizationResponse,
   verifyJarmJwt: VerifyJarmJwt,
