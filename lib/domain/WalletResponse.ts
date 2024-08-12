@@ -17,6 +17,10 @@
 import { PresentationSubmission } from 'oid4vc-prex';
 import { Jwt } from '.';
 
+/**
+ * Represents the response from a wallet.
+ * @typedef {IdToken | VpToken | IdAndVpToken | WalletResponseError} WalletResponse
+ */
 export type WalletResponse =
   | WalletResponse.IdToken
   | WalletResponse.VpToken
@@ -24,6 +28,11 @@ export type WalletResponse =
   | WalletResponse.WalletResponseError;
 
 export namespace WalletResponse {
+  /**
+   * Interface for wallet response types.
+   * @interface WalletResponse
+   * @property {string} __type - The type of the wallet response.
+   */
   interface WalletResponse {
     readonly __type:
       | 'IdToken'
@@ -32,9 +41,22 @@ export namespace WalletResponse {
       | 'WalletResponseError';
   }
 
+  /**
+   * Represents an ID token wallet response.
+   * @class IdToken
+   * @implements {WalletResponse}
+   * @property {string} __type - The type of the wallet response.
+   * @property {Jwt} idToken - The ID token.
+   */
   export class IdToken implements WalletResponse {
     readonly __type = 'IdToken';
 
+    /**
+     * Creates an instance of IdToken.
+     * @constructor
+     * @param {Jwt} idToken - The ID token.
+     * @throws {Error} If the ID token is not provided.
+     */
     constructor(public idToken: Jwt) {
       if (!idToken) {
         throw new Error('idToken is required');
@@ -42,9 +64,24 @@ export namespace WalletResponse {
     }
   }
 
+  /**
+   * Represents a VP token wallet response.
+   * @class VpToken
+   * @implements {WalletResponse}
+   * @property {string} __type - The type of the wallet response.
+   * @property {Jwt} vpToken - The VP token.
+   * @property {PresentationSubmission} presentationSubmission - The presentation submission.
+   */
   export class VpToken implements WalletResponse {
     readonly __type = 'VpToken';
 
+    /**
+     * Creates an instance of VpToken.
+     * @constructor
+     * @param {Jwt} vpToken - The VP token.
+     * @param {PresentationSubmission} presentationSubmission - The presentation submission.
+     * @throws {Error} If the VP token is not provided.
+     */
     constructor(
       public vpToken: Jwt,
       public presentationSubmission: PresentationSubmission
@@ -55,9 +92,26 @@ export namespace WalletResponse {
     }
   }
 
+  /**
+   * Represents an ID and VP token wallet response.
+   * @class IdAndVpToken
+   * @implements {WalletResponse}
+   * @property {string} __type - The type of the wallet response.
+   * @property {Jwt} idToken - The ID token.
+   * @property {Jwt} vpToken - The VP token.
+   * @property {PresentationSubmission} presentationSubmission - The presentation submission.
+   */
   export class IdAndVpToken implements WalletResponse {
     readonly __type = 'IdAndVpToken';
 
+    /**
+     * Creates an instance of IdAndVpToken.
+     * @constructor
+     * @param {Jwt} idToken - The ID token.
+     * @param {Jwt} vpToken - The VP token.
+     * @param {PresentationSubmission} presentationSubmission - The presentation submission.
+     * @throws {Error} If the ID token or VP token is not provided.
+     */
     constructor(
       public idToken: Jwt,
       public vpToken: Jwt,
@@ -72,9 +126,23 @@ export namespace WalletResponse {
     }
   }
 
+  /**
+   * Represents a wallet response error.
+   * @class WalletResponseError
+   * @implements {WalletResponse}
+   * @property {string} __type - The type of the wallet response.
+   * @property {string} value - The error value.
+   * @property {string} [description] - The optional error description.
+   */
   export class WalletResponseError implements WalletResponse {
     readonly __type = 'WalletResponseError';
 
+    /**
+     * Creates an instance of WalletResponseError.
+     * @constructor
+     * @param {string} value - The error value.
+     * @param {string} [description] - The optional error description.
+     */
     constructor(public value: string, public description?: string) {}
   }
 }
