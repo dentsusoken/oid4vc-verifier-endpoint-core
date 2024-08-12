@@ -22,10 +22,8 @@ describe('PostWalletResponse.convert', () => {
         state: 'request-id',
       });
 
-      const result = getRequestId(response);
+      const requestId = getRequestId(response);
 
-      expect(result.isSuccess).toBe(true);
-      const requestId = result.getOrThrow();
       expect(requestId).toBeInstanceOf(RequestId);
       expect(requestId.value).toBe('request-id');
     });
@@ -36,10 +34,8 @@ describe('PostWalletResponse.convert', () => {
         'jarm'
       );
 
-      const result = getRequestId(response);
+      const requestId = getRequestId(response);
 
-      expect(result.isSuccess).toBe(true);
-      const requestId = result.getOrThrow();
       expect(requestId).toBeInstanceOf(RequestId);
       expect(requestId.value).toBe('request-id');
     });
@@ -47,12 +43,7 @@ describe('PostWalletResponse.convert', () => {
     it('should return failure result for DirectPost response without state', () => {
       const response = new AuthorizationResponse.DirectPost({});
 
-      const result = getRequestId(response);
-
-      expect(result.isFailure).toBe(true);
-      const error = result.exceptionOrUndefined();
-      expect(error).toBeInstanceOf(Error);
-      expect(error?.message).toBe('Missing state');
+      expect(() => getRequestId(response)).toThrow('Missing state');
     });
 
     it('should return failure result for other response types without state', () => {
@@ -61,12 +52,7 @@ describe('PostWalletResponse.convert', () => {
         'jarm'
       );
 
-      const result = getRequestId(response);
-
-      expect(result.isFailure).toBe(true);
-      const error = result.exceptionOrUndefined();
-      expect(error).toBeInstanceOf(Error);
-      expect(error?.message).toBe('Missing state');
+      expect(() => getRequestId(response)).toThrow('Missing state');
     });
   });
 
@@ -118,9 +104,7 @@ describe('PostWalletResponse.convert', () => {
         ephemeralECDHPrivateJwk
       );
 
-      expect(result.isSuccess).toBe(true);
-      const data = result.getOrThrow();
-      expect(data).toEqual(response.response);
+      expect(result).toEqual(response.response);
     });
 
     it('should return response data for other response types with valid JARM', async () => {
@@ -135,14 +119,11 @@ describe('PostWalletResponse.convert', () => {
         jarmOption,
         ephemeralECDHPrivateJwk
       );
-      console.log(result);
 
-      expect(result.isSuccess).toBe(true);
-      const data = result.getOrThrow();
-      expect(data.state).toBe(payload.state);
-      expect(data.vpToken).toBe(payload.vpToken);
-      expect(data.presentationSubmission).toBeDefined();
-      expect(data.presentationSubmission).toBeInstanceOf(
+      expect(result.state).toBe(payload.state);
+      expect(result.vpToken).toBe(payload.vpToken);
+      expect(result.presentationSubmission).toBeDefined();
+      expect(result.presentationSubmission).toBeInstanceOf(
         PresentationSubmission
       );
     });
@@ -153,17 +134,14 @@ describe('PostWalletResponse.convert', () => {
         jarmJwt
       );
 
-      const result = await toAuthorizationResponseData(
-        response,
-        verifyJarmJwt,
-        jarmOption,
-        ephemeralECDHPrivateJwk
-      );
-      console.log(result);
-
-      expect(result.isFailure).toBe(true);
-      const error = result.exceptionOrUndefined();
-      expect(error?.message).toBe('Incorrect state');
+      await expect(
+        toAuthorizationResponseData(
+          response,
+          verifyJarmJwt,
+          jarmOption,
+          ephemeralECDHPrivateJwk
+        )
+      ).rejects.toThrow('Incorrect state');
     });
   });
 });

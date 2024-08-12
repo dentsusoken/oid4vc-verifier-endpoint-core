@@ -21,30 +21,24 @@ import {
   JarmOption,
   EphemeralECDHPrivateJwk,
 } from '../../domain';
-import { Result, runAsyncCatching, runCatching } from '../../kotlin';
 import { VerifyJarmJwt } from '../../ports/out/jose';
 
 /**
  * Extracts the request ID from an authorization response.
  * @param {AuthorizationResponse} response - The authorization response object.
- * @returns {Result<RequestId>} A Result object containing the extracted request ID if successful, or an error if the state is missing.
+ * @returns {RequestId} The extracted request ID.
  * @throws {Error} If the state is missing from the authorization response.
  */
-export const getRequestId = (
-  response: AuthorizationResponse
-): Result<RequestId> =>
-  runCatching(() => {
-    const state =
-      response.__type === 'DirectPost'
-        ? response.response.state
-        : response.state;
+export const getRequestId = (response: AuthorizationResponse): RequestId => {
+  const state =
+    response.__type === 'DirectPost' ? response.response.state : response.state;
 
-    if (!state) {
-      throw new Error('Missing state');
-    }
+  if (!state) {
+    throw new Error('Missing state');
+  }
 
-    return new RequestId(state);
-  });
+  return new RequestId(state);
+};
 
 /**
  * Converts an AuthorizationResponse to AuthorizationResponseData.
@@ -52,27 +46,26 @@ export const getRequestId = (
  * @param {VerifyJarmJwt} verifyJarmJwt - Function to verify the JARM JWT.
  * @param {JarmOption} jarmOption - The JARM option used for verification.
  * @param {EphemeralECDHPrivateJwk} ephemeralECDHPrivateJwk - The ephemeral ECDH private key in JWK format.
- * @returns {Promise<Result<AuthorizationResponseData>>} A promise that resolves to a Result object containing the AuthorizationResponseData if successful, or an error if the verification fails or the state is incorrect.
+ * @returns {Promise<AuthorizationResponseData>} A promise that resolves to the AuthorizationResponseData.
  * @throws {Error} If the state in the verified data does not match the state in the response.
  */
-export const toAuthorizationResponseData = (
+export const toAuthorizationResponseData = async (
   response: AuthorizationResponse,
   verifyJarmJwt: VerifyJarmJwt,
   jarmOption: JarmOption,
   ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk
-): Promise<Result<AuthorizationResponseData>> =>
-  runAsyncCatching(async () => {
-    if (response.__type === 'DirectPost') {
-      return response.response;
-    }
+): Promise<AuthorizationResponseData> => {
+  if (response.__type === 'DirectPost') {
+    return response.response;
+  }
 
-    const data = (
-      await verifyJarmJwt(jarmOption, ephemeralECDHPrivateJwk, response.jarm)
-    ).getOrThrow();
+  const data = (
+    await verifyJarmJwt(jarmOption, ephemeralECDHPrivateJwk, response.jarm)
+  ).getOrThrow();
 
-    if (data.state != response.state) {
-      throw new Error('Incorrect state');
-    }
+  if (data.state != response.state) {
+    throw new Error('Incorrect state');
+  }
 
-    return data;
-  });
+  return data;
+};
