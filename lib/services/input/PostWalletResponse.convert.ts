@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-import { AuthorizationResponse, RequestId } from '../../domain';
-import { Result, runCatching } from '../../kotlin';
+import {
+  AuthorizationResponse,
+  RequestId,
+  AuthorizationResponseData,
+  JarmOption,
+  EphemeralECDHPrivateJwk,
+} from '../../domain';
+import { Result, runAsyncCatching, runCatching } from '../../kotlin';
+import { VerifyJarmJwt } from '../../ports/out/jose';
 
 /**
  * Extracts the request ID from an authorization response.
@@ -37,4 +44,26 @@ export const getRequestId = (
     }
 
     return new RequestId(state);
+  });
+
+export const toAuthorizationResponseData = (
+  response: AuthorizationResponse,
+  verifyJarmJwt: VerifyJarmJwt,
+  jarmOption: JarmOption,
+  ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk
+): Promise<Result<AuthorizationResponseData>> =>
+  runAsyncCatching(async () => {
+    if (response.__type === 'DirectPost') {
+      return response.response;
+    }
+
+    const data = (
+      await verifyJarmJwt(jarmOption, ephemeralECDHPrivateJwk, response.jarm)
+    ).getOrThrow();
+
+    if (data.state != response.state) {
+      throw new Error('Incorrect state');
+    }
+
+    return data;
   });
