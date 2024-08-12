@@ -20,6 +20,8 @@ import {
   AuthorizationResponseData,
   JarmOption,
   EphemeralECDHPrivateJwk,
+  PresentationType,
+  WalletResponse,
 } from '../../domain';
 import { VerifyJarmJwt } from '../../ports/out/jose';
 
@@ -68,4 +70,63 @@ export const toAuthorizationResponseData = async (
   }
 
   return data;
+};
+
+/**
+ * Converts AuthorizationResponseData to WalletResponse based on the presentation type.
+ * @param {AuthorizationResponseData} authzData - The authorization response data.
+ * @param {PresentationType} presentationType - The presentation type.
+ * @returns {WalletResponse} The corresponding WalletResponse instance.
+ * @throws {Error} If required properties are missing based on the presentation type.
+ */
+export const toWalletResponse = (
+  authzData: AuthorizationResponseData,
+  presentationType: PresentationType
+): WalletResponse => {
+  if (authzData.error) {
+    return new WalletResponse.WalletResponseError(
+      authzData.error,
+      authzData.errorDescription
+    );
+  }
+
+  switch (presentationType.__type) {
+    case 'IdTokenRequest':
+      if (!authzData.idToken) {
+        throw new Error('Missing idToken');
+      }
+
+      return new WalletResponse.IdToken(authzData.idToken);
+    case 'VpTokenRequest':
+      if (!authzData.vpToken) {
+        throw new Error('Missing vpToken');
+      }
+
+      if (!authzData.presentationSubmission) {
+        throw new Error('Missing presentation submission');
+      }
+
+      return new WalletResponse.VpToken(
+        authzData.vpToken,
+        authzData.presentationSubmission
+      );
+    case 'IdAndVpTokenRequest':
+      if (!authzData.idToken) {
+        throw new Error('Missing idToken');
+      }
+
+      if (!authzData.vpToken) {
+        throw new Error('Missing vpToken');
+      }
+
+      if (!authzData.presentationSubmission) {
+        throw new Error('Missing presentation submission');
+      }
+
+      return new WalletResponse.IdAndVpToken(
+        authzData.idToken,
+        authzData.vpToken,
+        authzData.presentationSubmission
+      );
+  }
 };

@@ -6,10 +6,13 @@ import {
   AuthorizationResponseData,
   JarmOption,
   EphemeralECDHPrivateJwk,
+  PresentationType,
+  WalletResponse,
 } from '../../domain';
 import {
   getRequestId,
   toAuthorizationResponseData,
+  toWalletResponse,
 } from './PostWalletResponse.convert';
 import { generateKeyPair, exportJWK, CompactEncrypt } from 'jose';
 import { createVerifyJarmJwtJoseInvoker } from '../../adapters/out/jose';
@@ -142,6 +145,143 @@ describe('PostWalletResponse.convert', () => {
           ephemeralECDHPrivateJwk
         )
       ).rejects.toThrow('Incorrect state');
+    });
+  });
+
+  describe('toWalletResponse', () => {
+    it('should return WalletResponseError when authzData has an error', () => {
+      const authzData: AuthorizationResponseData = {
+        error: 'invalid_request',
+        errorDescription: 'Invalid request',
+      };
+      const presentationType = new PresentationType.IdTokenRequest([]);
+
+      const result = toWalletResponse(authzData, presentationType);
+
+      expect(result).toBeInstanceOf(WalletResponse.WalletResponseError);
+      expect(result.__type === 'WalletResponseError' && result.value).toBe(
+        'invalid_request'
+      );
+      expect(
+        result.__type === 'WalletResponseError' && result.description
+      ).toBe('Invalid request');
+    });
+
+    it('should return IdToken for IdTokenRequest when authzData has idToken', () => {
+      const authzData: AuthorizationResponseData = {
+        idToken: 'id-token',
+      };
+      const presentationType = new PresentationType.IdTokenRequest([]);
+
+      const result = toWalletResponse(authzData, presentationType);
+
+      expect(result).toBeInstanceOf(WalletResponse.IdToken);
+      expect(result.__type === 'IdToken' && result.idToken).toBe('id-token');
+    });
+
+    it('should throw an error for IdTokenRequest when idToken is missing', () => {
+      const authzData: AuthorizationResponseData = {};
+      const presentationType = new PresentationType.IdTokenRequest([]);
+
+      expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
+        'Missing idToken'
+      );
+    });
+
+    it('should return VpToken for VpTokenRequest when authzData has vpToken and presentationSubmission', () => {
+      const authzData: AuthorizationResponseData = {
+        vpToken: 'vp-token',
+        presentationSubmission: {} as PresentationSubmission,
+      };
+      const presentationType = new PresentationType.VpTokenRequest({});
+
+      const result = toWalletResponse(authzData, presentationType);
+
+      expect(result).toBeInstanceOf(WalletResponse.VpToken);
+      expect(result.__type === 'VpToken' && result.vpToken).toBe('vp-token');
+      expect(result.__type === 'VpToken' && result.presentationSubmission).toBe(
+        authzData.presentationSubmission
+      );
+    });
+
+    it('should throw an error for VpTokenRequest when vpToken is missing', () => {
+      const authzData: AuthorizationResponseData = {
+        presentationSubmission: {} as PresentationSubmission,
+      };
+      const presentationType = new PresentationType.VpTokenRequest({});
+
+      expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
+        'Missing vpToken'
+      );
+    });
+
+    it('should throw an error for VpTokenRequest when presentationSubmission is missing', () => {
+      const authzData: AuthorizationResponseData = {
+        vpToken: 'vp-token',
+      };
+      const presentationType = new PresentationType.VpTokenRequest({});
+
+      expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
+        'Missing presentation submission'
+      );
+    });
+
+    it('should return IdAndVpToken for IdAndVpTokenRequest when authzData has idToken, vpToken, and presentationSubmission', () => {
+      const authzData: AuthorizationResponseData = {
+        idToken: 'id-token',
+        vpToken: 'vp-token',
+        presentationSubmission: {} as PresentationSubmission,
+      };
+      const presentationType = new PresentationType.IdAndVpTokenRequest([], {});
+
+      const result = toWalletResponse(authzData, presentationType);
+
+      expect(result).toBeInstanceOf(WalletResponse.IdAndVpToken);
+      expect(result.__type === 'IdAndVpToken' && result.idToken).toBe(
+        'id-token'
+      );
+      expect(result.__type === 'IdAndVpToken' && result.vpToken).toBe(
+        'vp-token'
+      );
+      expect(
+        result.__type === 'IdAndVpToken' && result.presentationSubmission
+      ).toBe(authzData.presentationSubmission);
+    });
+
+    it('should throw an error for IdAndVpTokenRequest when idToken is missing', () => {
+      const authzData: AuthorizationResponseData = {
+        vpToken: 'vp-token',
+        presentationSubmission: {} as PresentationSubmission,
+      };
+      const presentationType = new PresentationType.IdAndVpTokenRequest([], {});
+
+      expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
+        'Missing idToken'
+      );
+    });
+
+    it('should throw an error for IdAndVpTokenRequest when vpToken is missing', () => {
+      const authzData: AuthorizationResponseData = {
+        idToken: 'id-token',
+        presentationSubmission: {} as PresentationSubmission,
+      };
+      const presentationType = new PresentationType.IdAndVpTokenRequest([], {});
+
+      expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
+        'Missing vpToken'
+      );
+    });
+
+    it('should throw an error for IdAndVpTokenRequest when presentationSubmission is missing', () => {
+      const authzData: AuthorizationResponseData = {
+        idToken: 'id-token',
+        vpToken: 'vp-token',
+      };
+      const presentationType = new PresentationType.IdAndVpTokenRequest([], {});
+
+      expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
+        'Missing presentation submission'
+      );
     });
   });
 });
