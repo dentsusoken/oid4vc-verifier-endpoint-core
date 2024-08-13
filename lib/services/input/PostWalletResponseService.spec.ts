@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import {
   Presentation,
   StaticSigningPrivateJwk,
-  EphemeralECDHPrivateJwk,
   ClientMetaData,
   EmbedOption,
   ClientIdScheme,
@@ -21,7 +20,6 @@ import {
   EmbedModeTO,
   IdTokenTypeTO,
   InitTransactionTO,
-  JwtSecuredAuthorizationRequestTO,
   PresentationTypeTO,
   ResponseModeTO,
 } from '../../ports/input/InitTransaction.types';
@@ -42,11 +40,7 @@ import {
   LoadPresentationByRequestId,
   StorePresentation,
 } from '../../ports/out/persistence';
-import {
-  createLoadPresentationByRequestIdInMemoryInvoker,
-  createStorePresentationInMemoryInvoker,
-  PresentationInMemoryStore,
-} from '../../adapters/out/persistence';
+import { PresentationInMemoryStore } from '../../adapters/out/persistence';
 import { createInitTransactionServiceInvoker } from './InitTransactionService';
 import { createPostWalletResponseServiceInvoker } from './PostWalletResponseService';
 import { VerifyJarmJwt } from '../../ports/out/jose';

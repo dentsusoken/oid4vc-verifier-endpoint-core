@@ -11,6 +11,7 @@ import {
   RequestId,
   ClientMetaData,
   EphemeralECDHPrivateJwk,
+  JarmOption,
 } from '../../../domain';
 import { RequestObject } from './RequestObject';
 import { PresentationDefinition } from 'oid4vc-prex';
@@ -66,11 +67,7 @@ describe('JWKS and Payload Utilities', () => {
         idTokenEncryptedResponseEnc: 'A256GCM',
         subjectSyntaxTypesSupported: ['urn:ietf:params:oauth:jwk-thumbprint'],
         jwkOption: EmbedOption.ByValue.INSTANCE,
-        jarmOption: {
-          jwsAlg: () => 'ES256',
-          jweAlg: () => 'ECDH-ES+A256KW',
-          jweEnc: () => 'A256GCM',
-        },
+        jarmOption: new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM'),
       };
       const responseMode = 'direct_post.jwt';
       const privateJWK: EphemeralECDHPrivateJwk = {
@@ -93,7 +90,7 @@ describe('JWKS and Payload Utilities', () => {
           'urn:ietf:params:oauth:jwk-thumbprint',
         ],
         jwks: { keys: [{ kty: 'EC', crv: 'P-256', x: 'abc', y: 'def' }] },
-        authorization_signed_response_alg: 'ES256',
+        authorization_signed_response_alg: undefined,
         authorization_encrypted_response_alg: 'ECDH-ES+A256KW',
         authorization_encrypted_response_enc: 'A256GCM',
       });

@@ -13,7 +13,7 @@ import { DurationLuxon } from '../adapters/out/cfg';
 
 describe('VerifierConfig', () => {
   const mockClientIdScheme: ClientIdScheme = {
-    name: 'mock-scheme',
+    __type: 'PreRegistered',
     clientId: 'mock-id',
     jarSigning: {} as SigningConfig,
   };
