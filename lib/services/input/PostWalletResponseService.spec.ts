@@ -25,7 +25,7 @@ import {
 } from '../../ports/input/InitTransaction.types';
 import { createGetRequestObjectServiceInvoker } from './GetRequestObjectService';
 import {
-  createGenerateTransactionIdInvoker,
+  createGenerateTransactionIdJoseInvoker,
   createGenerateRequestIdHoseInvoker,
   createCreateQueryWalletResponseRedirectUriInvoker,
   createGenerateResponseCodeInvoker,
@@ -84,7 +84,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
 
   const presentationInMemoryStore = new PresentationInMemoryStore();
 
-  const generateTransactionId = createGenerateTransactionIdInvoker();
+  const generateTransactionId = createGenerateTransactionIdJoseInvoker();
   const generateRequestId = createGenerateRequestIdHoseInvoker();
   const loadPresentationByRequestId =
     presentationInMemoryStore.loadPresentationByRequestId;

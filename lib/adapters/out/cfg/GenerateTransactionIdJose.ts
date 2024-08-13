@@ -32,7 +32,7 @@ const DEFAULT_BYTE_LENGTH = 32;
  * const generateTransactionId = createGenerateTransactionIdInvoker(32);
  * const transactionId = await generateTransactionId();
  */
-export const createGenerateTransactionIdInvoker =
+export const createGenerateTransactionIdJoseInvoker =
   (byteLength: number = DEFAULT_BYTE_LENGTH): GenerateTransactionId =>
   () =>
     runAsyncCatching(async () => {

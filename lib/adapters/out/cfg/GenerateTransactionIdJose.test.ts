@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { createGenerateTransactionIdInvoker } from './GenerateTransactionIdJose';
+import { createGenerateTransactionIdJoseInvoker } from './GenerateTransactionIdJose';
 import { TransactionId } from '../../../domain';
 
 describe('GenerateTransactionIdJose', () => {
   it('should generate a transaction ID with the default byte length', async () => {
-    const generateTransactionId = createGenerateTransactionIdInvoker(32);
+    const generateTransactionId = createGenerateTransactionIdJoseInvoker(32);
     const result = await generateTransactionId();
     expect(result.isSuccess).toBe(true);
     const transactionId = result.getOrThrow();
@@ -13,7 +13,7 @@ describe('GenerateTransactionIdJose', () => {
   });
 
   it('should generate a transaction ID with a custom byte length', async () => {
-    const generateTransactionId = createGenerateTransactionIdInvoker(64);
+    const generateTransactionId = createGenerateTransactionIdJoseInvoker(64);
     const result = await generateTransactionId();
     expect(result.isSuccess).toBe(true);
     const transactionId = result.getOrThrow();
@@ -22,7 +22,7 @@ describe('GenerateTransactionIdJose', () => {
   });
 
   it('should throw an error if the byte length is less than 32', async () => {
-    const generateTransactionId = createGenerateTransactionIdInvoker(16);
+    const generateTransactionId = createGenerateTransactionIdJoseInvoker(16);
     const result = await generateTransactionId();
     expect(result.isFailure).toBe(true);
     expect(result.exceptionOrNull()?.message).toBe(
@@ -31,7 +31,7 @@ describe('GenerateTransactionIdJose', () => {
   });
 
   it('should generate unique transaction IDs', async () => {
-    const generateTransactionId = createGenerateTransactionIdInvoker(32);
+    const generateTransactionId = createGenerateTransactionIdJoseInvoker(32);
     const result1 = await generateTransactionId();
     expect(result1.isSuccess).toBe(true);
     const transactionId1 = result1.getOrThrow();
