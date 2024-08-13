@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  Presentation,
   StaticSigningPrivateJwk,
-  EphemeralECDHPrivateJwk,
   ClientMetaData,
   EmbedOption,
   ClientIdScheme,
@@ -16,7 +14,6 @@ import {
   EmbedModeTO,
   IdTokenTypeTO,
   InitTransactionTO,
-  JwtSecuredAuthorizationRequestTO,
   PresentationTypeTO,
   ResponseModeTO,
 } from '../../ports/input/InitTransaction.types';
@@ -24,21 +21,14 @@ import { createGetRequestObjectServiceInvoker } from './GetRequestObjectService'
 import {
   createGenerateTransactionIdInvoker,
   createGenerateRequestIdHoseInvoker,
-  createCreateQueryWalletResponseRedirectUri,
+  createCreateQueryWalletResponseRedirectUriInvoker,
 } from '../../adapters/out/cfg';
 import {
   createGenerateEphemeralECDHPrivateJwkJoseInvoker,
   createSignRequestObjectJoseInvoker,
 } from '../../adapters/out/jose';
 import { generateKeyPair, exportJWK } from 'jose';
-import {
-  LoadPresentationByRequestId,
-  StorePresentation,
-} from '../../ports/out/persistence';
-import {
-  createLoadPresentationByRequestIdInMemoryInvoker,
-  createStorePresentationInMemoryInvoker,
-} from '../../adapters/out/persistence';
+import { PresentationInMemoryStore } from '../../adapters/out/persistence';
 import { createInitTransactionServiceInvoker } from './InitTransactionService';
 
 describe('createGetRequestObjectServiceInvoker', async () => {
@@ -77,16 +67,18 @@ describe('createGetRequestObjectServiceInvoker', async () => {
 
   const now = () => new Date();
 
+  const presentationInMemoryStore = new PresentationInMemoryStore();
+
   const generateTransactionId = createGenerateTransactionIdInvoker();
   const generateRequestId = createGenerateRequestIdHoseInvoker();
   const loadPresentationByRequestId =
-    createLoadPresentationByRequestIdInMemoryInvoker();
-  const storePresentation = createStorePresentationInMemoryInvoker();
+    presentationInMemoryStore.loadPresentationByRequestId;
+  const storePresentation = presentationInMemoryStore.storePresentation;
   const signRequestObject = createSignRequestObjectJoseInvoker();
   const generateEphemeralECDHPrivateJwk =
     createGenerateEphemeralECDHPrivateJwkJoseInvoker();
   const createQueryWalletResponseRedirectUri =
-    createCreateQueryWalletResponseRedirectUri();
+    createCreateQueryWalletResponseRedirectUriInvoker();
 
   const jarByReference = new EmbedOption.ByReference(
     (id: RequestId) => new URL(`https://example.com/request.jwt/${id.value}`)

@@ -8,12 +8,14 @@ import {
   EphemeralECDHPrivateJwk,
   PresentationType,
   WalletResponse,
+  ResponseModeOption,
 } from '../../domain';
 import {
   getRequestId,
   toAuthorizationResponseData,
   toWalletResponse,
-} from './PostWalletResponse.convert';
+  getReponseModeOption,
+} from './PostWalletResponseService.convert';
 import { generateKeyPair, exportJWK, CompactEncrypt } from 'jose';
 import { createVerifyJarmJwtJoseInvoker } from '../../adapters/out/jose';
 import { PresentationSubmission } from 'oid4vc-prex';
@@ -282,6 +284,26 @@ describe('PostWalletResponse.convert', () => {
       expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
         'Missing presentation submission'
       );
+    });
+  });
+
+  describe('getReponseModeOption', () => {
+    it('should return ResponseModeOption.DirectPost for DirectPost response', () => {
+      const response = new AuthorizationResponse.DirectPost(
+        {} as AuthorizationResponseData
+      );
+
+      const result = getReponseModeOption(response);
+
+      expect(result).toBe(ResponseModeOption.DirectPost);
+    });
+
+    it('should return ResponseModeOption.DirectPostJwt for other response types', () => {
+      const response = new AuthorizationResponse.DirectPostJwt('', '');
+
+      const result = getReponseModeOption(response);
+
+      expect(result).toBe(ResponseModeOption.DirectPostJwt);
     });
   });
 });

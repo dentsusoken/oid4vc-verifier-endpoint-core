@@ -22,6 +22,7 @@ import {
   EphemeralECDHPrivateJwk,
   PresentationType,
   WalletResponse,
+  ResponseModeOption,
 } from '../../domain';
 import { VerifyJarmJwt } from '../../ports/out/jose';
 
@@ -47,7 +48,7 @@ export const getRequestId = (response: AuthorizationResponse): RequestId => {
  * @param {AuthorizationResponse} response - The authorization response object.
  * @param {VerifyJarmJwt} verifyJarmJwt - Function to verify the JARM JWT.
  * @param {JarmOption} jarmOption - The JARM option used for verification.
- * @param {EphemeralECDHPrivateJwk} ephemeralECDHPrivateJwk - The ephemeral ECDH private key in JWK format.
+ * @param {EphemeralECDHPrivateJwk | undefined} ephemeralECDHPrivateJwk - The ephemeral ECDH private key in JWK format, or undefined if not available.
  * @returns {Promise<AuthorizationResponseData>} A promise that resolves to the AuthorizationResponseData.
  * @throws {Error} If the state in the verified data does not match the state in the response.
  */
@@ -55,7 +56,7 @@ export const toAuthorizationResponseData = async (
   response: AuthorizationResponse,
   verifyJarmJwt: VerifyJarmJwt,
   jarmOption: JarmOption,
-  ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk
+  ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk | undefined
 ): Promise<AuthorizationResponseData> => {
   if (response.__type === 'DirectPost') {
     return response.response;
@@ -129,4 +130,12 @@ export const toWalletResponse = (
         authzData.presentationSubmission
       );
   }
+};
+
+export const getReponseModeOption = (
+  response: AuthorizationResponse
+): ResponseModeOption => {
+  return response.__type === 'DirectPost'
+    ? ResponseModeOption.DirectPost
+    : ResponseModeOption.DirectPostJwt;
 };

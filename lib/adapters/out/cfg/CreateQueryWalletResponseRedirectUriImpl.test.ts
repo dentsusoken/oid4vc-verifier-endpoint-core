@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import {
-  createCreateQueryWalletResponseRedirectUri,
+  createCreateQueryWalletResponseRedirectUriInvoker,
   RESPONSE_CODE_PLACE_HOLDER,
 } from './CreateQueryWalletResponseRedirectUriImpl';
 import { ResponseCode } from '../../../domain';
 
 describe('createCreateQueryWalletResponseRedirectUri', () => {
   const createQueryWalletResponseRedirectUri =
-    createCreateQueryWalletResponseRedirectUri();
+    createCreateQueryWalletResponseRedirectUriInvoker();
 
   it('should successfully create a URL with the response code', () => {
     const template = `https://example.com/callback?code=${RESPONSE_CODE_PLACE_HOLDER}`;

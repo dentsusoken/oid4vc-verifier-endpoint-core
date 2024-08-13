@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  Presentation,
   StaticSigningPrivateJwk,
-  EphemeralECDHPrivateJwk,
   ClientMetaData,
   EmbedOption,
   ClientIdScheme,
@@ -10,6 +8,7 @@ import {
   VerifierConfig,
   RequestId,
   BuildUrl,
+  TransactionId,
 } from '../../domain';
 import { PresentationDefinition } from 'oid4vc-prex';
 import {
@@ -24,13 +23,14 @@ import { createInitTransactionServiceInvoker } from './InitTransactionService';
 import {
   createGenerateTransactionIdInvoker,
   createGenerateRequestIdHoseInvoker,
-  createCreateQueryWalletResponseRedirectUri,
+  createCreateQueryWalletResponseRedirectUriInvoker,
 } from '../../adapters/out/cfg';
 import {
   createGenerateEphemeralECDHPrivateJwkJoseInvoker,
   createSignRequestObjectJoseInvoker,
 } from '../../adapters/out/jose';
 import { generateKeyPair, exportJWK } from 'jose';
+import { PresentationInMemoryStore } from '../../adapters/out/persistence';
 
 describe('createInitTransactionServiceInvoker', async () => {
   const staticSigningPrivateKey = (await generateKeyPair('ES256')).privateKey;
@@ -68,12 +68,11 @@ describe('createInitTransactionServiceInvoker', async () => {
 
   const now = () => new Date();
 
+  const presentationInMemoryStore = new PresentationInMemoryStore();
+
   const generateTransactionId = createGenerateTransactionIdInvoker();
   const generateRequestId = createGenerateRequestIdHoseInvoker();
-  let storedPresentation: Presentation;
-  const storePresentation = async (presentation: Presentation) => {
-    storedPresentation = presentation;
-  };
+  const storePresentation = presentationInMemoryStore.storePresentation;
   const signRequestObject = createSignRequestObjectJoseInvoker();
   const generateEphemeralECDHPrivateJwk =
     createGenerateEphemeralECDHPrivateJwkJoseInvoker();
@@ -84,7 +83,7 @@ describe('createInitTransactionServiceInvoker', async () => {
     (id: RequestId) => new URL(`https://example.com/pd/${id.value}`)
   );
   const createQueryWalletResponseRedirectUri =
-    createCreateQueryWalletResponseRedirectUri();
+    createCreateQueryWalletResponseRedirectUriInvoker();
 
   const createParams = {
     generateTransactionId,
@@ -107,7 +106,7 @@ describe('createInitTransactionServiceInvoker', async () => {
       idTokenType: IdTokenTypeTO.SubjectSigned,
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPost,
-      jarMode: EmbedModeTO.ByValue,
+      jarMode: EmbedModeTO.ByReference,
       presentationDefinition: {} as PresentationDefinition,
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
@@ -117,11 +116,17 @@ describe('createInitTransactionServiceInvoker', async () => {
 
     expect(result.isSuccess).toBe(true);
     const requestTO = result.getOrThrow();
+    console.log(requestTO);
     expect(requestTO).toBeInstanceOf(JwtSecuredAuthorizationRequestTO);
     expect(requestTO.transactionId).toBeDefined();
     expect(requestTO.clientId).toBe('client_id');
-    expect(requestTO.request?.startsWith('eyJ')).toBe(true);
-    expect(requestTO.requestUri).toBeUndefined();
-    expect(storedPresentation.__type === 'RequestObjectRetrieved');
+    expect(requestTO.request).toBeUndefined();
+    expect(
+      requestTO.requestUri?.startsWith('https://example.com/request.jwt/')
+    ).toBe(true);
+    const presentation = await presentationInMemoryStore.loadPresentationById(
+      new TransactionId(requestTO.transactionId!)
+    );
+    expect(presentation!.__type === 'Requested');
   });
 });

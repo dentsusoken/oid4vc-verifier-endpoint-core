@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createGenerateResponseCode } from './GenerateResponseCodeImpl';
+import { createGenerateResponseCodeInvoker } from './GenerateResponseCodeImpl';
 import { ResponseCode } from '../../../domain';
 import * as uuid from 'uuid';
 
@@ -13,7 +13,7 @@ describe('createGenerateResponseCode', () => {
   });
 
   it('should create a function', () => {
-    const generateResponseCode = createGenerateResponseCode();
+    const generateResponseCode = createGenerateResponseCodeInvoker();
     expect(typeof generateResponseCode).toBe('function');
   });
 
@@ -22,7 +22,7 @@ describe('createGenerateResponseCode', () => {
       const mockUuid = '123e4567-e89b-12d3-a456-426614174000';
       vi.mocked(uuid.v4).mockReturnValue(mockUuid);
 
-      const generateResponseCode = createGenerateResponseCode();
+      const generateResponseCode = createGenerateResponseCodeInvoker();
       const result = await generateResponseCode();
 
       expect(result).toBeInstanceOf(ResponseCode);
@@ -37,7 +37,7 @@ describe('createGenerateResponseCode', () => {
         .mockReturnValueOnce(mockUuid1)
         .mockReturnValueOnce(mockUuid2);
 
-      const generateResponseCode = createGenerateResponseCode();
+      const generateResponseCode = createGenerateResponseCodeInvoker();
       const result1 = await generateResponseCode();
       const result2 = await generateResponseCode();
 

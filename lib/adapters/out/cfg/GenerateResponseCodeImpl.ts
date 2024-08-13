@@ -22,7 +22,8 @@ import { v4 as uuidv4 } from 'uuid';
  * Creates a function to generate a response code
  * @returns {GenerateResponseCode} A function that generates a response code
  */
-export const createGenerateResponseCode = (): GenerateResponseCode => invoke;
+export const createGenerateResponseCodeInvoker = (): GenerateResponseCode =>
+  invoke;
 
 /**
  * Generates a new response code using UUID v4

@@ -23,10 +23,10 @@ import { runCatching, assert } from '../../../kotlin';
 export const RESPONSE_CODE_PLACE_HOLDER = '{RESPONSE_CODE}';
 
 /**
- * Creates a function to generate a query wallet response redirect URI
+ * Creates a function to generate a query wallet response redirect URI invoker
  * @returns {CreateQueryWalletResponseRedirectUri} A function that creates a wallet response redirect URI
  */
-export const createCreateQueryWalletResponseRedirectUri =
+export const createCreateQueryWalletResponseRedirectUriInvoker =
   (): CreateQueryWalletResponseRedirectUri => invoke;
 
 /**

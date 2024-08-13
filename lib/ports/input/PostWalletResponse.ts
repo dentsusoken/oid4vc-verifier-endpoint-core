@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Result } from '../../kotlin';
 import { AuthorizationResponse } from '../../domain';
 import { WalletResponseAcceptedTO } from './PostWalletResponse.types';
 
+export { WalletResponseAcceptedTO } from './PostWalletResponse.types';
 /**
  *
  * The caller (wallet) may POST the [AuthorisationResponseTO] to the verifier back-end
  */
 export interface PostWalletResponse {
   /**
-   * Posts the wallet response to the verifier back-end.
-   *
-   * @param walletResponse - The authorisation response from the wallet.
-   * @returns A promise that resolves to WalletResponseAcceptedTO if the response is accepted, or undefined otherwise.
-   * @throws WalletResponseValidationError if the wallet response fails validation.
+   * Processes the wallet response and returns the accepted wallet response transfer object (TO) if successful.
+   * @param {AuthorizationResponse} authorizationResponse - The wallet response received from the authorization endpoint.
+   * @returns {Promise<Result<WalletResponseAcceptedTO | undefined>>} A promise that resolves to a Result object containing the accepted wallet response TO if successful, or an error if the processing fails. Returns undefined if the wallet response is not accepted.
+   * @throws {Error} If an error occurs during the processing of the wallet response.
    */
-  (walletResponse: AuthorizationResponse): Promise<
-    WalletResponseAcceptedTO | undefined
+  (authorizationResponse: AuthorizationResponse): Promise<
+    Result<WalletResponseAcceptedTO | undefined>
   >;
 }
