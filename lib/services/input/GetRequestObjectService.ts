@@ -15,7 +15,6 @@
  */
 
 import { RequestId, VerifierConfig, Jwt } from '../../domain';
-import { Now } from '../../ports/out/cfg';
 import { SignRequestObject } from '../../ports/out/jose';
 import {
   LoadPresentationByRequestId,
@@ -29,7 +28,7 @@ type CreateParams = {
   storePresentation: StorePresentation;
   signRequestObject: SignRequestObject;
   verifierConfig: VerifierConfig;
-  now: Now;
+  now: () => Date;
 };
 
 export const createGetRequestObjectServiceInvoker =

@@ -23,7 +23,6 @@ import {
 import {
   GenerateTransactionId,
   GenerateRequestId,
-  Now,
   CreateQueryWalletResponseRedirectUri,
 } from '../../ports/out/cfg';
 import {
@@ -56,7 +55,7 @@ type CreateParams = {
   storePresentation: StorePresentation;
   signRequestObject: SignRequestObject;
   verifierConfig: VerifierConfig;
-  now: Now;
+  now: () => Date;
   generateEphemeralECDHPrivateJwk: GenerateEphemeralECDHPrivateJwk;
   jarByReference: EmbedOption.ByReference<RequestId>;
   presentationDefinitionByReference: EmbedOption.ByReference<RequestId>;

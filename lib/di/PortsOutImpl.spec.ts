@@ -10,9 +10,6 @@ import {
 } from '../ports/out/cfg';
 import {
   GenerateEphemeralECDHPrivateJwk,
-  ParseJarmOption,
-  ParseSigningConfig,
-  ParseStaticSigningPrivateJwk,
   SignRequestObject,
   VerifyJarmJwt,
 } from '../ports/out/jose';
@@ -22,9 +19,10 @@ import {
   StorePresentation,
 } from '../ports/out/persistence';
 import { PortsOut } from './PortsOut';
+import { MockConfiguration } from './MockConfiguration';
 
 describe('PortsOutImpl', () => {
-  const portsOut: PortsOut = new PortsOutImpl();
+  const portsOut: PortsOut = new PortsOutImpl(new MockConfiguration());
 
   it('should create CreateQueryWalletResponseRedirectUri invoker', () => {
     const invoker: CreateQueryWalletResponseRedirectUri =
@@ -55,22 +53,6 @@ describe('PortsOutImpl', () => {
   it('should create GenerateEphemeralECDHPrivateJwk invoker', () => {
     const invoker: GenerateEphemeralECDHPrivateJwk =
       portsOut.generateEphemeralECDHPrivateJwk();
-    expect(typeof invoker).toBe('function');
-  });
-
-  it('should create ParseJarmOption invoker', () => {
-    const invoker: ParseJarmOption = portsOut.parseJarmOption();
-    expect(typeof invoker).toBe('function');
-  });
-
-  it('should create ParseSigningConfig invoker', () => {
-    const invoker: ParseSigningConfig = portsOut.parseSigningConfig();
-    expect(typeof invoker).toBe('function');
-  });
-
-  it('should create ParseStaticSigningPrivateJwk invoker', () => {
-    const invoker: ParseStaticSigningPrivateJwk =
-      portsOut.parseStaticSigningPrivateJwk();
     expect(typeof invoker).toBe('function');
   });
 

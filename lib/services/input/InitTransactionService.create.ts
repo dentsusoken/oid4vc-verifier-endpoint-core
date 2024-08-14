@@ -24,7 +24,6 @@ import {
   VerifierConfig,
 } from '../../domain';
 import { JwtSecuredAuthorizationRequestTO } from '../../ports/input/InitTransaction.types';
-import { Now } from '../../ports/out/cfg';
 import {
   GenerateEphemeralECDHPrivateJwk,
   SignRequestObject,
@@ -76,7 +75,7 @@ export const createJwtSecuredAuthorizationRequestTO = async (
   jarOption: EmbedOption<RequestId>,
   signRequestObject: SignRequestObject,
   verifierConfig: VerifierConfig,
-  now: Now
+  now: () => Date
 ): Promise<CreateJwtSecuredAuthorizationRequestTORet> => {
   if (jarOption.__type === 'ByValue') {
     const jwt = (

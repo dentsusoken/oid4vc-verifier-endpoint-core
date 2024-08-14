@@ -20,7 +20,7 @@ describe('PresentationType', () => {
 
   describe('VpTokenRequest', () => {
     it('should have the correct __type', () => {
-      const presentationDefinition: PresentationDefinition = {};
+      const presentationDefinition = {} as PresentationDefinition;
       const vpTokenRequest = new PresentationType.VpTokenRequest(
         presentationDefinition
       );
@@ -28,7 +28,7 @@ describe('PresentationType', () => {
     });
 
     it('should store the presentationDefinition', () => {
-      const presentationDefinition: PresentationDefinition = {};
+      const presentationDefinition = {} as PresentationDefinition;
       const vpTokenRequest = new PresentationType.VpTokenRequest(
         presentationDefinition
       );
@@ -41,7 +41,7 @@ describe('PresentationType', () => {
   describe('IdAndVpTokenRequest', () => {
     it('should have the correct __type', () => {
       const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
-      const presentationDefinition: PresentationDefinition = {};
+      const presentationDefinition = {} as PresentationDefinition;
       const idAndVpTokenRequest = new PresentationType.IdAndVpTokenRequest(
         idTokenType,
         presentationDefinition
@@ -51,7 +51,7 @@ describe('PresentationType', () => {
 
     it('should store the idTokenType and presentationDefinition', () => {
       const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
-      const presentationDefinition: PresentationDefinition = {};
+      const presentationDefinition = {} as PresentationDefinition;
       const idAndVpTokenRequest = new PresentationType.IdAndVpTokenRequest(
         idTokenType,
         presentationDefinition
@@ -79,7 +79,7 @@ describe('PresentationType', () => {
     });
 
     it('should correctly identify VpTokenRequest using if statement', () => {
-      const presentationDefinition: PresentationDefinition = {};
+      const presentationDefinition = {} as PresentationDefinition;
       const presentationType: PresentationType =
         new PresentationType.VpTokenRequest(presentationDefinition);
 
@@ -96,7 +96,7 @@ describe('PresentationType', () => {
 
     it('should correctly identify IdAndVpTokenRequest using if statement', () => {
       const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
-      const presentationDefinition: PresentationDefinition = {};
+      const presentationDefinition = {} as PresentationDefinition;
       const presentationType: PresentationType =
         new PresentationType.IdAndVpTokenRequest(
           idTokenType,
@@ -132,7 +132,7 @@ describe('PresentationType', () => {
     });
 
     it('should correctly identify VpTokenRequest using switch statement', () => {
-      const presentationDefinition: PresentationDefinition = {};
+      const presentationDefinition = {} as PresentationDefinition;
       const presentationType: PresentationType =
         new PresentationType.VpTokenRequest(presentationDefinition);
 
@@ -151,7 +151,7 @@ describe('PresentationType', () => {
 
     it('should correctly identify IdAndVpTokenRequest using switch statement', () => {
       const idTokenType: IdTokenType[] = [IdTokenType.SubjectSigned];
-      const presentationDefinition: PresentationDefinition = {};
+      const presentationDefinition = {} as PresentationDefinition;
       const presentationType: PresentationType =
         new PresentationType.IdAndVpTokenRequest(
           idTokenType,

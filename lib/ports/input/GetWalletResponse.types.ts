@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Expose, Type } from 'class-transformer';
+import { Expose, Type, Transform } from 'class-transformer';
 import { PresentationSubmission } from 'oid4vc-prex';
 
 /**
@@ -41,9 +41,11 @@ export class WalletResponseTO {
    */
   @Expose({ name: 'presentation_submission' })
   @Type(() => PresentationSubmission)
-  // @Transform(({ value }) => value && instanceToPlain(value), {
-  //   toPlainOnly: true,
-  // })
+  @Transform(
+    ({ value }) => value && PresentationSubmission.deserialize(value),
+    { toClassOnly: true }
+  )
+  @Transform(({ value }) => value && value.serialize(), { toPlainOnly: true })
   presentationSubmission?: PresentationSubmission;
 
   /**

@@ -27,7 +27,6 @@ import {
   getResponseMode,
 } from './RequestObject.convert';
 import type { ClientIdSchemeName } from './RequestObject.convert';
-import { Now } from '../../../ports/out/cfg';
 
 /**
  * Represents a request object for presentation exchange.
@@ -71,7 +70,7 @@ export interface RequestObject {
  */
 export const requestObjectFromDomain = (
   verifierConfig: VerifierConfig,
-  now: Now,
+  now: () => Date,
   presentation: Presentation.Requested
 ): RequestObject => {
   const type = presentation.type;

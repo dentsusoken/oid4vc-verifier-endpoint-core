@@ -23,9 +23,6 @@ import {
 } from '../adapters/out/cfg';
 import {
   createGenerateEphemeralECDHPrivateJwkJoseInvoker,
-  createParseJarmOptionJoseInvoker,
-  createParseSigningConfigJoseInvoker,
-  createParseStaticSigningPrivateJwkJoseInvoker,
   createSignRequestObjectJoseInvoker,
   createVerifyJarmJwtJoseInvoker,
 } from '../adapters/out/jose';
@@ -42,9 +39,6 @@ import {
 } from '../ports/out/cfg';
 import {
   GenerateEphemeralECDHPrivateJwk,
-  ParseJarmOption,
-  ParseSigningConfig,
-  ParseStaticSigningPrivateJwk,
   SignRequestObject,
   VerifyJarmJwt,
 } from '../ports/out/jose';
@@ -53,6 +47,7 @@ import {
   LoadPresentationByRequestId,
   StorePresentation,
 } from '../ports/out/persistence';
+import { Configuration } from './Configuration';
 import { PortsOut } from './PortsOut';
 
 /**
@@ -61,6 +56,39 @@ import { PortsOut } from './PortsOut';
  * @implements {PortsOut}
  */
 export class PortsOutImpl implements PortsOut {
+  #createQueryWalletResponseRedirectUri =
+    createCreateQueryWalletResponseRedirectUriInvoker();
+
+  #durationFactory = createDurationFactoryLuxon();
+
+  #generateRequestId: GenerateRequestId;
+
+  #generateResponseCode = createGenerateResponseCodeInvoker();
+
+  #generateTransactionId: GenerateTransactionId;
+
+  #generateEphemeralECDHPrivateJwk =
+    createGenerateEphemeralECDHPrivateJwkJoseInvoker();
+
+  #signRequestObject = createSignRequestObjectJoseInvoker();
+
+  #verifyJarmJwt = createVerifyJarmJwtJoseInvoker();
+
+  #loadPresentationById = createLoadPresentationByIdInMemoryInvoker();
+
+  #loadPresentationByRequestId = createLoadPresentationByIdInMemoryInvoker();
+
+  #storePresentation = createStorePresentationInMemoryInvoker();
+
+  constructor(private configuration: Configuration) {
+    this.#generateRequestId = createGenerateRequestIdHoseInvoker(
+      this.configuration.requestIdByteLength()
+    );
+
+    this.#generateTransactionId = createGenerateTransactionIdJoseInvoker(
+      this.configuration.transactionIdByteLength()
+    );
+  }
   /**
    * Creates a function to generate a query wallet response redirect URI.
    * @function
@@ -69,7 +97,7 @@ export class PortsOutImpl implements PortsOut {
    */
   createQueryWalletResponseRedirectUri =
     (): CreateQueryWalletResponseRedirectUri =>
-      createCreateQueryWalletResponseRedirectUriInvoker();
+      this.#createQueryWalletResponseRedirectUri;
 
   /**
    * Creates a function to generate a duration factory using Luxon.
@@ -77,7 +105,7 @@ export class PortsOutImpl implements PortsOut {
    * @name PortsOutImpl#durationFactory
    * @returns {DurationFactory} The DurationFactory component.
    */
-  durationFactory = (): DurationFactory => createDurationFactoryLuxon();
+  durationFactory = (): DurationFactory => this.#durationFactory;
 
   /**
    * Creates a function to generate a request ID using Hose.
@@ -85,8 +113,7 @@ export class PortsOutImpl implements PortsOut {
    * @name PortsOutImpl#generateRequestId
    * @returns {GenerateRequestId} The GenerateRequestId component.
    */
-  generateRequestId = (): GenerateRequestId =>
-    createGenerateRequestIdHoseInvoker();
+  generateRequestId = (): GenerateRequestId => this.#generateRequestId;
 
   /**
    * Creates a function to generate a response code.
@@ -94,8 +121,7 @@ export class PortsOutImpl implements PortsOut {
    * @name PortsOutImpl#generateResponseCode
    * @returns {GenerateResponseCode} The GenerateResponseCode component.
    */
-  generateResponseCode = (): GenerateResponseCode =>
-    createGenerateResponseCodeInvoker();
+  generateResponseCode = (): GenerateResponseCode => this.#generateResponseCode;
 
   /**
    * Creates a function to generate a transaction ID using Jose.
@@ -104,7 +130,7 @@ export class PortsOutImpl implements PortsOut {
    * @returns {GenerateTransactionId} The GenerateTransactionId component.
    */
   generateTransactionId = (): GenerateTransactionId =>
-    createGenerateTransactionIdJoseInvoker();
+    this.#generateTransactionId;
 
   /**
    * Creates a function to generate an ephemeral ECDH private JWK using Jose.
@@ -113,33 +139,7 @@ export class PortsOutImpl implements PortsOut {
    * @returns {GenerateEphemeralECDHPrivateJwk} The GenerateEphemeralECDHPrivateJwk component.
    */
   generateEphemeralECDHPrivateJwk = (): GenerateEphemeralECDHPrivateJwk =>
-    createGenerateEphemeralECDHPrivateJwkJoseInvoker();
-
-  /**
-   * Creates a function to parse a JARM option using Jose.
-   * @function
-   * @name PortsOutImpl#parseJarmOption
-   * @returns {ParseJarmOption} The ParseJarmOption component.
-   */
-  parseJarmOption = (): ParseJarmOption => createParseJarmOptionJoseInvoker();
-
-  /**
-   * Creates a function to parse a signing configuration using Jose.
-   * @function
-   * @name PortsOutImpl#parseSigningConfig
-   * @returns {ParseSigningConfig} The ParseSigningConfig component.
-   */
-  parseSigningConfig = (): ParseSigningConfig =>
-    createParseSigningConfigJoseInvoker();
-
-  /**
-   * Creates a function to parse a static signing private JWK using Jose.
-   * @function
-   * @name PortsOutImpl#parseStaticSigningPrivateJwk
-   * @returns {ParseStaticSigningPrivateJwk} The ParseStaticSigningPrivateJwk component.
-   */
-  parseStaticSigningPrivateJwk = (): ParseStaticSigningPrivateJwk =>
-    createParseStaticSigningPrivateJwkJoseInvoker();
+    this.#generateEphemeralECDHPrivateJwk;
 
   /**
    * Creates a function to sign a request object using Jose.
@@ -147,8 +147,7 @@ export class PortsOutImpl implements PortsOut {
    * @name PortsOutImpl#signRequestObject
    * @returns {SignRequestObject} The SignRequestObject component.
    */
-  signRequestObject = (): SignRequestObject =>
-    createSignRequestObjectJoseInvoker();
+  signRequestObject = (): SignRequestObject => this.#signRequestObject;
 
   /**
    * Creates a function to verify a JARM JWT using Jose.
@@ -156,7 +155,7 @@ export class PortsOutImpl implements PortsOut {
    * @name PortsOutImpl#verifyJarmJwt
    * @returns {VerifyJarmJwt} The VerifyJarmJwt component.
    */
-  verifyJarmJwt = (): VerifyJarmJwt => createVerifyJarmJwtJoseInvoker();
+  verifyJarmJwt = (): VerifyJarmJwt => this.#verifyJarmJwt;
 
   /**
    * Creates a function to load a presentation by ID using in-memory storage.
@@ -164,8 +163,7 @@ export class PortsOutImpl implements PortsOut {
    * @name PortsOutImpl#loadPresentationById
    * @returns {LoadPresentationById} The LoadPresentationById component.
    */
-  loadPresentationById = (): LoadPresentationById =>
-    createLoadPresentationByIdInMemoryInvoker();
+  loadPresentationById = (): LoadPresentationById => this.#loadPresentationById;
 
   /**
    * Creates a function to load a presentation by request ID using in-memory storage.
@@ -174,7 +172,7 @@ export class PortsOutImpl implements PortsOut {
    * @returns {LoadPresentationByRequestId} The LoadPresentationByRequestId component.
    */
   loadPresentationByRequestId = (): LoadPresentationByRequestId =>
-    createLoadPresentationByIdInMemoryInvoker();
+    this.#loadPresentationByRequestId;
 
   /**
    * Creates a function to store a presentation using in-memory storage.
@@ -182,6 +180,5 @@ export class PortsOutImpl implements PortsOut {
    * @name PortsOutImpl#storePresentation
    * @returns {StorePresentation} The StorePresentation component.
    */
-  storePresentation = (): StorePresentation =>
-    createStorePresentationInMemoryInvoker();
+  storePresentation = (): StorePresentation => this.#storePresentation;
 }

@@ -23,19 +23,19 @@ import { RequestId } from './RequestId';
  */
 export class ClientMetaData {
   /**
-   * Creates an instance of ClientMetaData.
-   * @param {EmbedOption<RequestId>} jwkOption - The JWK (JSON Web Key) option for the client.
-   * @param {string} idTokenSignedResponseAlg - The algorithm used for signing ID tokens.
-   * @param {string} idTokenEncryptedResponseAlg - The algorithm used for encrypting ID tokens.
-   * @param {string} idTokenEncryptedResponseEnc - The encryption method used for ID tokens.
-   * @param {string[]} subjectSyntaxTypesSupported - The subject syntax types supported by the client.
-   * @param {JarmOption} jarmOption - The JARM (JWT Secured Authorization Response Mode) option for the client.
+   * Constructor for the class.
+   * @param {EmbedOption<RequestId>} jwkOption - The JWK (JSON Web Key) option for the request ID.
+   * @param {string|undefined} idTokenSignedResponseAlg - The algorithm used for signing the ID token response.
+   * @param {string|undefined} idTokenEncryptedResponseAlg - The algorithm used for encrypting the ID token response.
+   * @param {string|undefined} idTokenEncryptedResponseEnc - The encryption method used for the ID token response.
+   * @param {string[]} subjectSyntaxTypesSupported - An array of supported subject syntax types.
+   * @param {JarmOption} jarmOption - The JARM (JWT Secured Authorization Response Mode) option.
    */
   constructor(
     public jwkOption: EmbedOption<RequestId>,
-    public idTokenSignedResponseAlg: string,
-    public idTokenEncryptedResponseAlg: string,
-    public idTokenEncryptedResponseEnc: string,
+    public idTokenSignedResponseAlg: string | undefined,
+    public idTokenEncryptedResponseAlg: string | undefined,
+    public idTokenEncryptedResponseEnc: string | undefined,
     public subjectSyntaxTypesSupported: string[],
     public jarmOption: JarmOption
   ) {}

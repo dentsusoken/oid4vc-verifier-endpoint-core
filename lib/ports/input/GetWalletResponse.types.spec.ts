@@ -31,7 +31,8 @@ describe('WalletResponseTO', () => {
       expect(instance.presentationSubmission).toBeInstanceOf(
         PresentationSubmission
       );
-      expect(instance.presentationSubmission?.id).toBe('submission1');
+      expect(instance.presentationSubmission?.id).toBeInstanceOf(Id);
+      expect(instance.presentationSubmission?.id?.value).toBe('submission1');
       expect(instance.error).toBeUndefined();
       expect(instance.errorDescription).toBeUndefined();
     });
@@ -51,7 +52,7 @@ describe('WalletResponseTO', () => {
   });
 
   describe('instanceToPlain', () => {
-    it.skip('should convert class instance to plain object', () => {
+    it('should convert class instance to plain object', () => {
       const instance = new WalletResponseTO({
         idToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         vpToken: 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9...',

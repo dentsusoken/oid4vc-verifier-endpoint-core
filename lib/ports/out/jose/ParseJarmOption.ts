@@ -24,12 +24,12 @@ export interface ParseJarmOption {
    *
    * @param jwsAlg an optional string representing a JWS algorithm
    * @param jweAlg an optional string representing a JWE algorithm
-   * @param encryptionMethod an optional string representing an encryption method
-   * @return a [JarmOption] or null
+   * @param jweEnc an optional string representing an encryption method
+   * @return a [JarmOption] or undefined
    */
   (
-    jwsAlg: string | null,
-    jweAlg: string | null,
-    encryptionMethod: string | null
-  ): JarmOption | null;
+    jwsAlg: string | undefined,
+    jweAlg: string | undefined,
+    jweEnc: string | undefined
+  ): JarmOption | undefined;
 }

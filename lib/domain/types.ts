@@ -27,13 +27,13 @@ export enum ResponseModeOption {
    * Direct POST response mode.
    * The authorization response is sent as a direct POST request to the client.
    */
-  DirectPost,
+  DirectPost = 'direct_post',
 
   /**
    * Direct POST JWT response mode.
    * The authorization response is sent as a JWT in a direct POST request to the client.
    */
-  DirectPostJwt,
+  DirectPostJwt = 'direct_post.jwt',
 }
 
 /**

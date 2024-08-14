@@ -23,9 +23,6 @@ import {
 } from '../ports/out/cfg';
 import {
   GenerateEphemeralECDHPrivateJwk,
-  ParseJarmOption,
-  ParseSigningConfig,
-  ParseStaticSigningPrivateJwk,
   SignRequestObject,
   VerifyJarmJwt,
 } from '../ports/out/jose';
@@ -87,30 +84,6 @@ export interface PortsOut {
    * @returns {GenerateEphemeralECDHPrivateJwk} The GenerateEphemeralECDHPrivateJwk component.
    */
   generateEphemeralECDHPrivateJwk(): GenerateEphemeralECDHPrivateJwk;
-
-  /**
-   * Creates a function to parse a JARM option.
-   * @function
-   * @name PortsOut#parseJarmOption
-   * @returns {ParseJarmOption} The ParseJarmOption component.
-   */
-  parseJarmOption(): ParseJarmOption;
-
-  /**
-   * Creates a function to parse a signing configuration.
-   * @function
-   * @name PortsOut#parseSigningConfig
-   * @returns {ParseSigningConfig} The ParseSigningConfig component.
-   */
-  parseSigningConfig(): ParseSigningConfig;
-
-  /**
-   * Creates a function to parse a static signing private JWK.
-   * @function
-   * @name PortsOut#parseStaticSigningPrivateJwk
-   * @returns {ParseStaticSigningPrivateJwk} The ParseStaticSigningPrivateJwk component.
-   */
-  parseStaticSigningPrivateJwk(): ParseStaticSigningPrivateJwk;
 
   /**
    * Creates a function to sign a request object.

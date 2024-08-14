@@ -18,7 +18,7 @@ import {
 } from './PostWalletResponseService.convert';
 import { generateKeyPair, exportJWK, CompactEncrypt } from 'jose';
 import { createVerifyJarmJwtJoseInvoker } from '../../adapters/out/jose';
-import { PresentationSubmission } from 'oid4vc-prex';
+import { PresentationDefinition, PresentationSubmission } from 'oid4vc-prex';
 
 describe('PostWalletResponse.convert', () => {
   describe('getRequestId', () => {
@@ -195,7 +195,9 @@ describe('PostWalletResponse.convert', () => {
         vpToken: 'vp-token',
         presentationSubmission: {} as PresentationSubmission,
       };
-      const presentationType = new PresentationType.VpTokenRequest({});
+      const presentationType = new PresentationType.VpTokenRequest(
+        {} as PresentationDefinition
+      );
 
       const result = toWalletResponse(authzData, presentationType);
 
@@ -210,7 +212,9 @@ describe('PostWalletResponse.convert', () => {
       const authzData: AuthorizationResponseData = {
         presentationSubmission: {} as PresentationSubmission,
       };
-      const presentationType = new PresentationType.VpTokenRequest({});
+      const presentationType = new PresentationType.VpTokenRequest(
+        {} as PresentationDefinition
+      );
 
       expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
         'Missing vpToken'
@@ -221,7 +225,9 @@ describe('PostWalletResponse.convert', () => {
       const authzData: AuthorizationResponseData = {
         vpToken: 'vp-token',
       };
-      const presentationType = new PresentationType.VpTokenRequest({});
+      const presentationType = new PresentationType.VpTokenRequest(
+        {} as PresentationDefinition
+      );
 
       expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
         'Missing presentation submission'
@@ -234,7 +240,10 @@ describe('PostWalletResponse.convert', () => {
         vpToken: 'vp-token',
         presentationSubmission: {} as PresentationSubmission,
       };
-      const presentationType = new PresentationType.IdAndVpTokenRequest([], {});
+      const presentationType = new PresentationType.IdAndVpTokenRequest(
+        [],
+        {} as PresentationDefinition
+      );
 
       const result = toWalletResponse(authzData, presentationType);
 
@@ -255,7 +264,10 @@ describe('PostWalletResponse.convert', () => {
         vpToken: 'vp-token',
         presentationSubmission: {} as PresentationSubmission,
       };
-      const presentationType = new PresentationType.IdAndVpTokenRequest([], {});
+      const presentationType = new PresentationType.IdAndVpTokenRequest(
+        [],
+        {} as PresentationDefinition
+      );
 
       expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
         'Missing idToken'
@@ -267,7 +279,10 @@ describe('PostWalletResponse.convert', () => {
         idToken: 'id-token',
         presentationSubmission: {} as PresentationSubmission,
       };
-      const presentationType = new PresentationType.IdAndVpTokenRequest([], {});
+      const presentationType = new PresentationType.IdAndVpTokenRequest(
+        [],
+        {} as PresentationDefinition
+      );
 
       expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
         'Missing vpToken'
@@ -279,7 +294,10 @@ describe('PostWalletResponse.convert', () => {
         idToken: 'id-token',
         vpToken: 'vp-token',
       };
-      const presentationType = new PresentationType.IdAndVpTokenRequest([], {});
+      const presentationType = new PresentationType.IdAndVpTokenRequest(
+        [],
+        {} as PresentationDefinition
+      );
 
       expect(() => toWalletResponse(authzData, presentationType)).toThrowError(
         'Missing presentation submission'

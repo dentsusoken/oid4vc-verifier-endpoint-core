@@ -18,7 +18,6 @@ import { AuthorizationResponse, VerifierConfig } from '../../domain';
 import {
   CreateQueryWalletResponseRedirectUri,
   GenerateResponseCode,
-  Now,
 } from '../../ports/out/cfg';
 import { VerifyJarmJwt } from '../../ports/out/jose';
 import {
@@ -43,7 +42,7 @@ type CreateParams = {
   loadPresentationByRequestId: LoadPresentationByRequestId;
   storePresentation: StorePresentation;
   verifyJarmJwt: VerifyJarmJwt;
-  now: Now;
+  now: () => Date;
   verifierConfig: VerifierConfig;
   generateResponseCode: GenerateResponseCode;
   createQueryWalletResponseRedirectUri: CreateQueryWalletResponseRedirectUri;

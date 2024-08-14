@@ -16,15 +16,20 @@
 
 import { Jwt, Presentation, VerifierConfig } from '../../../domain';
 import { Result } from '../../../kotlin';
-import { Now } from '../cfg';
 
 /**
- * An out port that signs a [Presentation.Requested]
+ * Interface for signing a request object.
+ * @interface SignRequestObject
+ * @param {VerifierConfig} verifierConfig - The verifier configuration.
+ * @param {() => Date} now - A function that returns the current date and time.
+ * @param {Presentation.Requested} presentation - The requested presentation.
+ * @returns {Promise<Result<Jwt>>} A promise that resolves to a Result object containing the signed JWT if successful, or an error if signing fails.
+ * @throws {Error} If an error occurs during the signing process.
  */
 export interface SignRequestObject {
   (
     verifierConfig: VerifierConfig,
-    now: Now,
+    now: () => Date,
     presentation: Presentation.Requested
   ): Promise<Result<Jwt>>;
 }

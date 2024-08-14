@@ -54,9 +54,9 @@ type Jwks = {
  * Represents the client metadata transfer object
  */
 export type ClientMetaDataTO = {
-  id_token_signed_response_alg: string;
-  id_token_encrypted_response_alg: string;
-  id_token_encrypted_response_enc: string;
+  id_token_signed_response_alg: string | undefined;
+  id_token_encrypted_response_alg: string | undefined;
+  id_token_encrypted_response_enc: string | undefined;
   subject_syntax_types_supported: string[];
   jwks?: Jwks;
   jwks_uri?: string;

@@ -88,7 +88,7 @@ describe('InitTransactionService.convert', () => {
     });
 
     it('should return VpTokenRequest when input is PresentationTypeTO.VpTokenRequest', () => {
-      const pd: PresentationDefinition = {};
+      const pd = {} as PresentationDefinition;
       const result = toPresentationType(
         PresentationTypeTO.VpTokenRequest,
         [],
@@ -108,7 +108,7 @@ describe('InitTransactionService.convert', () => {
 
     it('should return IdAndVpTokenRequest when input is PresentationTypeTO.IdAndVpTokenRequest', () => {
       const idTokenTypes: IdTokenType[] = [IdTokenType.SubjectSigned];
-      const pd: PresentationDefinition = {};
+      const pd = {} as PresentationDefinition;
       const result = toPresentationType(
         PresentationTypeTO.IdAndVpTokenRequest,
         idTokenTypes,
