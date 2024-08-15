@@ -67,7 +67,7 @@ export class MockConfiguration extends AbstractConfiguration {
   clientIdSchemeName = (): ClientIdSchemeName =>
     this.customizableConfig.clientIdSchemeName || 'pre-registered';
 
-  requestJarOptionName = (): EmbedOptionName =>
+  jarOptionName = (): EmbedOptionName =>
     this.customizableConfig.requestJarOptionName || 'by_reference';
 
   publicUrl = (): string =>

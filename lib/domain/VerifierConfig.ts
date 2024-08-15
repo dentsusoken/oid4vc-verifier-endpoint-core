@@ -31,8 +31,8 @@ export class VerifierConfig {
    * Creates a new instance of VerifierConfig.
    *
    * @param clientIdScheme - The scheme used for client identification.
-   * @param requestJarOption - The option for embedding the request as a JWT (JSON Web Token).
-   * @param presentationDefinitionEmbedOption - The option for embedding the presentation definition.
+   * @param jarOption - The option for embedding the request as a JWT (JSON Web Token).
+   * @param presentationDefinitionOption - The option for embedding the presentation definition.
    * @param responseModeOption - The option specifying how the response should be returned.
    * @param responseUriBuilder - A function to build the URI for the response.
    * @param maxAge - The maximum allowed age for the authentication.
@@ -40,8 +40,8 @@ export class VerifierConfig {
    */
   constructor(
     public clientIdScheme: ClientIdScheme,
-    public requestJarOption: EmbedOption<RequestId>,
-    public presentationDefinitionEmbedOption: EmbedOption<RequestId>,
+    public jarOption: EmbedOption<RequestId>,
+    public presentationDefinitionOption: EmbedOption<RequestId>,
     public responseModeOption: ResponseModeOption,
     public responseUriBuilder: BuildUrl<RequestId>,
     public maxAge: Duration,

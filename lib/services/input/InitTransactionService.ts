@@ -117,12 +117,12 @@ export const createInitTransactionServiceInvoker =
       const presentationDefinitionMode = toEmbedOption(
         initTransactionTO.presentationDefinitionMode,
         presentationDefinitionByReference,
-        verifierConfig.presentationDefinitionEmbedOption
+        verifierConfig.presentationDefinitionOption
       );
       const jarMode = toEmbedOption(
         initTransactionTO.jarMode,
         jarByReference,
-        verifierConfig.requestJarOption
+        verifierConfig.jarOption
       );
 
       const id = (await generateTransactionId()).getOrThrow();

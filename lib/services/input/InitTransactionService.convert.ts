@@ -149,14 +149,14 @@ export const toResponseModeOption = (
  * @param {string | undefined} redirectUriTemplate - The redirect URI template.
  * @param {CreateQueryWalletResponseRedirectUri} createRedirectUri - The function to create a redirect URI.
  * @returns {GetWalletResponseMethod} The GetWalletResponseMethod instance.
- * @throws {Error} If the redirectUriTemplate is undefined or if the createRedirectUri function returns a failure result.
+ * @throws {Error} If the createRedirectUri function returns a failure result.
  */
 export const toGetWalletResponseMethod = (
   redirectUriTemplate: string | undefined,
   createRedirectUri: CreateQueryWalletResponseRedirectUri
 ): GetWalletResponseMethod => {
   if (!redirectUriTemplate) {
-    throw new Error('Missing redirect uri template');
+    return GetWalletResponseMethod.Poll.INSTANCE;
   }
 
   const result = createRedirectUri(

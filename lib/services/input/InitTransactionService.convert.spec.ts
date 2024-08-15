@@ -214,10 +214,10 @@ describe('InitTransactionService.convert', () => {
       );
     });
 
-    it('should throw an error when redirectUriTemplate is undefined', () => {
-      expect(() =>
-        toGetWalletResponseMethod(undefined, createRedirectUri)
-      ).toThrowError('Missing redirect uri template');
+    it('should return GetWalletResponseMethod.Poll when redirectUriTemplate is undefined', () => {
+      const result = toGetWalletResponseMethod(undefined, createRedirectUri);
+      expect(result).toBeInstanceOf(GetWalletResponseMethod.Poll);
+      expect(result.__type === 'Poll').toBe(true);
     });
 
     it('should throw an error when createRedirectUri returns failure', () => {

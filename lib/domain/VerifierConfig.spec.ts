@@ -37,8 +37,8 @@ describe('VerifierConfig', () => {
     );
 
     expect(config.clientIdScheme).toBe(mockClientIdScheme);
-    expect(config.requestJarOption).toBe(mockRequestJarOption);
-    expect(config.presentationDefinitionEmbedOption).toBe(
+    expect(config.jarOption).toBe(mockRequestJarOption);
+    expect(config.presentationDefinitionOption).toBe(
       mockPresentationDefinitionEmbedOption
     );
     expect(config.responseModeOption).toBe(mockResponseModeOption);

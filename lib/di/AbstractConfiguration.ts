@@ -41,6 +41,15 @@ export abstract class AbstractConfiguration implements Configuration {
   #jarSigning: SigningConfig | undefined;
   #clientIdScheme: ClientIdScheme | undefined;
   #verifierConfig: VerifierConfig | undefined;
+  #jarByReference: EmbedOption.ByReference<RequestId> =
+    new EmbedOption.ByReference(
+      (id: RequestId) =>
+        new URL(`${this.publicUrl()}/wallet/request.jwt/${id.value}`)
+    );
+  #presentationDefinitionByReference: EmbedOption.ByReference<RequestId> =
+    new EmbedOption.ByReference(
+      (id: RequestId) => new URL(`${this.publicUrl()}/wallet/pd/${id.value}`)
+    );
 
   abstract jarSigningPrivateJwk(): string;
 
@@ -50,7 +59,7 @@ export abstract class AbstractConfiguration implements Configuration {
 
   abstract publicUrl(): string;
 
-  abstract requestJarOptionName(): EmbedOptionName;
+  abstract jarOptionName(): EmbedOptionName;
 
   abstract responseModeOptionName(): ResponseModeOptionName;
 
@@ -103,28 +112,29 @@ export abstract class AbstractConfiguration implements Configuration {
     return this.#clientIdScheme;
   };
 
-  requestJarOption = (): EmbedOption<RequestId> => {
-    if (this.requestJarOptionName() === 'by_value') {
+  jarByReference = (): EmbedOption.ByReference<RequestId> =>
+    this.#jarByReference;
+
+  jarOption = (): EmbedOption<RequestId> => {
+    if (this.jarOptionName() === 'by_value') {
       return EmbedOption.ByValue.INSTANCE;
     }
 
-    return new EmbedOption.ByReference(
-      (id: RequestId) =>
-        new URL(`${this.publicUrl()}/wallet/request.jwt/${id.value}`)
-    );
+    return this.jarByReference();
   };
 
   responseModeOption = (): ResponseModeOption =>
     this.responseModeOptionName() as ResponseModeOption;
+
+  presentationDefinitionByReference = (): EmbedOption.ByReference<RequestId> =>
+    this.#presentationDefinitionByReference;
 
   presentationDefinitionOption = (): EmbedOption<RequestId> => {
     if (this.presentationDefinitionOptionName() === 'by_value') {
       return EmbedOption.ByValue.INSTANCE;
     }
 
-    return new EmbedOption.ByReference(
-      (id: RequestId) => new URL(`${this.publicUrl()}/wallet/pd/${id.value}`)
-    );
+    return this.presentationDefinitionByReference();
   };
 
   jwkOption = (): EmbedOption<RequestId> => EmbedOption.ByValue.INSTANCE;
@@ -174,7 +184,7 @@ export abstract class AbstractConfiguration implements Configuration {
 
     this.#verifierConfig = new VerifierConfig(
       this.clientIdScheme(),
-      this.requestJarOption(),
+      this.jarOption(),
       this.presentationDefinitionOption(),
       this.responseModeOption(),
       this.responseUriBuilder(),

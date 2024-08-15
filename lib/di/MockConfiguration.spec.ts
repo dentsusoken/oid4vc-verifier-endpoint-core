@@ -110,12 +110,26 @@ describe('MockConfiguration', () => {
     });
   });
 
-  describe('requestJarOption', () => {
+  describe('jarByReference', () => {
+    it('returns correct URL when calling buildUrl"', () => {
+      const config = new MockConfiguration({
+        requestJarOptionName: 'by_reference',
+      });
+      const requestId = new RequestId('request-id');
+      const result = config.jarByReference();
+
+      expect(result.buildUrl(requestId).href).toBe(
+        `${configuration.publicUrl()}/wallet/request.jwt/${requestId.value}`
+      );
+    });
+  });
+
+  describe('jarOption', () => {
     it('returns EmbedOption.ByValue.INSTANCE when requestJarOptionName is "by_value"', () => {
       const config = new MockConfiguration({
         requestJarOptionName: 'by_value',
       });
-      const result = config.requestJarOption();
+      const result = config.jarOption();
 
       expect(result).toBe(EmbedOption.ByValue.INSTANCE);
     });
@@ -124,7 +138,7 @@ describe('MockConfiguration', () => {
       const config = new MockConfiguration({
         requestJarOptionName: 'by_reference',
       });
-      const result = config.requestJarOption();
+      const result = config.jarOption();
 
       expect(result).toBeInstanceOf(EmbedOption.ByReference);
 
@@ -157,6 +171,20 @@ describe('MockConfiguration', () => {
     });
   });
 
+  describe('presentationDefinitionByReference', () => {
+    it('returns correct URL when calling buildUrl"', () => {
+      const config = new MockConfiguration({
+        requestJarOptionName: 'by_reference',
+      });
+      const requestId = new RequestId('request-id');
+      const result = config.presentationDefinitionByReference();
+
+      expect(result.buildUrl(requestId).href).toBe(
+        `${configuration.publicUrl()}/wallet/pd/${requestId.value}`
+      );
+    });
+  });
+
   describe('presentationDefinitionOption', () => {
     it('returns EmbedOption.ByValue.INSTANCE when presentationDefinitionOptionName is "by_value"', () => {
       const config = new MockConfiguration({
@@ -171,7 +199,7 @@ describe('MockConfiguration', () => {
       const config = new MockConfiguration({
         presentationDefinitionOptionName: 'by_reference',
       });
-      const result = config.requestJarOption();
+      const result = config.jarOption();
 
       expect(result).toBeInstanceOf(EmbedOption.ByReference);
 

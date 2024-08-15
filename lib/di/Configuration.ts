@@ -55,15 +55,19 @@ export interface Configuration {
 
   publicUrl(): string;
 
-  requestJarOptionName(): EmbedOptionName;
+  jarOptionName(): EmbedOptionName;
 
-  requestJarOption(): EmbedOption<RequestId>;
+  jarByReference(): EmbedOption.ByReference<RequestId>;
+
+  jarOption(): EmbedOption<RequestId>;
 
   responseModeOptionName(): ResponseModeOptionName;
 
   responseModeOption(): ResponseModeOption;
 
   presentationDefinitionOptionName(): EmbedOptionName;
+
+  presentationDefinitionByReference(): EmbedOption.ByReference<RequestId>;
 
   presentationDefinitionOption(): EmbedOption<RequestId>;
 
