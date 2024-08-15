@@ -27,7 +27,8 @@ describe('InitTransactionTO', () => {
       wallet_response_redirect_uri_template: 'https://example.com/callback',
     };
 
-    const instance = plainToInstance(InitTransactionTO, plainObject);
+    // const instance = plainToInstance(InitTransactionTO, plainObject);
+    const instance = InitTransactionTO.deserialize(plainObject);
 
     expect(instance).toBeInstanceOf(InitTransactionTO);
     expect(instance.type).toBe(PresentationTypeTO.VpTokenRequest);
@@ -110,7 +111,8 @@ describe('JwtSecuredAuthorizationRequestTO', () => {
       'https://example.com/request2'
     );
 
-    const plainObject = instanceToPlain(instance);
+    // const plainObject = instanceToPlain(instance);
+    const plainObject = instance.serialize();
 
     expect(plainObject.presentation_id).toBe('xyz789');
     expect(plainObject.client_id).toBe('client2');

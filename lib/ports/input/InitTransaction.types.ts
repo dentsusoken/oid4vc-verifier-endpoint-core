@@ -15,7 +15,13 @@
  */
 import 'reflect-metadata';
 import { PresentationDefinition } from 'oid4vc-prex';
-import { Expose, Type } from 'class-transformer';
+import {
+  Expose,
+  instanceToPlain,
+  plainToInstance,
+  Transform,
+  Type,
+} from 'class-transformer';
 
 /**
  * Enumeration of presentation types for the transaction.
@@ -81,6 +87,10 @@ export class InitTransactionTO {
    */
   @Expose({ name: 'presentation_definition' })
   @Type(() => PresentationDefinition)
+  @Transform(
+    ({ value }) => value && PresentationDefinition.deserialize(value),
+    { toClassOnly: true }
+  )
   presentationDefinition?: PresentationDefinition;
 
   /**
@@ -153,6 +163,10 @@ export class InitTransactionTO {
     this.presentationDefinitionMode = presentationDefinitionMode;
     this.redirectUriTemplate = redirectUriTemplate;
   }
+
+  static deserialize(json: unknown): InitTransactionTO {
+    return plainToInstance(this, json);
+  }
 }
 
 /**
@@ -208,5 +222,9 @@ export class JwtSecuredAuthorizationRequestTO {
     this.clientId = clientId;
     this.request = request;
     this.requestUri = requestUri;
+  }
+
+  serialize() {
+    return instanceToPlain(this);
   }
 }
