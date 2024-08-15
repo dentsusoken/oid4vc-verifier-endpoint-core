@@ -21,7 +21,6 @@ import {
   EmbedOption,
 } from '../../../domain';
 import { RequestObject } from './RequestObject';
-import { PresentationDefinition } from 'oid4vc-prex';
 
 /**
  * Represents the payload structure for the request object
@@ -30,6 +29,7 @@ type Payload = {
   iss: string;
   aud: string[];
   response_type: string;
+  response_mode: string;
   client_id: string;
   scope: string;
   state: string;
@@ -37,7 +37,7 @@ type Payload = {
   client_id_scheme: string;
   iat: number;
   id_token_type?: string;
-  presentation_definition?: PresentationDefinition;
+  presentation_definition?: Record<string, unknown>;
   presentation_definition_uri?: string;
   client_metadata?: ClientMetaDataTO;
   response_uri?: string;
@@ -160,6 +160,7 @@ export const toPayload = (
     iss: requestObject.clientId,
     aud: requestObject.aud,
     response_type: requestObject.responseType.join(' '),
+    response_mode: requestObject.responseMode,
     client_id: requestObject.clientId,
     scope: requestObject.scope.join(' '),
     state: requestObject.state,
@@ -173,7 +174,8 @@ export const toPayload = (
   }
 
   if (requestObject.presentationDefinition) {
-    payload.presentation_definition = requestObject.presentationDefinition;
+    payload.presentation_definition =
+      requestObject.presentationDefinition.serialize();
   }
 
   if (requestObject.presentationDefinitionUri) {

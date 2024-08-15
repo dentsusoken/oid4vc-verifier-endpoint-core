@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   getJwks,
   getJwksUri,
@@ -118,7 +118,9 @@ describe('JWKS and Payload Utilities', () => {
         responseMode: 'direct_post',
         issuedAt: new Date('2023-06-08T10:00:00Z'),
         idTokenType: ['subject_signed'],
-        presentationDefinition: {} as PresentationDefinition,
+        presentationDefinition: {
+          serialize: () => ({}),
+        } as PresentationDefinition,
         presentationDefinitionUri: new URL('https://example.com/pd'),
         responseUri: new URL('https://example.com/response'),
       };
@@ -138,6 +140,7 @@ describe('JWKS and Payload Utilities', () => {
         id_token_type: 'subject_signed',
         presentation_definition: {},
         presentation_definition_uri: 'https://example.com/pd',
+        response_mode: 'direct_post',
         client_metadata: clientMetaData,
         response_uri: 'https://example.com/response',
       });
