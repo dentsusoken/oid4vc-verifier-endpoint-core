@@ -55,12 +55,12 @@ describe('createInitTransactionServiceInvoker', async () => {
 
     expect(result.isSuccess).toBe(true);
     const requestTO = result.getOrThrow();
-    console.log(requestTO);
+    //console.log(requestTO);
     expect(requestTO).toBeInstanceOf(JwtSecuredAuthorizationRequestTO);
     expect(requestTO.transactionId).toBeDefined();
     expect(requestTO.clientId).toBe('Verifier');
     expect(requestTO.request).toBeUndefined();
-    console.log(requestTO.requestUri);
+    //console.log(requestTO.requestUri);
     expect(
       requestTO.requestUri?.startsWith(
         'http://localhost:8080/wallet/request.jwt/'
@@ -91,12 +91,12 @@ describe('createInitTransactionServiceInvoker', async () => {
 
     expect(result.isSuccess).toBe(true);
     const requestTO = result.getOrThrow();
-    console.log(requestTO);
+    //console.log(requestTO);
     expect(requestTO).toBeInstanceOf(JwtSecuredAuthorizationRequestTO);
     expect(requestTO.transactionId).toBeDefined();
     expect(requestTO.clientId).toBe('Verifier');
     expect(requestTO.request).toBeUndefined();
-    console.log(requestTO.requestUri);
+    //console.log(requestTO.requestUri);
     expect(
       requestTO.requestUri?.startsWith(
         'http://localhost:8080/wallet/request.jwt/'

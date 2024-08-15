@@ -57,7 +57,8 @@ export class PresentationInMemoryStore {
         return presentation;
       }
     }
-
+    //console.log('requestId:', requestId);
+    //console.log('presentations:', this.presentations.keys());
     return undefined;
   };
 

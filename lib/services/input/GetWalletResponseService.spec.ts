@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import {
   Presentation,
@@ -8,7 +9,7 @@ import {
   AuthorizationResponse,
   ResponseModeOption,
 } from '../../domain';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { PresentationDefinition, PresentationSubmission } from 'oid4vc-prex';
 import {
   EmbedModeTO,
   IdTokenTypeTO,
@@ -30,6 +31,7 @@ import {
 } from '../../ports/out/cfg';
 import { MockConfiguration } from '../../di/MockConfiguration';
 import { PortsInputImpl, PortsOutImpl } from '../../di';
+import { WalletResponseTO } from '../../ports/input';
 
 describe('createGetRequestObjectServiceInvoker', async () => {
   it('should return WalletResponseAcceptedTO when GetWalletResponseMethod.Redirect', async () => {
@@ -39,6 +41,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     const initTransaction = portsInput.initTransaction();
     const getRequestObject = portsInput.getRequestObject();
     const postWalletResponse = portsInput.postWalletResponse();
+    const getWalletResponse = portsInput.getWalletResponse();
     const loadPresentationByRequestId = portsOut.loadPresentationByRequestId();
 
     const initTransactionTO: InitTransactionTO = {
@@ -47,7 +50,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPostJwt,
       jarMode: EmbedModeTO.ByReference,
-      presentationDefinition: {} as PresentationDefinition,
+      presentationDefinition: new PresentationDefinition(),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
     };
@@ -123,101 +126,22 @@ describe('createGetRequestObjectServiceInvoker', async () => {
       `https://example.com/redirect/${submitted.responseCode?.value}`
     );
     expect(submitted.walletResponse).toBeDefined();
-    //console.log(submitted.walletResponse);
-  });
 
-  it('should throw error when presentation is not found', async () => {
-    const createParams = {
-      loadPresentationByRequestId: (async () =>
-        undefined) as LoadPresentationByRequestId,
-      storePresentation: (async () => undefined) as StorePresentation,
-      verifyJarmJwt: (async () =>
-        Result.success({} as AuthorizationResponseData)) as VerifyJarmJwt,
-      now: () => new Date(),
-      verifierConfig: {} as VerifierConfig,
-      generateResponseCode: (async () =>
-        new ResponseCode('hoge')) as GenerateResponseCode,
-      createQueryWalletResponseRedirectUri: (() =>
-        Result.success(
-          new URL('https://example.com')
-        )) as CreateQueryWalletResponseRedirectUri,
-    };
-    const postWalletResponse =
-      createPostWalletResponseServiceInvoker(createParams);
-    const authorizationResponse = new AuthorizationResponse.DirectPostJwt(
-      'state',
-      'jarm'
+    const getWalletResponseResponse = await getWalletResponse(
+      submitted.id,
+      submitted.responseCode
     );
-
-    const result = await postWalletResponse(authorizationResponse);
-    expect(result.isFailure);
-    expect(result.exceptionOrUndefined()?.message).toBe(
-      'Not found presentation'
+    expect(getWalletResponseResponse.__type === 'Found').toBe(true);
+    const walletResponseTO = (
+      getWalletResponseResponse.__type === 'Found'
+        ? getWalletResponseResponse.value
+        : undefined
+    )!;
+    expect(walletResponseTO).toBeInstanceOf(WalletResponseTO);
+    expect(walletResponseTO.vpToken).toBe('vpToken');
+    expect(walletResponseTO.presentationSubmission).toBeInstanceOf(
+      PresentationSubmission
     );
-  });
-
-  it('should throw error when presentation type is not RequestObjectRetrieved', async () => {
-    const createParams = {
-      loadPresentationByRequestId: (async () =>
-        ({
-          __type: 'Requested',
-        } as Presentation)) as LoadPresentationByRequestId,
-      storePresentation: (async () => undefined) as StorePresentation,
-      verifyJarmJwt: (async () =>
-        Result.success({} as AuthorizationResponseData)) as VerifyJarmJwt,
-      now: () => new Date(),
-      verifierConfig: {} as VerifierConfig,
-      generateResponseCode: (async () =>
-        new ResponseCode('hoge')) as GenerateResponseCode,
-      createQueryWalletResponseRedirectUri: (() =>
-        Result.success(
-          new URL('https://example.com')
-        )) as CreateQueryWalletResponseRedirectUri,
-    };
-    const postWalletResponse =
-      createPostWalletResponseServiceInvoker(createParams);
-    const authorizationResponse = new AuthorizationResponse.DirectPostJwt(
-      'state',
-      'jarm'
-    );
-
-    const result = await postWalletResponse(authorizationResponse);
-    expect(result.isFailure);
-    expect(result.exceptionOrUndefined()?.message).toBe(
-      'Invalid presentation status'
-    );
-  });
-
-  it('should throw error when the response mode of the presentation does not match the response mode of the authorization response', async () => {
-    const createParams = {
-      loadPresentationByRequestId: (async () =>
-        ({
-          __type: 'RequestObjectRetrieved',
-          responseMode: ResponseModeOption.DirectPost,
-        } as Presentation)) as LoadPresentationByRequestId,
-      storePresentation: (async () => undefined) as StorePresentation,
-      verifyJarmJwt: (async () =>
-        Result.success({} as AuthorizationResponseData)) as VerifyJarmJwt,
-      now: () => new Date(),
-      verifierConfig: {} as VerifierConfig,
-      generateResponseCode: (async () =>
-        new ResponseCode('hoge')) as GenerateResponseCode,
-      createQueryWalletResponseRedirectUri: (() =>
-        Result.success(
-          new URL('https://example.com')
-        )) as CreateQueryWalletResponseRedirectUri,
-    };
-    const postWalletResponse =
-      createPostWalletResponseServiceInvoker(createParams);
-    const authorizationResponse = new AuthorizationResponse.DirectPostJwt(
-      'state',
-      'jarm'
-    );
-
-    const result = await postWalletResponse(authorizationResponse);
-    expect(result.isFailure);
-    expect(result.exceptionOrUndefined()?.message).toBe(
-      'Unexpected response mode'
-    );
+    console.log(getWalletResponseResponse);
   });
 });

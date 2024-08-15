@@ -30,4 +30,11 @@ describe('PortsInputImpl', () => {
       expect(typeof postWalletResponse).toBe('function');
     });
   });
+
+  describe('getWalletResponse', () => {
+    it('should return GetWalletResponse', () => {
+      const getWalletResponse = portsInput.getWalletResponse();
+      expect(typeof getWalletResponse).toBe('function');
+    });
+  });
 });

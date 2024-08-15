@@ -173,7 +173,7 @@ describe('InitTransactionService.create', () => {
         verifierConfig,
         now
       );
-      console.log(result.requestTO);
+      //console.log(result.requestTO);
 
       expect(result.requestTO).toBeInstanceOf(JwtSecuredAuthorizationRequestTO);
       expect(result.requestTO.transactionId).toBe(id.value);

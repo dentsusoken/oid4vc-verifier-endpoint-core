@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { PresentationDefinition } from 'oid4vc-prex';
 import {
   ClientMetaData,
   EphemeralECDHPrivateJwk,
@@ -173,7 +174,10 @@ export const toPayload = (
     payload.id_token_type = requestObject.idTokenType.join(' ');
   }
 
-  if (requestObject.presentationDefinition) {
+  if (
+    requestObject.presentationDefinition &&
+    requestObject.presentationDefinition instanceof PresentationDefinition
+  ) {
     payload.presentation_definition =
       requestObject.presentationDefinition.serialize();
   }

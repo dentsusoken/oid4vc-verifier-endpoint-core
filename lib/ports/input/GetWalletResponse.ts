@@ -17,6 +17,7 @@ import { ResponseCode, TransactionId } from '../../domain';
 import { QueryResponse } from './QueryResponse';
 import { WalletResponseTO } from './GetWalletResponse.types';
 
+export { WalletResponseTO } from './GetWalletResponse.types';
 /**
  * Represents a function to retrieve a wallet response based on a transaction ID.
  *

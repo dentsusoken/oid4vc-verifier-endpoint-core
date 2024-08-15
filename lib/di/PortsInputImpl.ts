@@ -16,10 +16,14 @@
 
 import {
   GetRequestObject,
+  GetWalletResponse,
   InitTransaction,
   PostWalletResponse,
 } from '../ports/input';
-import { createInitTransactionServiceInvoker } from '../services/input';
+import {
+  createGetWalletResponseInvoker,
+  createInitTransactionServiceInvoker,
+} from '../services/input';
 import { Configuration } from './Configuration';
 import { PortsOut } from './PortsOut';
 import { PortsInput } from './PortsInput';
@@ -32,6 +36,8 @@ export class PortsInputImpl implements PortsInput {
   #getRequestObject: GetRequestObject;
 
   #postWalletResponse: PostWalletResponse;
+
+  #getWalletResponse: GetWalletResponse;
 
   constructor(
     private configuration: Configuration,
@@ -71,6 +77,12 @@ export class PortsInputImpl implements PortsInput {
       createQueryWalletResponseRedirectUri:
         this.portsOut.createQueryWalletResponseRedirectUri(),
     });
+
+    this.#getWalletResponse = createGetWalletResponseInvoker({
+      loadPresentationById: this.portsOut.loadPresentationById(),
+      now: this.configuration.now(),
+      maxAge: this.configuration.maxAge(),
+    });
   }
 
   initTransaction = (): InitTransaction => this.#initTransaction;
@@ -78,4 +90,6 @@ export class PortsInputImpl implements PortsInput {
   getRequestObject = (): GetRequestObject => this.#getRequestObject;
 
   postWalletResponse = (): PostWalletResponse => this.#postWalletResponse;
+
+  getWalletResponse = (): GetWalletResponse => this.#getWalletResponse;
 }

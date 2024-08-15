@@ -16,6 +16,7 @@
 
 import {
   GetRequestObject,
+  GetWalletResponse,
   InitTransaction,
   PostWalletResponse,
 } from '../ports/input';
@@ -26,4 +27,6 @@ export interface PortsInput {
   getRequestObject(): GetRequestObject;
 
   postWalletResponse(): PostWalletResponse;
+
+  getWalletResponse(): GetWalletResponse;
 }

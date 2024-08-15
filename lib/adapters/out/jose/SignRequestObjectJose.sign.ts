@@ -49,13 +49,10 @@ export const sign = async (
     ) {
       header.x5c = jwk.x5c;
     }
-
     const payload = toPayload(requestObject, clientMetaDataTO);
-
     const jwt = await new SignJWT(payload)
       .setProtectedHeader(header)
       .sign(await importJWK(jwk));
-
     return jwt;
   });
 };
