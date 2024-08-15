@@ -49,118 +49,118 @@ import {
   CreateQueryWalletResponseRedirectUri,
   GenerateResponseCode,
 } from '../../ports/out/cfg';
+import { MockConfiguration } from '../../di/MockConfiguration';
+import { PortsInputImpl, PortsOutImpl } from '../../di';
 
 describe('createGetRequestObjectServiceInvoker', async () => {
-  const staticSigningPrivateKey = (await generateKeyPair('ES256')).privateKey;
-  const staticSigningPrivateExportedJwk = await exportJWK(
-    staticSigningPrivateKey
-  );
-  const staticSigningPrivateJwk: StaticSigningPrivateJwk = {
-    value: JSON.stringify(staticSigningPrivateExportedJwk),
-  };
+  // const staticSigningPrivateKey = (await generateKeyPair('ES256')).privateKey;
+  // const staticSigningPrivateExportedJwk = await exportJWK(
+  //   staticSigningPrivateKey
+  // );
+  // const staticSigningPrivateJwk: StaticSigningPrivateJwk = {
+  //   value: JSON.stringify(staticSigningPrivateExportedJwk),
+  // };
 
-  const clientMetaData = {
-    idTokenSignedResponseAlg: 'ES256',
-    idTokenEncryptedResponseAlg: 'ECDH-ES+A256KW',
-    idTokenEncryptedResponseEnc: 'A256GCM',
-    subjectSyntaxTypesSupported: ['urn:ietf:params:oauth:jwk-thumbprint'],
-    jwkOption: EmbedOption.ByValue.INSTANCE,
-    jarmOption: new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM'),
-  } as ClientMetaData;
-  const clientIdScheme = new ClientIdScheme.PreRegistered('client_id', {
-    staticSigningPrivateJwk,
-    algorithm: 'ES256',
-  } as SigningConfig);
+  // const clientMetaData = {
+  //   idTokenSignedResponseAlg: 'ES256',
+  //   idTokenEncryptedResponseAlg: 'ECDH-ES+A256KW',
+  //   idTokenEncryptedResponseEnc: 'A256GCM',
+  //   subjectSyntaxTypesSupported: ['urn:ietf:params:oauth:jwk-thumbprint'],
+  //   jwkOption: EmbedOption.ByValue.INSTANCE,
+  //   jarmOption: new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM'),
+  // } as ClientMetaData;
+  // const clientIdScheme = new ClientIdScheme.PreRegistered('client_id', {
+  //   staticSigningPrivateJwk,
+  //   algorithm: 'ES256',
+  // } as SigningConfig);
 
-  const responseUriBuilder: BuildUrl<RequestId> = (requestId: RequestId) =>
-    new URL(`https://example.com/response/${requestId.value}`);
-  const verifierConfig = {
-    clientIdScheme,
-    clientMetaData,
-    responseUriBuilder,
-  } as VerifierConfig;
+  // const responseUriBuilder: BuildUrl<RequestId> = (requestId: RequestId) =>
+  //   new URL(`https://example.com/response/${requestId.value}`);
+  // const verifierConfig = {
+  //   clientIdScheme,
+  //   clientMetaData,
+  //   responseUriBuilder,
+  // } as VerifierConfig;
 
-  const now = () => new Date();
+  // const now = () => new Date();
 
-  const presentationInMemoryStore = new PresentationInMemoryStore();
+  // const presentationInMemoryStore = new PresentationInMemoryStore();
 
-  const generateTransactionId = createGenerateTransactionIdJoseInvoker();
-  const generateRequestId = createGenerateRequestIdHoseInvoker();
-  const loadPresentationByRequestId =
-    presentationInMemoryStore.loadPresentationByRequestId;
-  const storePresentation = presentationInMemoryStore.storePresentation;
-  const signRequestObject = createSignRequestObjectJoseInvoker();
-  const generateEphemeralECDHPrivateJwk =
-    createGenerateEphemeralECDHPrivateJwkJoseInvoker();
-  const createQueryWalletResponseRedirectUri =
-    createCreateQueryWalletResponseRedirectUriInvoker();
-  const verifyJarmJwt = createVerifyJarmJwtJoseInvoker();
-  const generateResponseCode = createGenerateResponseCodeInvoker();
+  // const generateTransactionId = createGenerateTransactionIdJoseInvoker();
+  // const generateRequestId = createGenerateRequestIdHoseInvoker();
+  // const loadPresentationByRequestId =
+  //   presentationInMemoryStore.loadPresentationByRequestId;
+  // const storePresentation = presentationInMemoryStore.storePresentation;
+  // const signRequestObject = createSignRequestObjectJoseInvoker();
+  // const generateEphemeralECDHPrivateJwk =
+  //   createGenerateEphemeralECDHPrivateJwkJoseInvoker();
+  // const createQueryWalletResponseRedirectUri =
+  //   createCreateQueryWalletResponseRedirectUriInvoker();
+  // const verifyJarmJwt = createVerifyJarmJwtJoseInvoker();
+  // const generateResponseCode = createGenerateResponseCodeInvoker();
 
-  const jarByReference = new EmbedOption.ByReference(
-    (id: RequestId) => new URL(`https://example.com/request.jwt/${id.value}`)
-  );
-  const presentationDefinitionByReference = new EmbedOption.ByReference(
-    (id: RequestId) => new URL(`https://example.com/pd/${id.value}`)
-  );
+  // const jarByReference = new EmbedOption.ByReference(
+  //   (id: RequestId) => new URL(`https://example.com/request.jwt/${id.value}`)
+  // );
+  // const presentationDefinitionByReference = new EmbedOption.ByReference(
+  //   (id: RequestId) => new URL(`https://example.com/pd/${id.value}`)
+  // );
 
-  // const recipientKeyPair = await generateKeyPair('ES256');
-  // const privateJwk = await exportJWK(recipientKeyPair.privateKey);
+  // // const recipientKeyPair = await generateKeyPair('ES256');
+  // // const privateJwk = await exportJWK(recipientKeyPair.privateKey);
 
-  const presentationSubmission = {
-    id: 'submission-id-1',
-    definition_id: 'definition-id-1',
-    descriptor_map: [
-      {
-        id: 'input-descriptor-id-1',
-        format: 'jwt_vc',
-        path: '$.verifiableCredential[0]',
-      },
-    ],
-  };
-  const presentationSubmissionJsonStr = JSON.stringify(presentationSubmission);
+  // const presentationSubmission = {
+  //   id: 'submission-id-1',
+  //   definition_id: 'definition-id-1',
+  //   descriptor_map: [
+  //     {
+  //       id: 'input-descriptor-id-1',
+  //       format: 'jwt_vc',
+  //       path: '$.verifiableCredential[0]',
+  //     },
+  //   ],
+  // };
+  // const presentationSubmissionJsonStr = JSON.stringify(presentationSubmission);
 
-  const initTransactionCreateParams = {
-    generateTransactionId,
-    generateRequestId,
-    storePresentation,
-    signRequestObject,
-    verifierConfig,
-    now,
-    generateEphemeralECDHPrivateJwk,
-    jarByReference,
-    presentationDefinitionByReference,
-    createQueryWalletResponseRedirectUri,
-  };
+  // const initTransactionCreateParams = {
+  //   generateTransactionId,
+  //   generateRequestId,
+  //   storePresentation,
+  //   signRequestObject,
+  //   verifierConfig,
+  //   now,
+  //   generateEphemeralECDHPrivateJwk,
+  //   jarByReference,
+  //   presentationDefinitionByReference,
+  //   createQueryWalletResponseRedirectUri,
+  // };
 
-  const getRequestObjectCreateParams = {
-    loadPresentationByRequestId,
-    storePresentation,
-    signRequestObject,
-    verifierConfig,
-    now,
-  };
+  // const getRequestObjectCreateParams = {
+  //   loadPresentationByRequestId,
+  //   storePresentation,
+  //   signRequestObject,
+  //   verifierConfig,
+  //   now,
+  // };
 
-  const postWalletResponseCreateParams = {
-    loadPresentationByRequestId,
-    storePresentation,
-    verifyJarmJwt,
-    now,
-    verifierConfig,
-    generateResponseCode,
-    createQueryWalletResponseRedirectUri,
-  };
+  // const postWalletResponseCreateParams = {
+  //   loadPresentationByRequestId,
+  //   storePresentation,
+  //   verifyJarmJwt,
+  //   now,
+  //   verifierConfig,
+  //   generateResponseCode,
+  //   createQueryWalletResponseRedirectUri,
+  // };
 
   it('should return WalletResponseAcceptedTO when GetWalletResponseMethod.Redirect', async () => {
-    const initTransaction = createInitTransactionServiceInvoker(
-      initTransactionCreateParams
-    );
-    const getRequestObject = createGetRequestObjectServiceInvoker(
-      getRequestObjectCreateParams
-    );
-    const postWalletResponse = createPostWalletResponseServiceInvoker(
-      postWalletResponseCreateParams
-    );
+    const configuration = new MockConfiguration();
+    const portsOut = new PortsOutImpl(configuration);
+    const portsInput = new PortsInputImpl(configuration, portsOut);
+    const initTransaction = portsInput.initTransaction();
+    const getRequestObject = portsInput.getRequestObject();
+    const postWalletResponse = portsInput.postWalletResponse();
+    const loadPresentationByRequestId = portsOut.loadPresentationByRequestId();
 
     const initTransactionTO: InitTransactionTO = {
       type: PresentationTypeTO.VpTokenRequest,
@@ -190,6 +190,20 @@ describe('createGetRequestObjectServiceInvoker', async () => {
       throw new Error('Invalid presentation state');
     }
 
+    const presentationSubmission = {
+      id: 'submission-id-1',
+      definition_id: 'definition-id-1',
+      descriptor_map: [
+        {
+          id: 'input-descriptor-id-1',
+          format: 'jwt_vc',
+          path: '$.verifiableCredential[0]',
+        },
+      ],
+    };
+    const presentationSubmissionJsonStr = JSON.stringify(
+      presentationSubmission
+    );
     const payload = {
       state: presentation.requestId.value,
       vpToken: 'vpToken',

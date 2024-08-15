@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-import { GetRequestObject, InitTransaction } from '../ports/input';
+import {
+  GetRequestObject,
+  InitTransaction,
+  PostWalletResponse,
+} from '../ports/input';
 import { createInitTransactionServiceInvoker } from '../services/input';
 import { Configuration } from './Configuration';
 import { PortsOut } from './PortsOut';
 import { PortsInput } from './PortsInput';
 import { createGetRequestObjectServiceInvoker } from '../services/input/GetRequestObjectService';
+import { createPostWalletResponseServiceInvoker } from '../services/input/PostWalletResponseService';
 
 export class PortsInputImpl implements PortsInput {
   #initTransaction: InitTransaction;
 
   #getRequestObject: GetRequestObject;
+
+  #postWalletResponse: PostWalletResponse;
 
   constructor(
     private configuration: Configuration,
@@ -53,9 +60,22 @@ export class PortsInputImpl implements PortsInput {
       verifierConfig: this.configuration.verifierConfig(),
       now: this.configuration.now(),
     });
+
+    this.#postWalletResponse = createPostWalletResponseServiceInvoker({
+      loadPresentationByRequestId: this.portsOut.loadPresentationByRequestId(),
+      storePresentation: this.portsOut.storePresentation(),
+      verifyJarmJwt: this.portsOut.verifyJarmJwt(),
+      now: this.configuration.now(),
+      verifierConfig: this.configuration.verifierConfig(),
+      generateResponseCode: this.portsOut.generateResponseCode(),
+      createQueryWalletResponseRedirectUri:
+        this.portsOut.createQueryWalletResponseRedirectUri(),
+    });
   }
 
   initTransaction = (): InitTransaction => this.#initTransaction;
 
   getRequestObject = (): GetRequestObject => this.#getRequestObject;
+
+  postWalletResponse = (): PostWalletResponse => this.#postWalletResponse;
 }

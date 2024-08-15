@@ -16,4 +16,18 @@ describe('PortsInputImpl', () => {
       expect(typeof initTransaction).toBe('function');
     });
   });
+
+  describe('getRequestObject', () => {
+    it('should return GetRequestObject', () => {
+      const getRequestObject = portsInput.getRequestObject();
+      expect(typeof getRequestObject).toBe('function');
+    });
+  });
+
+  describe('postWalletResponse', () => {
+    it('should return PostWalletResponse', () => {
+      const postWalletResponse = portsInput.postWalletResponse();
+      expect(typeof postWalletResponse).toBe('function');
+    });
+  });
 });

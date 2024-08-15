@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-import { GetRequestObject, InitTransaction } from '../ports/input';
+import {
+  GetRequestObject,
+  InitTransaction,
+  PostWalletResponse,
+} from '../ports/input';
 
 export interface PortsInput {
   initTransaction(): InitTransaction;
 
   getRequestObject(): GetRequestObject;
+
+  postWalletResponse(): PostWalletResponse;
 }
