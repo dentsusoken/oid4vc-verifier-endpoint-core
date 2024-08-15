@@ -25,7 +25,9 @@ export const createGenerateEphemeralECDHPrivateJwkJoseInvoker =
 
 const invoke: GenerateEphemeralECDHPrivateJwk = (ecdhAlg = 'ES256') =>
   runAsyncCatching(async () => {
-    const { privateKey } = await generateKeyPair(ecdhAlg);
+    const { privateKey } = await generateKeyPair(ecdhAlg, {
+      extractable: true,
+    });
     const jwk = await exportJWK(privateKey);
     jwk.kid = uuidv4();
     jwk.use = 'enc';
