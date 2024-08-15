@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-import { InitTransaction } from '../ports/input';
+import { GetRequestObject, InitTransaction } from '../ports/input';
 import { createInitTransactionServiceInvoker } from '../services/input';
 import { Configuration } from './Configuration';
 import { PortsOut } from './PortsOut';
 import { PortsInput } from './PortsInput';
+import { createGetRequestObjectServiceInvoker } from '../services/input/GetRequestObjectService';
 
 export class PortsInputImpl implements PortsInput {
   #initTransaction: InitTransaction;
+
+  #getRequestObject: GetRequestObject;
 
   constructor(
     private configuration: Configuration,
@@ -42,7 +45,17 @@ export class PortsInputImpl implements PortsInput {
       createQueryWalletResponseRedirectUri:
         this.portsOut.createQueryWalletResponseRedirectUri(),
     });
+
+    this.#getRequestObject = createGetRequestObjectServiceInvoker({
+      loadPresentationByRequestId: this.portsOut.loadPresentationByRequestId(),
+      storePresentation: this.portsOut.storePresentation(),
+      signRequestObject: this.portsOut.signRequestObject(),
+      verifierConfig: this.configuration.verifierConfig(),
+      now: this.configuration.now(),
+    });
   }
 
   initTransaction = (): InitTransaction => this.#initTransaction;
+
+  getRequestObject = (): GetRequestObject => this.#getRequestObject;
 }

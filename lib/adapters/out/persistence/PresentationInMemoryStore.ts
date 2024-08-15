@@ -57,6 +57,7 @@ export class PresentationInMemoryStore {
         return presentation;
       }
     }
+
     return undefined;
   };
 

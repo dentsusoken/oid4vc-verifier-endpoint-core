@@ -43,6 +43,7 @@ export const createGetRequestObjectServiceInvoker =
     const presentation = await loadPresentationByRequestId(requestId);
 
     if (!presentation) {
+      console.log('hoge');
       return QueryResponse.NotFound.INSTANCE;
     }
 

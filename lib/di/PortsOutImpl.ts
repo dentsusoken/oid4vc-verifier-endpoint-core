@@ -28,6 +28,7 @@ import {
 } from '../adapters/out/jose';
 import {
   createLoadPresentationByIdInMemoryInvoker,
+  createLoadPresentationByRequestIdInMemoryInvoker,
   createStorePresentationInMemoryInvoker,
 } from '../adapters/out/persistence';
 import {
@@ -76,7 +77,8 @@ export class PortsOutImpl implements PortsOut {
 
   #loadPresentationById = createLoadPresentationByIdInMemoryInvoker();
 
-  #loadPresentationByRequestId = createLoadPresentationByIdInMemoryInvoker();
+  #loadPresentationByRequestId =
+    createLoadPresentationByRequestIdInMemoryInvoker();
 
   #storePresentation = createStorePresentationInMemoryInvoker();
 

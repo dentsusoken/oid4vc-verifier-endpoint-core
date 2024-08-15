@@ -23,6 +23,10 @@ import {
 } from './Configuration';
 import { DurationLuxon } from '../adapters/out/cfg';
 
+/**
+ * Private JWK for signing (for test purposes only)
+ * @constant {string} SINGING_PRIVATE_JWK_FOR_TEST_ONLY
+ */
 const SINGING_PRIVATE_JWK_FOR_TEST_ONLY = JSON.stringify({
   kty: 'EC',
   x: 'wR8cHVLAAHN5fVSLTt2dfmkv4Vy2ZtY5zAvB3UACyKo',
@@ -34,6 +38,18 @@ const SINGING_PRIVATE_JWK_FOR_TEST_ONLY = JSON.stringify({
   kid: 'e720016c-64f1-4326-b5a7-a00a34536951',
 });
 
+/**
+ * Type definition for customizable entries
+ * @typedef {Object} CustomizableEntries
+ * @property {string} jarSigningPrivateJwk - Private JWK for signing the JAR
+ * @property {string} clientId - Client ID
+ * @property {ClientIdSchemeName} clientIdSchemeName - Name of the client ID scheme
+ * @property {EmbedOptionName} requestJarOptionName - Name of the JAR embed option
+ * @property {string} publicUrl - Public URL
+ * @property {ResponseModeOptionName} responseModeOptionName - Name of the response mode option
+ * @property {EmbedOptionName} presentationDefinitionOptionName - Name of the presentation definition embed option
+ * @property {Duration} maxAge - Maximum age
+ */
 type CustomizableEntries = {
   jarSigningPrivateJwk: string;
   clientId: string;
@@ -45,15 +61,34 @@ type CustomizableEntries = {
   maxAge: Duration;
 };
 
+/**
+ * Type definition for customizable configuration
+ * @typedef {Object} CustomizableConfig
+ * @property {CustomizableEntries[P]} [P] - Optional customizable entries
+ */
 type CustomizableConfig = {
   [P in keyof CustomizableEntries]?: CustomizableEntries[P];
 };
 
+/**
+ * Mock configuration class extending AbstractConfiguration
+ * @class MockConfiguration
+ * @extends AbstractConfiguration
+ */
 export class MockConfiguration extends AbstractConfiguration {
+  /**
+   * Constructor for MockConfiguration
+   * @constructor
+   * @param {CustomizableConfig} [customizableConfig={}] - Optional customizable configuration
+   */
   constructor(private customizableConfig: CustomizableConfig = {}) {
     super();
   }
 
+  /**
+   * Function to get the private JWK for signing the JAR
+   * @type {() => string}
+   */
   jarSigningPrivateJwk = (): string => {
     if (this.customizableConfig?.jarSigningPrivateJwk) {
       return this.customizableConfig.jarSigningPrivateJwk;
@@ -62,23 +97,51 @@ export class MockConfiguration extends AbstractConfiguration {
     return SINGING_PRIVATE_JWK_FOR_TEST_ONLY;
   };
 
+  /**
+   * Function to get the client ID
+   * @type {() => string}
+   */
   clientId = (): string => this.customizableConfig.clientId || 'Verifier';
 
+  /**
+   * Function to get the name of the client ID scheme
+   * @type {() => ClientIdSchemeName}
+   */
   clientIdSchemeName = (): ClientIdSchemeName =>
     this.customizableConfig.clientIdSchemeName || 'pre-registered';
 
+  /**
+   * Function to get the name of the JAR embed option
+   * @type {() => EmbedOptionName}
+   */
   jarOptionName = (): EmbedOptionName =>
     this.customizableConfig.requestJarOptionName || 'by_reference';
 
+  /**
+   * Function to get the public URL
+   * @type {() => string}
+   */
   publicUrl = (): string =>
     this.customizableConfig.publicUrl || 'http://localhost:8080';
 
+  /**
+   * Function to get the name of the response mode option
+   * @type {() => ResponseModeOptionName}
+   */
   responseModeOptionName = (): ResponseModeOptionName =>
     this.customizableConfig.responseModeOptionName || 'direct_post.jwt';
 
+  /**
+   * Function to get the name of the presentation definition embed option
+   * @type {() => EmbedOptionName}
+   */
   presentationDefinitionOptionName = (): EmbedOptionName =>
     this.customizableConfig.presentationDefinitionOptionName || 'by_value';
 
+  /**
+   * Function to get the maximum age
+   * @type {() => Duration}
+   */
   maxAge = (): Duration =>
     this.customizableConfig.maxAge || DurationLuxon.Factory.ofMinutes(5);
 }
