@@ -15,7 +15,7 @@
  */
 
 import { JWTDecryptResult } from 'jose';
-import { PresentationExchange } from 'oid4vc-prex';
+import { PresentationSubmission } from 'oid4vc-prex';
 import { AuthorizationResponseData } from '../../../domain';
 
 /**
@@ -26,17 +26,35 @@ import { AuthorizationResponseData } from '../../../domain';
 export const toAuthorizationResponseData = async (
   payload: JWTDecryptResult['payload']
 ): Promise<AuthorizationResponseData> => {
+  const {
+    state,
+    id_token,
+    vp_token,
+    presentation_submission,
+    error,
+    error_description,
+  } = payload;
   const data = {
-    ...payload,
+    state: state as string,
+    error: error as string,
+    errorDescription: error_description as string,
+    idToken: id_token as string,
+    vpToken: vp_token as string,
+    // ...payload,
   } as AuthorizationResponseData;
-  if (payload.presentationSubmission) {
-    const presentationSubmission = (
-      await PresentationExchange.jsonParse.decodePresentationSubmission(
-        payload.presentationSubmission as ReadableStream<Uint8Array> | string
-      )
-    ).getOrThrow();
-    data.presentationSubmission = presentationSubmission;
+  if (presentation_submission) {
+    data.presentationSubmission = PresentationSubmission.deserialize(
+      presentation_submission
+    );
   }
+  // if (payload.presentationSubmission) {
+  //   const presentationSubmission = (
+  //     await PresentationExchange.jsonParse.decodePresentationSubmission(
+  //       payload.presentationSubmission as ReadableStream<Uint8Array> | string
+  //     )
+  //   ).getOrThrow();
+  //   data.presentationSubmission = presentationSubmission;
+  // }
 
   return data;
 };
