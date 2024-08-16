@@ -56,18 +56,10 @@ export namespace QueryResponse {
     readonly __type = 'NotFound';
 
     /**
-     * The singleton instance of the NotFound class.
-     * @type {NotFound}
-     * @static
-     * @readonly
+     * Constructor for the class.
+     * @param {string} message - The error message associated with this response.
      */
-    static readonly INSTANCE = new NotFound();
-
-    /**
-     * Private constructor to enforce singleton pattern.
-     * @private
-     */
-    private constructor() {}
+    constructor(public message: string) {}
   }
 
   /**
@@ -84,18 +76,10 @@ export namespace QueryResponse {
     readonly __type = 'InvalidState';
 
     /**
-     * The singleton instance of the InvalidState class.
-     * @type {InvalidState}
-     * @static
-     * @readonly
+     * Constructor for the class.
+     * @param {string} message - The error message associated with this response.
      */
-    static readonly INSTANCE = new InvalidState();
-
-    /**
-     * Private constructor to enforce singleton pattern.
-     * @private
-     */
-    private constructor() {}
+    constructor(public message: string) {}
   }
 
   /**

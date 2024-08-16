@@ -31,21 +31,34 @@ export const createGetWalletResponseInvoker =
     const presentation = await loadPresentationById(transactionId);
 
     if (!presentation) {
-      return QueryResponse.NotFound.INSTANCE;
+      return new QueryResponse.NotFound(
+        `Presentation not found for transactionId: ${transactionId}`
+      );
     }
 
     if (presentation.__type !== 'Submitted') {
-      return QueryResponse.InvalidState.INSTANCE;
+      return new QueryResponse.InvalidState(
+        `Invalid presentation state. Expected 'Submitted', but found '${presentation.__type}'.`
+      );
     }
 
     if (responseCode !== presentation.responseCode) {
-      return QueryResponse.InvalidState.INSTANCE;
+      return new QueryResponse.InvalidState(
+        `Invalid response code. Expected '${presentation.responseCode}', but found '${responseCode}'.`
+      );
     }
 
     const expired = presentation.initiatedAt.getTime() + maxAge.toMillis();
+    const current = now().getTime();
 
-    if (expired < now().getTime()) {
-      return QueryResponse.InvalidState.INSTANCE;
+    if (expired < current) {
+      return new QueryResponse.InvalidState(
+        `Presentation has expired. Current time: ${new Date(
+          current
+        ).toISOString()}, Initiated at: ${presentation.initiatedAt.toISOString()}, Valid until: ${new Date(
+          expired
+        ).toISOString()}.`
+      );
     }
 
     return new QueryResponse.Found(

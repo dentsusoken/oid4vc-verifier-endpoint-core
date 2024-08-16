@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
+import 'reflect-metadata';
+import { describe, it, expect } from 'vitest';
 import {
   getJwks,
   getJwksUri,
@@ -138,7 +139,6 @@ describe('JWKS and Payload Utilities', () => {
         client_id_scheme: 'pre-registered',
         iat: 1686218400,
         id_token_type: 'subject_signed',
-        presentation_definition: {},
         presentation_definition_uri: 'https://example.com/pd',
         response_mode: 'direct_post',
         client_metadata: clientMetaData,

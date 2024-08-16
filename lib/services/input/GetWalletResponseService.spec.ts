@@ -1,14 +1,6 @@
 import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
-import {
-  Presentation,
-  VerifierConfig,
-  RequestId,
-  AuthorizationResponseData,
-  ResponseCode,
-  AuthorizationResponse,
-  ResponseModeOption,
-} from '../../domain';
+import { RequestId, AuthorizationResponse } from '../../domain';
 import { PresentationDefinition, PresentationSubmission } from 'oid4vc-prex';
 import {
   EmbedModeTO,
@@ -18,17 +10,6 @@ import {
   ResponseModeTO,
 } from '../../ports/input/InitTransaction.types';
 import { CompactEncrypt, importJWK } from 'jose';
-import {
-  LoadPresentationByRequestId,
-  StorePresentation,
-} from '../../ports/out/persistence';
-import { createPostWalletResponseServiceInvoker } from './PostWalletResponseService';
-import { VerifyJarmJwt } from '../../ports/out/jose';
-import { Result } from '../../kotlin';
-import {
-  CreateQueryWalletResponseRedirectUri,
-  GenerateResponseCode,
-} from '../../ports/out/cfg';
 import { MockConfiguration } from '../../di/MockConfiguration';
 import { PortsInputImpl, PortsOutImpl } from '../../di';
 import { WalletResponseTO } from '../../ports/input';

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { PresentationDefinition } from 'oid4vc-prex';
 import {
   ClientMetaData,
   EphemeralECDHPrivateJwk,
@@ -22,6 +21,7 @@ import {
   EmbedOption,
 } from '../../../domain';
 import { RequestObject } from './RequestObject';
+import { PresentationDefinition } from 'oid4vc-prex';
 
 /**
  * Represents the payload structure for the request object
@@ -178,6 +178,7 @@ export const toPayload = (
     requestObject.presentationDefinition &&
     requestObject.presentationDefinition instanceof PresentationDefinition
   ) {
+    //if (requestObject.presentationDefinition) {
     payload.presentation_definition =
       requestObject.presentationDefinition.serialize();
   }

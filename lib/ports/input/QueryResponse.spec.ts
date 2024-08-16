@@ -4,19 +4,23 @@ import { QueryResponse } from './QueryResponse';
 describe('QueryResponse', () => {
   describe('NotFound', () => {
     it('should create a NotFound instance using the static INSTANCE', () => {
-      const notFound = QueryResponse.NotFound.INSTANCE;
+      const message = 'aaa';
+      const notFound = new QueryResponse.NotFound(message);
 
       expect(notFound).toBeInstanceOf(QueryResponse.NotFound);
       expect(notFound.__type).toBe('NotFound');
+      expect(notFound.message).toBe(message);
     });
   });
 
   describe('InvalidState', () => {
     it('should create an InvalidState instance using the static INSTANCE', () => {
-      const invalidState = QueryResponse.InvalidState.INSTANCE;
+      const message = 'invalid';
+      const invalidState = new QueryResponse.InvalidState(message);
 
       expect(invalidState).toBeInstanceOf(QueryResponse.InvalidState);
       expect(invalidState.__type).toBe('InvalidState');
+      expect(invalidState.message).toBe(message);
     });
   });
 

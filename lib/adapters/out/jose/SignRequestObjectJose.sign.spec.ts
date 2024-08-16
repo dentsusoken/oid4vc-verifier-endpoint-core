@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { sign } from './SignRequestObjectJose.sign';
 import { SigningConfig } from '../../../domain';

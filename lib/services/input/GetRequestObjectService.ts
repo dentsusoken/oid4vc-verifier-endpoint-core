@@ -23,7 +23,7 @@ import {
 import { GetRequestObject, QueryResponse } from '../../ports/input';
 import { runAsyncCatching } from '../../kotlin';
 
-type CreateParams = {
+export type GetRequestObjectServiceCreateParams = {
   loadPresentationByRequestId: LoadPresentationByRequestId;
   storePresentation: StorePresentation;
   signRequestObject: SignRequestObject;
@@ -38,16 +38,20 @@ export const createGetRequestObjectServiceInvoker =
     signRequestObject,
     verifierConfig,
     now,
-  }: CreateParams): GetRequestObject =>
+  }: GetRequestObjectServiceCreateParams): GetRequestObject =>
   async (requestId: RequestId): Promise<QueryResponse<Jwt>> => {
     const presentation = await loadPresentationByRequestId(requestId);
 
     if (!presentation) {
-      return QueryResponse.NotFound.INSTANCE;
+      return new QueryResponse.NotFound(
+        `Presentation not found for requestId: ${requestId.value}`
+      );
     }
 
     if (presentation.__type !== 'Requested') {
-      return QueryResponse.InvalidState.INSTANCE;
+      return new QueryResponse.InvalidState(
+        `Invalid presentation state. Expected 'Requested', but found '${presentation.__type}'.`
+      );
     }
 
     const result = await runAsyncCatching(async () => {
@@ -63,7 +67,9 @@ export const createGetRequestObjectServiceInvoker =
     });
 
     if (result.isFailure) {
-      return QueryResponse.InvalidState.INSTANCE;
+      return new QueryResponse.InvalidState(
+        `${result.exceptionOrUndefined()?.toString()}`
+      );
     }
 
     return new QueryResponse.Found(result.getOrThrow());
