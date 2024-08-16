@@ -21,7 +21,7 @@ import {
   PostWalletResponse,
 } from '../ports/input';
 import {
-  createGetWalletResponseInvoker,
+  createGetWalletResponseServiceInvoker,
   createInitTransactionServiceInvoker,
 } from '../services/input';
 import { Configuration } from './Configuration';
@@ -78,7 +78,7 @@ export class PortsInputImpl implements PortsInput {
         this.portsOut.createQueryWalletResponseRedirectUri(),
     });
 
-    this.#getWalletResponse = createGetWalletResponseInvoker({
+    this.#getWalletResponse = createGetWalletResponseServiceInvoker({
       loadPresentationById: this.portsOut.loadPresentationById(),
       now: this.configuration.now(),
       maxAge: this.configuration.maxAge(),

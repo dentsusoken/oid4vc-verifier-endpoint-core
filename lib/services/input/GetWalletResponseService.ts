@@ -19,20 +19,24 @@ import { QueryResponse, GetWalletResponse } from '../../ports/input';
 import { LoadPresentationById } from '../../ports/out/persistence';
 import { toWalletResponseTO } from './GetWalletResponseService.convert';
 
-type CreateParams = {
+export type GetWalletResponseCreateParams = {
   loadPresentationById: LoadPresentationById;
   now: () => Date;
   maxAge: Duration;
 };
 
-export const createGetWalletResponseInvoker =
-  ({ loadPresentationById, now, maxAge }: CreateParams): GetWalletResponse =>
+export const createGetWalletResponseServiceInvoker =
+  ({
+    loadPresentationById,
+    now,
+    maxAge,
+  }: GetWalletResponseCreateParams): GetWalletResponse =>
   async (transactionId, responseCode) => {
     const presentation = await loadPresentationById(transactionId);
 
     if (!presentation) {
       return new QueryResponse.NotFound(
-        `Presentation not found for transactionId: ${transactionId}`
+        `Presentation not found for transactionId: ${transactionId.value}`
       );
     }
 
@@ -50,7 +54,7 @@ export const createGetWalletResponseInvoker =
         responseCode.value !== presentation.responseCode.value)
     ) {
       return new QueryResponse.InvalidState(
-        `Invalid response code. Expected '${presentation.responseCode}', but found '${responseCode}'.`
+        `Invalid response code. Expected '${presentation.responseCode?.value}', but found '${responseCode?.value}'.`
       );
     }
 
