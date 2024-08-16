@@ -79,7 +79,7 @@ export const getJwks = (
   if (jwkOption.__type === 'ByValue' && privateJwk) {
     const jwk = JSON.parse(privateJwk.value);
     delete jwk.d;
-    delete jwk.use;
+    // delete jwk.use;
 
     return {
       keys: [jwk],

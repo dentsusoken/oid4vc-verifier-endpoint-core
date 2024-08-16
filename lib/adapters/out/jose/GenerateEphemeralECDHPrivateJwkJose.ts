@@ -23,7 +23,7 @@ import { runAsyncCatching } from '../../../kotlin';
 export const createGenerateEphemeralECDHPrivateJwkJoseInvoker =
   (): GenerateEphemeralECDHPrivateJwk => invoke;
 
-const invoke: GenerateEphemeralECDHPrivateJwk = (ecdhAlg = 'ES256') =>
+const invoke: GenerateEphemeralECDHPrivateJwk = (ecdhAlg = 'ECDH-ES') =>
   runAsyncCatching(async () => {
     const { privateKey } = await generateKeyPair(ecdhAlg, {
       extractable: true,
@@ -31,6 +31,7 @@ const invoke: GenerateEphemeralECDHPrivateJwk = (ecdhAlg = 'ES256') =>
     const jwk = await exportJWK(privateKey);
     jwk.kid = uuidv4();
     jwk.use = 'enc';
+    jwk.alg = ecdhAlg;
     const privateJwk: EphemeralECDHPrivateJwk = {
       value: JSON.stringify(jwk),
     };

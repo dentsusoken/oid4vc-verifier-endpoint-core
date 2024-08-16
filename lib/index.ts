@@ -1,5 +1,14 @@
 import 'reflect-metadata';
+export * from './adapters/out/cfg';
+export * from './adapters/out/jose';
+export * from './adapters/out/persistence';
+export * from './di';
 export * from './domain';
+export * from './ports/input';
+export * from './ports/out/cfg';
+export * from './ports/out/jose';
+export * from './ports/out/persistence';
+export * from './services/input';
 export * from './kotlin';
 
 // export class Result<T> {

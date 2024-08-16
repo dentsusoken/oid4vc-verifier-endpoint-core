@@ -27,7 +27,7 @@ describe('JWKS and Payload Utilities', () => {
       };
       const result = getJwks(jwkOption, privateJwk);
       expect(result).toEqual({
-        keys: [{ kty: 'EC', crv: 'P-256', x: 'abc', y: 'def' }],
+        keys: [{ kty: 'EC', crv: 'P-256', x: 'abc', y: 'def', use: 'sig' }],
       });
     });
 
@@ -90,7 +90,9 @@ describe('JWKS and Payload Utilities', () => {
         subject_syntax_types_supported: [
           'urn:ietf:params:oauth:jwk-thumbprint',
         ],
-        jwks: { keys: [{ kty: 'EC', crv: 'P-256', x: 'abc', y: 'def' }] },
+        jwks: {
+          keys: [{ kty: 'EC', crv: 'P-256', x: 'abc', y: 'def', use: 'sig' }],
+        },
         authorization_signed_response_alg: undefined,
         authorization_encrypted_response_alg: 'ECDH-ES+A256KW',
         authorization_encrypted_response_enc: 'A256GCM',

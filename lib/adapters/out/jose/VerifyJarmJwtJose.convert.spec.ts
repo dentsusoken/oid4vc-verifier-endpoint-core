@@ -6,7 +6,8 @@ import { toAuthorizationResponseData } from './VerifyJarmJwtJose.convert';
 
 describe('toAuthorizationResponseTO', () => {
   it('should successfully convert JWT payload to AuthorisationResponseTO', async () => {
-    const presentationSubmissionJson = JSON.stringify({
+    // const presentationSubmissionJson = JSON.stringify({
+    const presentationSubmissionJson = {
       id: 'submission-id-1',
       definition_id: 'definition-id-1',
       descriptor_map: [
@@ -16,20 +17,21 @@ describe('toAuthorizationResponseTO', () => {
           path: '$.verifiableCredential[0]',
         },
       ],
-    });
+    };
+    // });
 
     const mockPayload: JWTDecryptResult['payload'] = {
       state: 'test-state',
-      idToken: 'test-id-token',
-      vpToken: 'test-vp-token',
-      presentationSubmission: presentationSubmissionJson,
+      id_token: 'test-id-token',
+      vp_token: 'test-vp-token',
+      presentation_submission: presentationSubmissionJson,
     };
 
     const authResponse = await toAuthorizationResponseData(mockPayload);
 
     expect(authResponse.state).toBe(mockPayload.state);
-    expect(authResponse.idToken).toBe(mockPayload.idToken);
-    expect(authResponse.vpToken).toBe(mockPayload.vpToken);
+    expect(authResponse.idToken).toBe(mockPayload.id_token);
+    expect(authResponse.vpToken).toBe(mockPayload.vp_token);
 
     const ps = authResponse.presentationSubmission as PresentationSubmission;
     expect(ps.id?.value).toBe('submission-id-1');
@@ -56,11 +58,12 @@ describe('toAuthorizationResponseTO', () => {
   it('should handle payload without presentationSubmission', async () => {
     const mockPayload: JWTDecryptResult['payload'] = {
       state: 'test-state',
-      idToken: 'test-id-token',
+      id_token: 'test-id-token',
     };
 
     const authResponse = await toAuthorizationResponseData(mockPayload);
-    expect(authResponse).toEqual(mockPayload);
+    expect(authResponse.state).toEqual(mockPayload.state);
+    expect(authResponse.idToken).toEqual(mockPayload.id_token);
     expect(authResponse.presentationSubmission).toBeUndefined();
   });
 });
