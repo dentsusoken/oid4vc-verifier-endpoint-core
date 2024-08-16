@@ -42,7 +42,13 @@ export const createGetWalletResponseInvoker =
       );
     }
 
-    if (responseCode !== presentation.responseCode) {
+    if (
+      (!responseCode && presentation.responseCode) ||
+      (responseCode && !presentation.responseCode) ||
+      (responseCode &&
+        presentation.responseCode &&
+        responseCode.value !== presentation.responseCode.value)
+    ) {
       return new QueryResponse.InvalidState(
         `Invalid response code. Expected '${presentation.responseCode}', but found '${responseCode}'.`
       );
