@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
-import { RequestId } from '../../domain';
+import { RequestId, Presentation } from '../../domain';
 import { Result } from '../../kotlin';
 import { PresentationDefinition } from 'oid4vc-prex';
 import {
@@ -63,7 +63,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     expect(presentation?.__type === 'RequestObjectRetrieved').toBe(true);
   });
 
-  it('should throw error when presentation is not found', async () => {
+  it('should return NotFound when presentation is not found', async () => {
     const configuration = new MockConfiguration();
 
     const createParams: GetRequestObjectServiceCreateParams = {
@@ -78,43 +78,88 @@ describe('createGetRequestObjectServiceInvoker', async () => {
 
     const requestId = new RequestId('request-id');
     const response = await getRequestObject(requestId);
-    console.log(response);
 
     expect(response.__type === 'NotFound').toBe(true);
     expect(response.__type === 'NotFound' ? response.message : undefined).toBe(
-      `Presentation not found for requestId: ${requestId.value}`
+      `Presentation not found for requestId: request-id`
     );
   });
 
-  // it('should throw error when presentation type is not RequestObjectRetrieved', async () => {
-  //   const createParams = {
-  //     loadPresentationByRequestId: (async () =>
-  //       ({
-  //         __type: 'Requested',
-  //       } as Presentation)) as LoadPresentationByRequestId,
-  //     storePresentation: (async () => undefined) as StorePresentation,
-  //     verifyJarmJwt: (async () =>
-  //       Result.success({} as AuthorizationResponseData)) as VerifyJarmJwt,
-  //     now: () => new Date(),
-  //     verifierConfig: {} as VerifierConfig,
-  //     generateResponseCode: (async () =>
-  //       new ResponseCode('hoge')) as GenerateResponseCode,
-  //     createQueryWalletResponseRedirectUri: (() =>
-  //       Result.success(
-  //         new URL('https://example.com')
-  //       )) as CreateQueryWalletResponseRedirectUri,
-  //   };
-  //   const postWalletResponse =
-  //     createPostWalletResponseServiceInvoker(createParams);
-  //   const authorizationResponse = new AuthorizationResponse.DirectPostJwt(
-  //     'state',
-  //     'jarm'
-  //   );
+  it('should return InvalidState when presentation type is not Requested', async () => {
+    const configuration = new MockConfiguration();
 
-  //   const result = await postWalletResponse(authorizationResponse);
-  //   expect(result.isFailure);
-  //   expect(result.exceptionOrUndefined()?.message).toBe(
-  //     'Invalid presentation status'
-  //   );
-  // });
+    const createParams: GetRequestObjectServiceCreateParams = {
+      loadPresentationByRequestId: (async () =>
+        ({
+          __type: 'Submitted',
+        } as Presentation.Submitted)) as LoadPresentationByRequestId,
+      storePresentation: (async () => undefined) as StorePresentation,
+      signRequestObject: (async () => Result.success('')) as SignRequestObject,
+      now: () => new Date(),
+      verifierConfig: configuration.verifierConfig(),
+    };
+    const getRequestObject = createGetRequestObjectServiceInvoker(createParams);
+
+    const requestId = new RequestId('request-id');
+    const response = await getRequestObject(requestId);
+
+    expect(response.__type === 'InvalidState').toBe(true);
+    expect(
+      response.__type === 'InvalidState' ? response.message : undefined
+    ).toBe(
+      `Invalid presentation state. Expected 'Requested', but found 'Submitted'.`
+    );
+  });
+
+  it('should return InvalidState when presentation type is not Requested', async () => {
+    const configuration = new MockConfiguration();
+
+    const createParams: GetRequestObjectServiceCreateParams = {
+      loadPresentationByRequestId: (async () =>
+        ({
+          __type: 'Submitted',
+        } as Presentation.Submitted)) as LoadPresentationByRequestId,
+      storePresentation: (async () => undefined) as StorePresentation,
+      signRequestObject: (async () => Result.success('')) as SignRequestObject,
+      now: () => new Date(),
+      verifierConfig: configuration.verifierConfig(),
+    };
+    const getRequestObject = createGetRequestObjectServiceInvoker(createParams);
+
+    const requestId = new RequestId('request-id');
+    const response = await getRequestObject(requestId);
+
+    expect(response.__type === 'InvalidState').toBe(true);
+    expect(
+      response.__type === 'InvalidState' ? response.message : undefined
+    ).toBe(
+      `Invalid presentation state. Expected 'Requested', but found 'Submitted'.`
+    );
+  });
+
+  it('should return InvalidState when signRequestObject() fails', async () => {
+    const configuration = new MockConfiguration();
+
+    const createParams: GetRequestObjectServiceCreateParams = {
+      loadPresentationByRequestId: (async () =>
+        ({
+          __type: 'Requested',
+        } as Presentation.Requested)) as LoadPresentationByRequestId,
+      storePresentation: (async () => undefined) as StorePresentation,
+      signRequestObject: (async () =>
+        Result.failure(new Error('failure'))) as SignRequestObject,
+      now: () => new Date(),
+      verifierConfig: configuration.verifierConfig(),
+    };
+    const getRequestObject = createGetRequestObjectServiceInvoker(createParams);
+
+    const requestId = new RequestId('request-id');
+    const response = await getRequestObject(requestId);
+    console.log(response);
+
+    expect(response.__type === 'InvalidState').toBe(true);
+    expect(
+      response.__type === 'InvalidState' ? response.message : undefined
+    ).toBe(`Error: failure`);
+  });
 });
