@@ -6,3 +6,4 @@ export * from './PostWalletResponse';
 export * from './QueryResponse';
 export * from './TimeoutPresentations';
 export * from './InitTransaction';
+export * from './InitTransaction.types';
