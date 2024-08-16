@@ -76,14 +76,11 @@ describe('PostWalletResponse.convert', () => {
         },
       ],
     };
-    const presentationSubmissionJsonStr = JSON.stringify(
-      presentationSubmission
-    );
 
     const payload = {
       state: 'request-id',
-      vpToken: 'vpToken',
-      presentationSubmission: presentationSubmissionJsonStr,
+      vp_token: 'vpToken',
+      presentation_submission: presentationSubmission,
     };
 
     const enc = new CompactEncrypt(
@@ -124,9 +121,10 @@ describe('PostWalletResponse.convert', () => {
         jarmOption,
         ephemeralECDHPrivateJwk
       );
+      console.log(result);
 
       expect(result.state).toBe(payload.state);
-      expect(result.vpToken).toBe(payload.vpToken);
+      expect(result.vpToken).toBe(payload.vp_token);
       expect(result.presentationSubmission).toBeDefined();
       expect(result.presentationSubmission).toBeInstanceOf(
         PresentationSubmission

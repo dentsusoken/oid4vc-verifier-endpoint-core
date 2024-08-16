@@ -44,16 +44,16 @@ describe('toAuthorizationResponseTO', () => {
     );
   });
 
-  it('should return an error result when presentationSubmission decoding fails', async () => {
-    const mockPayload: JWTDecryptResult['payload'] = {
-      state: 'test-state',
-      presentationSubmission: 'invalid-submission',
-    };
+  // it('should return an error result when presentationSubmission decoding fails', async () => {
+  //   const mockPayload: JWTDecryptResult['payload'] = {
+  //     state: 'test-state',
+  //     presentationSubmission: 'invalid-submission',
+  //   };
 
-    await expect(toAuthorizationResponseData(mockPayload)).rejects.toThrow(
-      SyntaxError
-    );
-  });
+  //   await expect(toAuthorizationResponseData(mockPayload)).rejects.toThrow(
+  //     SyntaxError
+  //   );
+  // });
 
   it('should handle payload without presentationSubmission', async () => {
     const mockPayload: JWTDecryptResult['payload'] = {

@@ -10,6 +10,7 @@ import {
 } from 'jose';
 import { createVerifyJarmJwtJoseInvoker } from './VerifyJarmJwtJose';
 import { EphemeralECDHPrivateJwk, JarmOption } from '../../../domain';
+import { PresentationSubmission } from 'oid4vc-prex';
 
 describe('VerifyJarmJwtJose', () => {
   describe('JWE', () => {
@@ -51,7 +52,7 @@ describe('VerifyJarmJwtJose', () => {
 
     it('should decrypt JARM JWT and map claims to AuthorisationResponseTO', async () => {
       // Given
-      const recipientKeyPair = await generateKeyPair('ES256');
+      const recipientKeyPair = await generateKeyPair('ECDH-ES');
       const privateJwk = await exportJWK(recipientKeyPair.privateKey);
       const publicJwk = { ...privateJwk };
       delete publicJwk.d;
@@ -59,9 +60,8 @@ describe('VerifyJarmJwtJose', () => {
       const publicKey = await importJWK(publicJwk);
 
       const payload = {
-        iss: 'iss',
-        sub: 'sub',
-        aud: 'aud',
+        vp_token: 'vpToken',
+        presentation_submission: {},
       };
 
       const enc = new CompactEncrypt(
@@ -83,7 +83,9 @@ describe('VerifyJarmJwtJose', () => {
 
       expect(result.isSuccess).toBe(true);
       const to = result.getOrThrow();
-      expect(to).toEqual(payload);
+      console.log(to);
+      expect(to.vpToken).toEqual('vpToken');
+      expect(to.presentationSubmission).toEqual(new PresentationSubmission());
     });
 
     it('should return an error when JARM JWT decryption fails', async () => {

@@ -85,8 +85,8 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     );
     const payload = {
       state: presentation.requestId.value,
-      vpToken: 'vpToken',
-      presentationSubmission: presentationSubmissionJsonStr,
+      vp_token: 'vpToken',
+      presentation_submission: presentationSubmissionJsonStr,
     };
 
     const enc = new CompactEncrypt(

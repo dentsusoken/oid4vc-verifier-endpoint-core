@@ -64,13 +64,10 @@ describe('createGetRequestObjectServiceInvoker', async () => {
         },
       ],
     };
-    const presentationSubmissionJsonStr = JSON.stringify(
-      presentationSubmission
-    );
     const payload = {
       state: presentation.requestId.value,
-      vpToken: 'vpToken',
-      presentationSubmission: presentationSubmissionJsonStr,
+      vp_token: 'vpToken',
+      presentation_submission: presentationSubmission,
     };
 
     const enc = new CompactEncrypt(
@@ -123,6 +120,6 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     expect(walletResponseTO.presentationSubmission).toBeInstanceOf(
       PresentationSubmission
     );
-    console.log(getWalletResponseResponse);
+    //console.log(getWalletResponseResponse);
   });
 });
