@@ -25,7 +25,7 @@ export * from './ClientIdScheme';
 export * from './Presentation';
 export * from './Duration';
 export * from './VerifierConfig';
-
+export * from './IdTokenType';
 export * from './TransactionId';
 export * from './RequestId';
 export * from './Nonce';
@@ -34,5 +34,6 @@ export * from './WalletResponse';
 export * from './EphemeralECDHPrivateJwk';
 export * from './StaticSigningPrivateJwk';
 export * from './ResponseCode';
+export * from './ResponseModeOption';
 export * from './GetWalletResponseMethod';
 export * from './Presentation';

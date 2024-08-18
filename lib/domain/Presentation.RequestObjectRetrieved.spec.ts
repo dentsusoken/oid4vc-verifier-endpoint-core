@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import {
   TransactionId,
@@ -12,6 +13,7 @@ import {
   ResponseCode,
   WalletResponse,
 } from '.';
+import { PresentationDefinition } from 'oid4vc-prex';
 
 describe('RequestObjectRetrieved', () => {
   const id = new TransactionId('transaction-id');
@@ -49,7 +51,7 @@ describe('RequestObjectRetrieved', () => {
       requestObjectRetrievedAt
     );
     expect(requestObjectRetrieved.nonce).toBe(nonce);
-    expect(requestObjectRetrieved.ephemeralEcPrivateKey).toBe(
+    expect(requestObjectRetrieved.ephemeralECDHPrivateJwk).toBe(
       ephemeralECDHPrivateJwk
     );
     expect(requestObjectRetrieved.responseMode).toBe(responseMode);
@@ -75,26 +77,6 @@ describe('RequestObjectRetrieved', () => {
     }).toThrow(
       'initiatedAt must be earlier than requestObjectRetrievedAt or equal to requestObjectRetrievedAtEpoc'
     );
-  });
-
-  it('should check if the presentation is expired', () => {
-    const requestObjectRetrieved = new Presentation.RequestObjectRetrieved(
-      id,
-      initiatedAt,
-      type,
-      requestId,
-      requestObjectRetrievedAt,
-      nonce,
-      ephemeralECDHPrivateJwk,
-      responseMode,
-      getWalletResponseMethod
-    );
-
-    const notExpiredAt = new Date('2023-06-08T10:29:59Z');
-    expect(requestObjectRetrieved.isExpired(notExpiredAt)).toBe(false);
-
-    const expiredAt = new Date('2023-06-08T10:30:01Z');
-    expect(requestObjectRetrieved.isExpired(expiredAt)).toBe(true);
   });
 
   it('should submit the presentation', () => {
@@ -136,55 +118,6 @@ describe('RequestObjectRetrieved', () => {
     expect(submitted.responseCode).toBe(responseCode);
   });
 
-  it('should handle timeout', () => {
-    const requestObjectRetrieved = new Presentation.RequestObjectRetrieved(
-      id,
-      initiatedAt,
-      type,
-      requestId,
-      requestObjectRetrievedAt,
-      nonce,
-      ephemeralECDHPrivateJwk,
-      responseMode,
-      getWalletResponseMethod
-    );
-
-    const timeoutAt = new Date('2023-06-08T12:00:00Z');
-    const result = requestObjectRetrieved.timedOut(timeoutAt);
-
-    expect(result.isSuccess).toBe(true);
-    const timedOut = result.getOrThrow();
-    expect(timedOut.constructor).toBe(Presentation.TimedOut);
-    expect(timedOut.id).toBe(id);
-    expect(timedOut.initiatedAt).toBe(initiatedAt);
-    expect(timedOut.type).toBe(type);
-    expect(timedOut.requestObjectRetrievedAt).toBe(requestObjectRetrievedAt);
-    expect(timedOut.submittedAt).toBeUndefined();
-    expect(timedOut.timedOutAt).toBe(timeoutAt);
-  });
-
-  it('should throw an error if initiatedAt is later than timeout date', () => {
-    const requestObjectRetrieved = new Presentation.RequestObjectRetrieved(
-      id,
-      initiatedAt,
-      type,
-      requestId,
-      requestObjectRetrievedAt,
-      nonce,
-      ephemeralECDHPrivateJwk,
-      responseMode,
-      getWalletResponseMethod
-    );
-
-    const invalidTimeoutAt = new Date('2023-06-08T09:59:59Z');
-    const result = requestObjectRetrieved.timedOut(invalidTimeoutAt);
-
-    expect(result.isFailure).toBe(true);
-    expect(result.exceptionOrUndefined()?.message).toBe(
-      'initiatedAt must be earlier than at'
-    );
-  });
-
   describe('type guard', () => {
     it('should correctly identify RequestObjectRetrieved using if statement', () => {
       const presentation = new Presentation.RequestObjectRetrieved(
@@ -208,7 +141,7 @@ describe('RequestObjectRetrieved', () => {
           requestObjectRetrievedAt
         );
         expect(presentation.nonce).toBe(nonce);
-        expect(presentation.ephemeralEcPrivateKey).toBe(
+        expect(presentation.ephemeralECDHPrivateJwk).toBe(
           ephemeralECDHPrivateJwk
         );
         expect(presentation.responseMode).toBe(responseMode);
@@ -245,7 +178,7 @@ describe('RequestObjectRetrieved', () => {
             requestObjectRetrievedAt
           );
           expect(presentation.nonce).toBe(nonce);
-          expect(presentation.ephemeralEcPrivateKey).toBe(
+          expect(presentation.ephemeralECDHPrivateJwk).toBe(
             ephemeralECDHPrivateJwk
           );
           expect(presentation.responseMode).toBe(responseMode);
@@ -258,6 +191,55 @@ describe('RequestObjectRetrieved', () => {
             'Expected presentation to be of type RequestObjectRetrieved'
           );
       }
+    });
+  });
+
+  describe('toJSON', () => {
+    it('should return a JSON', () => {
+      const id = new TransactionId('abc123');
+      const initiatedAt = new Date(0);
+      const type = new PresentationType.VpTokenRequest(
+        new PresentationDefinition()
+      );
+      const requestId = new RequestId('def456');
+      const requestObjectRetrievedAt = new Date(0);
+      const nonce = new Nonce('ghi789');
+      const ephemeralECDHPrivateJwk = {
+        value: 'hoge',
+      } as EphemeralECDHPrivateJwk;
+      const responseMode = ResponseModeOption.DirectPost;
+      const getWalletResponseMethod = GetWalletResponseMethod.Poll.INSTANCE;
+
+      const presentation = new Presentation.RequestObjectRetrieved(
+        id,
+        initiatedAt,
+        type,
+        requestId,
+        requestObjectRetrievedAt,
+        nonce,
+        ephemeralECDHPrivateJwk,
+        responseMode,
+        getWalletResponseMethod
+      );
+
+      const json = presentation.toJSON();
+
+      expect(json).toEqual({
+        id: 'abc123',
+        initiated_at: '1970-01-01T00:00:00.000Z',
+        type: {
+          __type: 'VpTokenRequest',
+          presentation_definition: {},
+        },
+        request_id: 'def456',
+        request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
+        nonce: 'ghi789',
+        ephemeral_ecdh_private_jwk: 'hoge',
+        response_mode: 'direct_post',
+        get_wallet_response_method: {
+          __type: 'Poll',
+        },
+      });
     });
   });
 });

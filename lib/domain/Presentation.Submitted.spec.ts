@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import {
   TransactionId,
@@ -61,76 +62,6 @@ describe('Submitted', () => {
         responseCode
       );
     }).toThrowError('initiatedAt must be earlier than now');
-  });
-
-  it('should check if the presentation is expired', () => {
-    const submitted = new Presentation.Submitted(
-      id,
-      initiatedAt,
-      type,
-      requestId,
-      requestObjectRetrievedAt,
-      submittedAt,
-      walletResponse,
-      nonce,
-      responseCode
-    );
-
-    const notExpiredAt = new Date('2023-06-01T09:59:59Z');
-    expect(submitted.isExpired(notExpiredAt)).toBe(false);
-
-    const expiredAt = new Date('2023-06-01T10:00:01Z');
-    expect(submitted.isExpired(expiredAt)).toBe(true);
-  });
-
-  it('should timeout the presentation', () => {
-    const submitted = new Presentation.Submitted(
-      id,
-      initiatedAt,
-      type,
-      requestId,
-      requestObjectRetrievedAt,
-      submittedAt,
-      walletResponse,
-      nonce,
-      responseCode
-    );
-
-    const timeoutAt = new Date('2023-06-01T10:03:00Z');
-    const result = submitted.timedOut(timeoutAt);
-
-    expect(result.isSuccess).toBe(true);
-    const timedOut = result.getOrThrow();
-    expect(timedOut.constructor).toBe(Presentation.TimedOut);
-    expect(timedOut.id).toBe(id);
-    expect(timedOut.initiatedAt).toBe(initiatedAt);
-    expect(timedOut.type).toBe(type);
-    expect(timedOut.requestObjectRetrievedAt).toBe(requestObjectRetrievedAt);
-    expect(timedOut.submittedAt).toBe(submittedAt);
-    expect(timedOut.timedOutAt).toBe(timeoutAt);
-  });
-
-  it('should return a failure result if initiatedAt is later than timeout date', () => {
-    const submitted = new Presentation.Submitted(
-      id,
-      initiatedAt,
-      type,
-      requestId,
-      requestObjectRetrievedAt,
-      submittedAt,
-      walletResponse,
-      nonce,
-      responseCode
-    );
-
-    const invalidTimeoutAt = new Date('2023-06-01T09:59:59Z');
-    const result = submitted.timedOut(invalidTimeoutAt);
-
-    expect(result.isFailure).toBe(true);
-    expect(result.exceptionOrUndefined()).toBeInstanceOf(Error);
-    expect(result.exceptionOrUndefined()?.message).toBe(
-      'initiatedAt must be earlier than at'
-    );
   });
 
   describe('type guard', () => {

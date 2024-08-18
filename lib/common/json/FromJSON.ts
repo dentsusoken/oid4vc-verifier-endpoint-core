@@ -15,17 +15,10 @@
  */
 
 /**
- * Represents an ephemeral ECDH private key in JWK format.
- *
- * @interface EphemeralECDHPrivateJwk
- * @property {string} value - The value of the ephemeral ECDH private key.
- * @readonly
- *
- * @example
- * const privateKey: EphemeralECDHPrivateJwk = {
- *   value: 'abc123...'
- * };
+ * Type definition for a function that converts JSON to a specific type.
+ * @template T - The type to which the JSON will be converted.
+ * @param {unknown} json - The JSON value to be converted.
+ * @returns {T} The converted value of type T.
  */
-export interface EphemeralECDHPrivateJwk {
-  readonly value: string;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FromJSON<T> = (json: unknown) => T;

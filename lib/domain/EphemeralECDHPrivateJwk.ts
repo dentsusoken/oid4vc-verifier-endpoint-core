@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+import { z } from 'zod';
+import { FromJSON } from '../common/json/FromJSON';
+
+const schema = z.string().min(1);
+
 /**
  * Represents an ephemeral encryption private key in JWK (JSON Web Key) format.
  * This interface is used for temporary or one-time encryption purposes.
@@ -23,15 +28,15 @@ export interface EphemeralECDHPrivateJwk {
   /**
    * The string representation of the ephemeral private key in JWK format.
    * This should be a valid JSON string representing a JWK for an encryption key.
-   *
-   * @example
-   * {
-   *   "kty": "EC",
-   *   "crv": "P-256",
-   *   "x": "MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4",
-   *   "y": "4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM",
-   *   "d": "870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"
-   * }
    */
   readonly value: string;
+}
+
+export namespace EphemeralECDHPrivateJwk {
+  export const fromJSON: FromJSON<EphemeralECDHPrivateJwk> = (json) =>
+    ({ value: schema.parse(json) } as EphemeralECDHPrivateJwk);
+
+  export const toJSON = (
+    ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk
+  ): string => ephemeralECDHPrivateJwk.value;
 }

@@ -86,7 +86,7 @@ describe('createGetWalletResponseServiceInvoker', async () => {
     ).setProtectedHeader({ alg: 'ECDH-ES+A256KW', enc: 'A256GCM' });
 
     const verifierPrivateJwk = JSON.parse(
-      presentation.ephemeralEcPrivateKey!.value
+      presentation.ephemeralECDHPrivateJwk!.value
     );
     delete verifierPrivateJwk.d;
     const publicKey = await importJWK(verifierPrivateJwk);

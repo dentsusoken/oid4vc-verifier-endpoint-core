@@ -17,7 +17,29 @@
 /**
  * Represents a transaction ID.
  */
+
+import { FromJSON } from '../common/json/FromJSON';
+import { z } from 'zod';
+
+const schema = z.string().min(1);
+
+/**
+ * Represents a transaction ID.
+ */
 export class TransactionId {
+  /**
+   * Creates a TransactionId instance from a JSON value.
+   * @type {FromJSON<TransactionId>}
+   * @param {unknown} json - The JSON value representing the transaction ID.
+   * @returns {TransactionId} The TransactionId instance.
+   * @throws {ZodError} If the JSON value is not a valid non-empty string.
+   */
+  static fromJSON: FromJSON<TransactionId> = (json) => {
+    const value = schema.parse(json);
+
+    return new TransactionId(value);
+  };
+
   /**
    * Creates an instance of TransactionId.
    * @param {string} value - The value of the transaction ID.
@@ -27,5 +49,13 @@ export class TransactionId {
     if (!value) {
       throw new Error('value is required');
     }
+  }
+
+  /**
+   * Returns the JSON representation of the TransactionId.
+   * @returns {string} The JSON representation of the TransactionId.
+   */
+  toJSON(): string {
+    return this.value;
   }
 }

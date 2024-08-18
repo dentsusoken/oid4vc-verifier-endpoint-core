@@ -1,282 +1,381 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { PresentationSubmission } from 'oid4vc-prex';
-import { Jwt, WalletResponse } from '.';
+import { WalletResponse } from '.';
+import { ZodError } from 'zod';
 
 describe('WalletResponse', () => {
   describe('IdToken', () => {
-    it('should have the correct __type', () => {
-      const idToken = 'id-token';
-      const walletResponse = new WalletResponse.IdToken(idToken);
-      expect(walletResponse.__type).toBe('IdToken');
+    describe('fromJSON', () => {
+      it('should create an IdToken instance for a valid JSON object', () => {
+        const json = { __type: 'IdToken', id_token: 'example_id_token' };
+        const result = WalletResponse.IdToken.fromJSON(json);
+        expect(result).toBeInstanceOf(WalletResponse.IdToken);
+        expect(result.__type === 'IdToken').toBe(true);
+        expect(result.idToken).toBe('example_id_token');
+      });
+
+      it('should throw a ZodError for an invalid JSON object with missing id_token', () => {
+        const json = { __type: 'IdToken' };
+
+        try {
+          WalletResponse.IdToken.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'invalid_type',
+              expected: 'string',
+              received: 'undefined',
+              path: ['id_token'],
+              message: 'Required',
+            },
+          ]);
+        }
+      });
+
+      it('should throw a ZodError for an invalid JSON object with empty id_token', () => {
+        const json = { __type: 'IdToken', id_token: '' };
+
+        try {
+          WalletResponse.IdToken.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'too_small',
+              exact: false,
+              minimum: 1,
+              type: 'string',
+              inclusive: true,
+              path: ['id_token'],
+              message: 'String must contain at least 1 character(s)',
+            },
+          ]);
+        }
+      });
     });
 
-    it('should store the idToken', () => {
-      const idToken = 'id-token';
-      const walletResponse = new WalletResponse.IdToken(idToken);
-      expect(walletResponse.idToken).toBe(idToken);
-    });
-
-    it('should throw an error if idToken is not provided', () => {
-      expect(() => new WalletResponse.IdToken('')).toThrowError(
-        'idToken is required'
-      );
+    describe('toJSON', () => {
+      it('should return the correct JSON representation', () => {
+        const idToken = new WalletResponse.IdToken('example_id_token');
+        expect(idToken.toJSON()).toEqual({
+          __type: 'IdToken',
+          id_token: 'example_id_token',
+        });
+      });
     });
   });
 
   describe('VpToken', () => {
-    it('should have the correct __type', () => {
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      const walletResponse = new WalletResponse.VpToken(
-        vpToken,
-        presentationSubmission
-      );
-      expect(walletResponse.__type).toBe('VpToken');
+    describe('fromJSON', () => {
+      it('should create a VpToken instance for a valid JSON object', () => {
+        const json = {
+          __type: 'VpToken',
+          vp_token: 'example_vp_token',
+          presentation_submission: {},
+        };
+        const result = WalletResponse.VpToken.fromJSON(json);
+        expect(result).toBeInstanceOf(WalletResponse.VpToken);
+        expect(result.vpToken).toBe('example_vp_token');
+        expect(result.presentationSubmission).toBeInstanceOf(
+          PresentationSubmission
+        );
+      });
+
+      it('should throw a ZodError for an invalid JSON object with missing vp_token', () => {
+        const json = { __type: 'VpToken', presentation_submission: {} };
+
+        try {
+          WalletResponse.VpToken.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'invalid_type',
+              expected: 'string',
+              received: 'undefined',
+              path: ['vp_token'],
+              message: 'Required',
+            },
+          ]);
+        }
+      });
+
+      it('should throw a ZodError for an invalid JSON object with empty vp_token', () => {
+        const json = {
+          __type: 'VpToken',
+          vp_token: '',
+          presentation_submission: {},
+        };
+
+        try {
+          WalletResponse.VpToken.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'too_small',
+              exact: false,
+              minimum: 1,
+              type: 'string',
+              inclusive: true,
+              path: ['vp_token'],
+              message: 'String must contain at least 1 character(s)',
+            },
+          ]);
+        }
+      });
     });
 
-    it('should store the vpToken and presentationSubmission', () => {
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      const walletResponse = new WalletResponse.VpToken(
-        vpToken,
-        presentationSubmission
-      );
-      expect(walletResponse.vpToken).toBe(vpToken);
-      expect(walletResponse.presentationSubmission).toBe(
-        presentationSubmission
-      );
-    });
-
-    it('should throw an error if vpToken is not provided', () => {
-      const presentationSubmission = {} as PresentationSubmission;
-      expect(
-        () => new WalletResponse.VpToken('', presentationSubmission)
-      ).toThrowError('vpToken is required');
+    describe('toJSON', () => {
+      it('should return the correct JSON representation', () => {
+        const vpToken = new WalletResponse.VpToken(
+          'example_vp_token',
+          new PresentationSubmission()
+        );
+        expect(vpToken.toJSON()).toEqual({
+          __type: 'VpToken',
+          vp_token: 'example_vp_token',
+          presentation_submission: {},
+        });
+      });
     });
   });
 
   describe('IdAndVpToken', () => {
-    it('should have the correct __type', () => {
-      const idToken = 'id-token';
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      const walletResponse = new WalletResponse.IdAndVpToken(
-        idToken,
-        vpToken,
-        presentationSubmission
-      );
-      expect(walletResponse.__type).toBe('IdAndVpToken');
+    describe('fromJSON', () => {
+      it('should create an IdAndVpToken instance for a valid JSON object', () => {
+        const json = {
+          __type: 'IdAndVpToken',
+          id_token: 'example_id_token',
+          vp_token: 'example_vp_token',
+          presentation_submission: {},
+        };
+        const result = WalletResponse.IdAndVpToken.fromJSON(json);
+        expect(result).toBeInstanceOf(WalletResponse.IdAndVpToken);
+        expect(result.idToken).toBe('example_id_token');
+        expect(result.vpToken).toBe('example_vp_token');
+        expect(result.presentationSubmission).toBeInstanceOf(
+          PresentationSubmission
+        );
+      });
+
+      it('should throw a ZodError for an invalid JSON object with missing id_token', () => {
+        const json = {
+          __type: 'IdAndVpToken',
+          vp_token: 'example_vp_token',
+          presentation_submission: {},
+        };
+
+        try {
+          WalletResponse.IdAndVpToken.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'invalid_type',
+              expected: 'string',
+              received: 'undefined',
+              path: ['id_token'],
+              message: 'Required',
+            },
+          ]);
+        }
+      });
+
+      it('should throw a ZodError for an invalid JSON object with missing vp_token', () => {
+        const json = {
+          __type: 'IdAndVpToken',
+          id_token: 'example_id_token',
+          presentation_submission: {},
+        };
+
+        try {
+          WalletResponse.IdAndVpToken.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'invalid_type',
+              expected: 'string',
+              received: 'undefined',
+              path: ['vp_token'],
+              message: 'Required',
+            },
+          ]);
+        }
+      });
+
+      it('should throw a ZodError for an invalid JSON object with empty id_token', () => {
+        const json = {
+          __type: 'IdAndVpToken',
+          id_token: '',
+          vp_token: 'example_vp_token',
+          presentation_submission: {},
+        };
+
+        try {
+          WalletResponse.IdAndVpToken.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'too_small',
+              exact: false,
+              minimum: 1,
+              type: 'string',
+              inclusive: true,
+              path: ['id_token'],
+              message: 'String must contain at least 1 character(s)',
+            },
+          ]);
+        }
+      });
+
+      it('should throw a ZodError for an invalid JSON object with empty vp_token', () => {
+        const json = {
+          __type: 'IdAndVpToken',
+          id_token: 'example_id_token',
+          vp_token: '',
+          presentation_submission: {},
+        };
+
+        try {
+          WalletResponse.IdAndVpToken.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'too_small',
+              exact: false,
+              minimum: 1,
+              type: 'string',
+              inclusive: true,
+              path: ['vp_token'],
+              message: 'String must contain at least 1 character(s)',
+            },
+          ]);
+        }
+      });
     });
 
-    it('should store the idToken, vpToken, and presentationSubmission', () => {
-      const idToken = 'id-token';
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      const walletResponse = new WalletResponse.IdAndVpToken(
-        idToken,
-        vpToken,
-        presentationSubmission
-      );
-      expect(walletResponse.idToken).toBe(idToken);
-      expect(walletResponse.vpToken).toBe(vpToken);
-      expect(walletResponse.presentationSubmission).toBe(
-        presentationSubmission
-      );
-    });
-
-    it('should throw an error if idToken is not provided', () => {
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      expect(
-        () =>
-          new WalletResponse.IdAndVpToken(
-            undefined as unknown as Jwt,
-            vpToken,
-            presentationSubmission
-          )
-      ).toThrowError('idToken is required');
-    });
-
-    it('should throw an error if vpToken is not provided', () => {
-      const idToken = 'id-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      expect(
-        () =>
-          new WalletResponse.IdAndVpToken(
-            idToken,
-            undefined as unknown as Jwt,
-            presentationSubmission
-          )
-      ).toThrowError('vpToken is required');
+    describe('toJSON', () => {
+      it('should return the correct JSON representation', () => {
+        const idAndVpToken = new WalletResponse.IdAndVpToken(
+          'example_id_token',
+          'example_vp_token',
+          new PresentationSubmission()
+        );
+        expect(idAndVpToken.toJSON()).toEqual({
+          __type: 'IdAndVpToken',
+          id_token: 'example_id_token',
+          vp_token: 'example_vp_token',
+          presentation_submission: {},
+        });
+      });
     });
   });
 
   describe('WalletResponseError', () => {
-    it('should have the correct __type', () => {
-      const value = 'error';
-      const description = 'error description';
-      const walletResponse = new WalletResponse.WalletResponseError(
-        value,
-        description
-      );
-      expect(walletResponse.__type).toBe('WalletResponseError');
+    describe('fromJSON', () => {
+      it('should create a WalletResponseError instance for a valid JSON object', () => {
+        const json = {
+          __type: 'WalletResponseError',
+          value: 'example_error',
+          description: 'Example error description',
+        };
+        const result = WalletResponse.WalletResponseError.fromJSON(json);
+        expect(result).toBeInstanceOf(WalletResponse.WalletResponseError);
+        expect(result.value).toBe('example_error');
+        expect(result.description).toBe('Example error description');
+      });
+
+      it('should create a WalletResponseError instance for a valid JSON object without description', () => {
+        const json = {
+          __type: 'WalletResponseError',
+          value: 'example_error',
+        };
+        const result = WalletResponse.WalletResponseError.fromJSON(json);
+        expect(result).toBeInstanceOf(WalletResponse.WalletResponseError);
+        expect(result.value).toBe('example_error');
+        expect(result.description).toBeUndefined();
+      });
+
+      it('should throw a ZodError for an invalid JSON object with missing value', () => {
+        const json = { __type: 'WalletResponseError' };
+
+        try {
+          WalletResponse.WalletResponseError.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'invalid_type',
+              expected: 'string',
+              received: 'undefined',
+              path: ['value'],
+              message: 'Required',
+            },
+          ]);
+        }
+      });
+
+      it('should throw a ZodError for an invalid JSON object with empty value', () => {
+        const json = { __type: 'WalletResponseError', value: '' };
+
+        try {
+          WalletResponse.WalletResponseError.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'too_small',
+              exact: false,
+              minimum: 1,
+              type: 'string',
+              inclusive: true,
+              path: ['value'],
+              message: 'String must contain at least 1 character(s)',
+            },
+          ]);
+        }
+      });
     });
 
-    it('should store the value and description', () => {
-      const value = 'error';
-      const description = 'error description';
-      const walletResponse = new WalletResponse.WalletResponseError(
-        value,
-        description
-      );
-      expect(walletResponse.value).toBe(value);
-      expect(walletResponse.description).toBe(description);
-    });
-  });
-
-  describe('type guard', () => {
-    it('should correctly identify IdToken using if statement', () => {
-      const idToken = 'id-token';
-      const walletResponse: WalletResponse = new WalletResponse.IdToken(
-        idToken
-      );
-
-      if (walletResponse.__type === 'IdToken') {
-        expect(walletResponse.idToken).toBe(idToken);
-      } else {
-        throw new Error('Expected walletResponse to be of type IdToken');
-      }
-    });
-
-    it('should correctly identify VpToken using if statement', () => {
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      const walletResponse: WalletResponse = new WalletResponse.VpToken(
-        vpToken,
-        presentationSubmission
-      );
-
-      if (walletResponse.__type === 'VpToken') {
-        expect(walletResponse.vpToken).toBe(vpToken);
-        expect(walletResponse.presentationSubmission).toBe(
-          presentationSubmission
+    describe('toJSON', () => {
+      it('should return the correct JSON representation with description', () => {
+        const walletResponseError = new WalletResponse.WalletResponseError(
+          'example_error',
+          'Example error description'
         );
-      } else {
-        throw new Error('Expected walletResponse to be of type VpToken');
-      }
-    });
+        expect(walletResponseError.toJSON()).toEqual({
+          __type: 'WalletResponseError',
+          value: 'example_error',
+          description: 'Example error description',
+        });
+      });
 
-    it('should correctly identify IdAndVpToken using if statement', () => {
-      const idToken = 'id-token';
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      const walletResponse: WalletResponse = new WalletResponse.IdAndVpToken(
-        idToken,
-        vpToken,
-        presentationSubmission
-      );
-
-      if (walletResponse.__type === 'IdAndVpToken') {
-        expect(walletResponse.idToken).toBe(idToken);
-        expect(walletResponse.vpToken).toBe(vpToken);
-        expect(walletResponse.presentationSubmission).toBe(
-          presentationSubmission
+      it('should return the correct JSON representation without description', () => {
+        const walletResponseError = new WalletResponse.WalletResponseError(
+          'example_error'
         );
-      } else {
-        throw new Error('Expected walletResponse to be of type IdAndVpToken');
-      }
-    });
-
-    it('should correctly identify WalletResponseError using if statement', () => {
-      const value = 'error';
-      const description = 'error description';
-      const walletResponse: WalletResponse =
-        new WalletResponse.WalletResponseError(value, description);
-
-      if (walletResponse.__type === 'WalletResponseError') {
-        expect(walletResponse.value).toBe(value);
-        expect(walletResponse.description).toBe(description);
-      } else {
-        throw new Error(
-          'Expected walletResponse to be of type WalletResponseError'
-        );
-      }
-    });
-
-    it('should correctly identify IdToken using switch statement', () => {
-      const idToken = 'id-token';
-      const walletResponse: WalletResponse = new WalletResponse.IdToken(
-        idToken
-      );
-
-      switch (walletResponse.__type) {
-        case 'IdToken':
-          expect(walletResponse.idToken).toBe(idToken);
-          break;
-        default:
-          throw new Error('Expected walletResponse to be of type IdToken');
-      }
-    });
-
-    it('should correctly identify VpToken using switch statement', () => {
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      const walletResponse: WalletResponse = new WalletResponse.VpToken(
-        vpToken,
-        presentationSubmission
-      );
-
-      switch (walletResponse.__type) {
-        case 'VpToken':
-          expect(walletResponse.vpToken).toBe(vpToken);
-          expect(walletResponse.presentationSubmission).toBe(
-            presentationSubmission
-          );
-          break;
-        default:
-          throw new Error('Expected walletResponse to be of type VpToken');
-      }
-    });
-
-    it('should correctly identify IdAndVpToken using switch statement', () => {
-      const idToken = 'id-token';
-      const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
-      const walletResponse: WalletResponse = new WalletResponse.IdAndVpToken(
-        idToken,
-        vpToken,
-        presentationSubmission
-      );
-
-      switch (walletResponse.__type) {
-        case 'IdAndVpToken':
-          expect(walletResponse.idToken).toBe(idToken);
-          expect(walletResponse.vpToken).toBe(vpToken);
-          expect(walletResponse.presentationSubmission).toBe(
-            presentationSubmission
-          );
-          break;
-        default:
-          throw new Error('Expected walletResponse to be of type IdAndVpToken');
-      }
-    });
-
-    it('should correctly identify WalletResponseError using switch statement', () => {
-      const value = 'error';
-      const description = 'error description';
-      const walletResponse: WalletResponse =
-        new WalletResponse.WalletResponseError(value, description);
-
-      switch (walletResponse.__type) {
-        case 'WalletResponseError':
-          expect(walletResponse.value).toBe(value);
-          expect(walletResponse.description).toBe(description);
-          break;
-        default:
-          throw new Error(
-            'Expected walletResponse to be of type WalletResponseError'
-          );
-      }
+        expect(walletResponseError.toJSON()).toEqual({
+          __type: 'WalletResponseError',
+          value: 'example_error',
+          description: undefined,
+        });
+      });
     });
   });
 });

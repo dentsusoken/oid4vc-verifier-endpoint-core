@@ -25,6 +25,7 @@ import {
   WalletResponse,
   ResponseCode,
 } from '.';
+//import { FromJSON } from '../common/json/FromJSON';
 import { Result, runCatching } from '../kotlin';
 
 /**
@@ -34,8 +35,7 @@ import { Result, runCatching } from '../kotlin';
 export type Presentation =
   | Presentation.Requested
   | Presentation.RequestObjectRetrieved
-  | Presentation.Submitted
-  | Presentation.TimedOut;
+  | Presentation.Submitted;
 
 export namespace Presentation {
   /**
@@ -48,11 +48,7 @@ export namespace Presentation {
      * @type {('Requested' | 'RequestObjectRetrieved' | 'Submitted' | 'TimedOut')}
      * @readonly
      */
-    readonly __type:
-      | 'Requested'
-      | 'RequestObjectRetrieved'
-      | 'Submitted'
-      | 'TimedOut';
+    readonly __type: 'Requested' | 'RequestObjectRetrieved' | 'Submitted';
 
     /**
      * The transaction ID.
@@ -71,14 +67,18 @@ export namespace Presentation {
      * @type {PresentationType}
      */
     type: PresentationType;
-
-    /**
-     * Checks if the presentation is expired at the specified date and time.
-     * @param {Date} at - The date and time to check.
-     * @returns {boolean} True if expired, false otherwise.
-     */
-    isExpired(at: Date): boolean;
   }
+
+  type RequestedJSONType = {
+    id: string;
+    initiated_at: string;
+    type: object;
+    request_id: string;
+    nonce: string;
+    ephemeral_ecdh_private_jwk?: string;
+    response_mode: string;
+    get_wallet_response_method: GetWalletResponseMethod.GetWalletResponseMethodJSONType;
+  };
 
   /**
    * Represents a requested presentation.
@@ -87,6 +87,10 @@ export namespace Presentation {
    */
   export class Requested implements Presentation {
     readonly __type = 'Requested';
+
+    // static fromJSON: FromJSON<Requested> = (json) => {
+
+    // }
     /**
      * Constructorq
      * @param id Transaction ID
@@ -107,20 +111,9 @@ export namespace Presentation {
       public nonce: Nonce,
       public ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk | undefined,
       public responseMode: ResponseModeOption,
-      public presentationDefinitionMode: EmbedOption<RequestId> | undefined,
+      public presentationDefinitionMode: EmbedOption<RequestId>,
       public getWalletResponseMethod: GetWalletResponseMethod
     ) {}
-
-    /**
-     * Checks if the presentation is expired at the specified date and time.
-     * @param {Date} at - The date and time to check.
-     * @returns {boolean} True if expired, false otherwise.
-     */
-    isExpired(at: Date): boolean {
-      const initiatedAtEpoc = this.initiatedAt.getTime();
-      const atEpoc = at.getTime();
-      return initiatedAtEpoc <= atEpoc;
-    }
 
     /**
      * Retrieves the request object.
@@ -144,31 +137,38 @@ export namespace Presentation {
       );
     }
 
-    /**
-     * Performs timeout processing.
-     * @param {Date} at - The timeout date and time.
-     * @returns {Result} The result containing the timed out presentation.
-     */
-    timedOut(at: Date): Result<TimedOut> {
-      return runCatching(() => {
-        const initiatedAtEpoc = this.initiatedAt.getTime();
-        const atEpoc = at.getTime();
+    toJSON(): RequestedJSONType {
+      const json: RequestedJSONType = {
+        id: this.id.toJSON(),
+        initiated_at: this.initiatedAt.toJSON(),
+        type: this.type.toJSON(),
+        request_id: this.requestId.toJSON(),
+        nonce: this.nonce.toJSON(),
+        response_mode: ResponseModeOption.toJSON(this.responseMode),
+        get_wallet_response_method: this.getWalletResponseMethod.toJSON(),
+      };
 
-        if (initiatedAtEpoc > atEpoc) {
-          throw new Error('initiatedAt must be earlier than at');
-        }
-
-        return new TimedOut(
-          this.id,
-          this.initiatedAt,
-          this.type,
-          undefined,
-          undefined,
-          at
+      if (this.ephemeralECDHPrivateJwk) {
+        json.ephemeral_ecdh_private_jwk = EphemeralECDHPrivateJwk.toJSON(
+          this.ephemeralECDHPrivateJwk
         );
-      });
+      }
+
+      return json;
     }
   }
+
+  type RequestObjectRetrievedJSONType = {
+    id: string;
+    initiated_at: string;
+    type: object;
+    request_id: string;
+    request_object_retrieved_at: string;
+    nonce: string;
+    ephemeral_ecdh_private_jwk?: string;
+    response_mode: string;
+    get_wallet_response_method: GetWalletResponseMethod.GetWalletResponseMethodJSONType;
+  };
 
   /**
    * Represents a request object retrieved presentation.
@@ -191,7 +191,7 @@ export namespace Presentation {
      * @param {RequestId} requestId - The request ID.
      * @param {Date} requestObjectRetrievedAt - The request object retrieval date and time.
      * @param {Nonce} nonce - The nonce.
-     * @param {EphemeralECDHPrivateJwk | undefined} ephemeralEcPrivateKey - The ephemeral EC private key in JWK format.
+     * @param {EphemeralECDHPrivateJwk | undefined} ephemeralECDHPrivateJwk - The ephemeral EC private key in JWK format.
      * @param {ResponseModeOption} responseMode - The response mode option.
      * @param {GetWalletResponseMethod} getWalletResponseMethod - The method to get wallet response.
      */
@@ -202,7 +202,7 @@ export namespace Presentation {
       public requestId: RequestId,
       public requestObjectRetrievedAt: Date,
       public nonce: Nonce,
-      public ephemeralEcPrivateKey: EphemeralECDHPrivateJwk | undefined,
+      public ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk | undefined,
       public responseMode: ResponseModeOption,
       public getWalletResponseMethod: GetWalletResponseMethod
     ) {
@@ -214,18 +214,6 @@ export namespace Presentation {
           'initiatedAt must be earlier than requestObjectRetrievedAt or equal to requestObjectRetrievedAtEpoc'
         );
       }
-    }
-
-    /**
-     * Checks if the presentation is expired at the specified date and time.
-     * @param {Date} at - The date and time to check.
-     * @returns {boolean} True if expired, false otherwise.
-     */
-    isExpired(at: Date): boolean {
-      const requestObjectRetrievedAtEpoc =
-        this.requestObjectRetrievedAt.getTime();
-      const atEpoc = at.getTime();
-      return requestObjectRetrievedAtEpoc <= atEpoc;
     }
 
     /**
@@ -256,30 +244,40 @@ export namespace Presentation {
       );
     }
 
-    /**
-     * Performs timeout processing.
-     * @param {Date} at - The timeout date and time.
-     * @returns {Result} The result containing the timed out presentation.
-     */
-    timedOut(at: Date): Result<Presentation.TimedOut> {
-      return runCatching(() => {
-        const initiatedAtEpoc = this.initiatedAt.getTime();
-        const atEpoc = at.getTime();
+    toJSON(): RequestObjectRetrievedJSONType {
+      const json: RequestObjectRetrievedJSONType = {
+        id: this.id.toJSON(),
+        initiated_at: this.initiatedAt.toJSON(),
+        type: this.type.toJSON(),
+        request_id: this.requestId.toJSON(),
+        request_object_retrieved_at: this.requestObjectRetrievedAt.toJSON(),
+        nonce: this.nonce.toJSON(),
+        response_mode: ResponseModeOption.toJSON(this.responseMode),
+        get_wallet_response_method: this.getWalletResponseMethod.toJSON(),
+      };
 
-        if (initiatedAtEpoc > atEpoc) {
-          throw new Error('initiatedAt must be earlier than at');
-        }
-        return new Presentation.TimedOut(
-          this.id,
-          this.initiatedAt,
-          this.type,
-          this.requestObjectRetrievedAt,
-          undefined,
-          at
+      if (this.ephemeralECDHPrivateJwk) {
+        json.ephemeral_ecdh_private_jwk = EphemeralECDHPrivateJwk.toJSON(
+          this.ephemeralECDHPrivateJwk
         );
-      });
+      }
+
+      return json;
     }
   }
+
+  type SubmittedJSONType = {
+    id: string;
+    initiated_at: string;
+    type: object;
+    request_id: string;
+    request_object_retrieved_at: string;
+    submitted_at: string;
+    nonce: string;
+    ephemeral_ecdh_private_jwk?: string;
+    response_mode: string;
+    get_wallet_response_method: GetWalletResponseMethod.GetWalletResponseMethodJSONType;
+  };
 
   /**
    * Represents a submitted presentation.
@@ -323,83 +321,6 @@ export namespace Presentation {
       if (initiatedAtEpoc > now) {
         throw new Error('initiatedAt must be earlier than now');
       }
-    }
-
-    /**
-     * Checks if the presentation is expired at the specified date and time.
-     * @param {Date} at - The date and time to check.
-     * @returns {boolean} True if expired, false otherwise.
-     */
-    isExpired(at: Date): boolean {
-      const initiatedAtEpoc = this.initiatedAt.getTime();
-      const atEpoc = at.getTime();
-      return initiatedAtEpoc <= atEpoc;
-    }
-
-    /**
-     * Performs timeout processing.
-     * @param {Date} at - The timeout date and time.
-     * @returns {Result} The result containing the timed out presentation.
-     */
-    timedOut(at: Date): Result<Presentation.TimedOut> {
-      return runCatching(() => {
-        const initiatedAtEpoc = this.initiatedAt.getTime();
-        const atEpoc = at.getTime();
-
-        if (initiatedAtEpoc > atEpoc) {
-          throw new Error('initiatedAt must be earlier than at');
-        }
-
-        return new Presentation.TimedOut(
-          this.id,
-          this.initiatedAt,
-          this.type,
-          this.requestObjectRetrievedAt,
-          this.submittedAt,
-          at
-        );
-      });
-    }
-  }
-
-  /**
-   * Represents a timed out presentation.
-   * @class TimedOut
-   * @implements {Presentation}
-   */
-  export class TimedOut implements Presentation {
-    /**
-     * The type of the presentation.
-     * @type {('TimedOut')}
-     * @readonly
-     */
-    readonly __type = 'TimedOut';
-    /**
-     * Creates an instance of TimedOut.
-     * @param {TransactionId} id - The transaction ID.
-     * @param {Date} initiatedAt - The initiation date and time.
-     * @param {PresentationType} type - The presentation type.
-     * @param {Date | undefined} [requestObjectRetrievedAt=undefined] - The request object retrieval date and time.
-     * @param {Date | undefined} [submittedAt=undefined] - The submission date and time.
-     * @param {Date} timedOutAt - The timeout date and time.
-     */
-    constructor(
-      public id: TransactionId,
-      public initiatedAt: Date,
-      public type: PresentationType,
-      public requestObjectRetrievedAt: Date | undefined = undefined,
-      public submittedAt: Date | undefined = undefined,
-      public timedOutAt: Date
-    ) {}
-
-    /**
-     * Checks if the presentation is expired at the specified date and time.
-     * @param {Date} _ - The date and time to check (unused).
-     * @returns {boolean} Always returns false.
-     */
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    isExpired(_: Date): boolean {
-      return false;
     }
   }
 }

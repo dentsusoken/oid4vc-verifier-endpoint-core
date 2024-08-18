@@ -84,7 +84,7 @@ export const createPostWalletResponseServiceInvoker =
         authorizationResponse,
         verifyJarmJwt,
         verifierConfig.clientMetaData.jarmOption,
-        presentation.ephemeralEcPrivateKey
+        presentation.ephemeralECDHPrivateJwk
       );
       const walletResponse = await toWalletResponse(
         authorizationResponseData,

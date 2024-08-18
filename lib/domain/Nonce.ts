@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
+import { FromJSON } from '../common/json/FromJSON';
+import { z } from 'zod';
+
+const schema = z.string().min(1);
 /**
  * Represents a nonce.
  */
 export class Nonce {
+  static fromJSON: FromJSON<Nonce> = (json) => {
+    const value = schema.parse(json);
+
+    return new Nonce(value);
+  };
+
   /**
    * Creates an instance of Nonce.
    * @param {string} value - The value of the nonce.
@@ -27,5 +37,9 @@ export class Nonce {
     if (!value) {
       throw new Error('value is required');
     }
+  }
+
+  toJSON(): string {
+    return this.value;
   }
 }

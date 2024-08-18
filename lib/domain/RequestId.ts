@@ -14,10 +14,28 @@
  * limitations under the License.
  */
 
+import { FromJSON } from '../common/json/FromJSON';
+import { z } from 'zod';
+
+const schema = z.string().min(1);
+
 /**
  * Represents a request ID.
  */
 export class RequestId {
+  /**
+   * Creates a RequestId instance from a JSON value.
+   * @type {FromJSON<RequestId>}
+   * @param {unknown} json - The JSON value representing the request ID.
+   * @returns {RequestId} The RequestId instance.
+   * @throws {ZodError} If the JSON value is not a valid non-empty string.
+   */
+  static fromJSON: FromJSON<RequestId> = (json) => {
+    const value = schema.parse(json);
+
+    return new RequestId(value);
+  };
+
   /**
    * Creates an instance of RequestId.
    * @param {string} value - The value of the request ID.
@@ -27,5 +45,13 @@ export class RequestId {
     if (!value) {
       throw new Error('value is required');
     }
+  }
+
+  /**
+   * Returns the JSON representation of the RequestId.
+   * @returns {string} The JSON representation of the RequestId.
+   */
+  toJSON(): string {
+    return this.value;
   }
 }

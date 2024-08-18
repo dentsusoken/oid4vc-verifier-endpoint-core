@@ -1,62 +1,110 @@
 import { describe, it, expect } from 'vitest';
 import { GetWalletResponseMethod } from './GetWalletResponseMethod';
+import { ZodError } from 'zod';
 
 describe('GetWalletResponseMethod', () => {
   describe('Poll', () => {
-    it('should have the correct __type', () => {
-      expect(GetWalletResponseMethod.Poll.INSTANCE.__type).toBe('Poll');
+    describe('fromJSON', () => {
+      it('should return the Poll instance for a valid JSON object', () => {
+        const json = { __type: 'Poll' };
+        const result = GetWalletResponseMethod.Poll.fromJSON(json);
+        expect(result).toBe(GetWalletResponseMethod.Poll.INSTANCE);
+      });
+
+      it('should throw a ZodError for an invalid JSON object', () => {
+        const json = { __type: 'InvalidType' };
+
+        try {
+          GetWalletResponseMethod.Poll.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'invalid_literal',
+              expected: 'Poll',
+              path: ['__type'],
+              message: `Invalid literal value, expected "Poll"`,
+              received: 'InvalidType',
+            },
+          ]);
+        }
+      });
     });
 
-    it('should be a singleton', () => {
-      expect(GetWalletResponseMethod.Poll.INSTANCE).toBe(
-        GetWalletResponseMethod.Poll.INSTANCE
-      );
+    describe('toJSON', () => {
+      it('should return the correct JSON representation', () => {
+        const poll = GetWalletResponseMethod.Poll.INSTANCE;
+        expect(poll.toJSON()).toEqual({ __type: 'Poll' });
+      });
     });
   });
 
   describe('Redirect', () => {
-    it('should have the correct __type', () => {
-      const redirectUriTemplate = 'https://example.com/redirect';
-      const redirect = new GetWalletResponseMethod.Redirect(
-        redirectUriTemplate
-      );
-      expect(redirect.__type).toBe('Redirect');
+    describe('fromJSON', () => {
+      it('should create a Redirect instance for a valid JSON object', () => {
+        const json = {
+          __type: 'Redirect',
+          redirect_uri_template: 'https://example.com/redirect',
+        };
+        const result = GetWalletResponseMethod.Redirect.fromJSON(json);
+        expect(result).toBeInstanceOf(GetWalletResponseMethod.Redirect);
+        expect(result.redirectUriTemplate).toBe('https://example.com/redirect');
+      });
+
+      it('should throw a ZodError for an invalid JSON object with missing redirect_uri_template', () => {
+        const json = { __type: 'Redirect' };
+
+        try {
+          GetWalletResponseMethod.Redirect.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'invalid_type',
+              expected: 'string',
+              received: 'undefined',
+              path: ['redirect_uri_template'],
+              message: 'Required',
+            },
+          ]);
+        }
+      });
+
+      it('should throw a ZodError for an invalid JSON object with empty redirect_uri_template', () => {
+        const json = { __type: 'Redirect', redirect_uri_template: '' };
+
+        try {
+          GetWalletResponseMethod.Redirect.fromJSON(json);
+          expect.fail('Expected a ZodError to be thrown');
+        } catch (error) {
+          expect(error).toBeInstanceOf(ZodError);
+          expect(error instanceof ZodError && error.issues).toEqual([
+            {
+              code: 'too_small',
+              minimum: 1,
+              exact: false,
+              type: 'string',
+              inclusive: true,
+              path: ['redirect_uri_template'],
+              message: 'String must contain at least 1 character(s)',
+            },
+          ]);
+        }
+      });
     });
 
-    it('should store the redirectUriTemplate', () => {
-      const redirectUriTemplate = 'https://example.com/redirect';
-      const redirect = new GetWalletResponseMethod.Redirect(
-        redirectUriTemplate
-      );
-      expect(redirect.redirectUriTemplate).toBe(redirectUriTemplate);
-    });
-  });
-
-  describe('type guard', () => {
-    it('should correctly identify Redirect using if statement', () => {
-      const redirectUriTemplate = 'https://example.com/redirect';
-      const responseMethod: GetWalletResponseMethod =
-        new GetWalletResponseMethod.Redirect(redirectUriTemplate);
-
-      if (responseMethod.__type === 'Redirect') {
-        expect(responseMethod.redirectUriTemplate).toBe(redirectUriTemplate);
-      } else {
-        throw new Error('Expected responseMethod to be of type Redirect');
-      }
-    });
-
-    it('should correctly identify Redirect using switch statement', () => {
-      const redirectUriTemplate = 'https://example.com/redirect';
-      const responseMethod: GetWalletResponseMethod =
-        new GetWalletResponseMethod.Redirect(redirectUriTemplate);
-
-      switch (responseMethod.__type) {
-        case 'Redirect':
-          expect(responseMethod.redirectUriTemplate).toBe(redirectUriTemplate);
-          break;
-        default:
-          throw new Error('Expected responseMethod to be of type Redirect');
-      }
+    describe('toJSON', () => {
+      it('should return the correct JSON representation', () => {
+        const redirect = new GetWalletResponseMethod.Redirect(
+          'https://example.com/redirect'
+        );
+        expect(redirect.toJSON()).toEqual({
+          __type: 'Redirect',
+          redirect_uri_template: 'https://example.com/redirect',
+        });
+      });
     });
   });
 });

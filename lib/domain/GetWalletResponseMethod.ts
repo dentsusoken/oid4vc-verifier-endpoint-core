@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import { FromJSON } from '../common/json/FromJSON';
+import { z } from 'zod';
+
 /**
  * Represents the method to get the wallet response.
  * @typedef {GetWalletResponseMethod.Poll | GetWalletResponseMethod.Redirect} GetWalletResponseMethod
@@ -27,6 +30,13 @@ export type GetWalletResponseMethod =
  * @namespace GetWalletResponseMethod
  */
 export namespace GetWalletResponseMethod {
+  type Type = 'Poll' | 'Redirect';
+
+  export type GetWalletResponseMethodJSONType = {
+    __type: Type;
+    [index: string]: unknown;
+  };
+
   /**
    * Interface representing a GetWalletResponseMethod.
    * @interface GetWalletResponseMethod
@@ -37,7 +47,9 @@ export namespace GetWalletResponseMethod {
      * @type {('Poll' | 'Redirect')}
      * @readonly
      */
-    readonly __type: 'Poll' | 'Redirect';
+    readonly __type: Type;
+
+    toJSON(): GetWalletResponseMethodJSONType;
   }
 
   /**
@@ -54,6 +66,16 @@ export namespace GetWalletResponseMethod {
      */
     static readonly INSTANCE = new Poll();
 
+    static schema = z.object({
+      __type: z.literal('Poll'),
+    });
+
+    static fromJSON: FromJSON<Poll> = (json) => {
+      this.schema.parse(json);
+
+      return this.INSTANCE;
+    };
+
     /**
      * The type of the GetWalletResponseMethod.
      * @type {('Poll')}
@@ -66,6 +88,10 @@ export namespace GetWalletResponseMethod {
      * @private
      */
     private constructor() {}
+
+    toJSON(): { __type: 'Poll' } {
+      return { __type: this.__type };
+    }
   }
 
   /**
@@ -74,6 +100,11 @@ export namespace GetWalletResponseMethod {
    * @implements {GetWalletResponseMethod}
    */
   export class Redirect implements GetWalletResponseMethod {
+    static schema = z.object({
+      __type: z.literal('Redirect'),
+      redirect_uri_template: z.string().min(1),
+    });
+
     /**
      * The type of the GetWalletResponseMethod.
      * @type {('Redirect')}
@@ -81,10 +112,23 @@ export namespace GetWalletResponseMethod {
      */
     readonly __type = 'Redirect';
 
+    static fromJSON: FromJSON<Redirect> = (json) => {
+      const { redirect_uri_template } = this.schema.parse(json);
+
+      return new Redirect(redirect_uri_template);
+    };
+
     /**
      * Creates an instance of Redirect.
      * @param {string} redirectUriTemplate - The redirect URI template.
      */
     constructor(public redirectUriTemplate: string) {}
+
+    toJSON(): { __type: 'Redirect'; redirect_uri_template: string } {
+      return {
+        __type: this.__type,
+        redirect_uri_template: this.redirectUriTemplate,
+      };
+    }
   }
 }

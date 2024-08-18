@@ -18,35 +18,3 @@
  * Represents a JSON Web Token (JWT) as a string.
  */
 export type Jwt = string;
-
-/**
- * Enum representing the response mode options for authorization responses.
- */
-export enum ResponseModeOption {
-  /**
-   * Direct POST response mode.
-   * The authorization response is sent as a direct POST request to the client.
-   */
-  DirectPost = 'direct_post',
-
-  /**
-   * Direct POST JWT response mode.
-   * The authorization response is sent as a JWT in a direct POST request to the client.
-   */
-  DirectPostJwt = 'direct_post.jwt',
-}
-
-/**
- * Enum representing the types of ID tokens.
- */
-export enum IdTokenType {
-  /**
-   * ID token signed by the subject (user).
-   */
-  SubjectSigned,
-
-  /**
-   * ID token signed by the attester (identity provider).
-   */
-  AttesterSigned,
-}
