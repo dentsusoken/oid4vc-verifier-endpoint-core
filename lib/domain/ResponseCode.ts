@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
+import { z } from 'zod';
+import { FromJSON } from '../common/json/FromJSON';
+
+const schema = z.string().min(1);
+
 /**
  * Represents a response code.
  *
  * @class ResponseCode
  *
  * @param {string} value - The value of the response code.
- *
- * @example
- * const responseCode = new ResponseCode('200');
- * console.log(responseCode.value); // Output: '200'
  */
 export class ResponseCode {
-  constructor(public value: string) {}
+  static fromJSON: FromJSON<ResponseCode> = (json) => {
+    const value = schema.parse(json);
+
+    return new ResponseCode(value);
+  };
+
+  constructor(public value: string) {
+    schema.parse(value);
+  }
+
+  toJSON(): string {
+    return this.value;
+  }
 }

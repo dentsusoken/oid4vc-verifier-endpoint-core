@@ -273,10 +273,9 @@ export namespace Presentation {
     request_id: string;
     request_object_retrieved_at: string;
     submitted_at: string;
+    wallet_response: WalletResponse.WalletResponseJSONType;
     nonce: string;
-    ephemeral_ecdh_private_jwk?: string;
-    response_mode: string;
-    get_wallet_response_method: GetWalletResponseMethod.GetWalletResponseMethodJSONType;
+    response_code?: string;
   };
 
   /**
@@ -321,6 +320,25 @@ export namespace Presentation {
       if (initiatedAtEpoc > now) {
         throw new Error('initiatedAt must be earlier than now');
       }
+    }
+
+    toJSON(): SubmittedJSONType {
+      const json: SubmittedJSONType = {
+        id: this.id.toJSON(),
+        initiated_at: this.initiatedAt.toJSON(),
+        type: this.type.toJSON(),
+        request_id: this.requestId.toJSON(),
+        request_object_retrieved_at: this.requestObjectRetrievedAt.toJSON(),
+        submitted_at: this.submittedAt.toJSON(),
+        wallet_response: this.walletResponse.toJSON(),
+        nonce: this.nonce.toJSON(),
+      };
+
+      if (this.responseCode) {
+        json.response_code = this.responseCode?.toJSON();
+      }
+
+      return json;
     }
   }
 }
