@@ -15,67 +15,163 @@
  */
 
 import { PresentationDefinition } from 'oid4vc-prex';
-import { IdTokenType } from '.';
+import {
+  IdTokenType,
+  idTokenTypeSchema,
+  presentationDefinitionSchema,
+} from '.';
 import { FromJSON } from '../common/json/FromJSON';
+import { z } from 'zod';
+
+const idTokenRequestSchema = z.object({
+  __type: z.literal('IdTokenRequest'),
+  id_token_type: z.array(idTokenTypeSchema),
+});
 
 /**
- * Represents the type of presentation request.
- * @typedef {PresentationType.IdTokenRequest | PresentationType.VpTokenRequest | PresentationType.IdAndVpTokenRequest} PresentationType
+ * Zod schema for validating ID Token Request objects.
+ *
+ * This schema defines the structure and types for an ID Token Request:
+ * - __type: Must be the literal string 'IdTokenRequest'
+ * - id_token_type: An array of ID token types
+ *
+ * @type {z.ZodObject<{
+ *   __type: z.ZodLiteral<'IdTokenRequest'>,
+ *   id_token_type: z.ZodArray<typeof idTokenTypeSchema>
+ * }>}
+ *
+ * @example
+ * // Valid usage
+ * const validRequest = {
+ *   __type: 'IdTokenRequest',
+ *   id_token_type: ['subject_signed_id_token', 'attester_signed_id_token']
+ * };
+ * idTokenRequestSchema.parse(validRequest);
+ *
+ * // Invalid usage (will throw ZodError)
+ * const invalidRequest = {
+ *   __type: 'InvalidType',
+ *   id_token_type: ['invalid_type']
+ * };
+ * idTokenRequestSchema.parse(invalidRequest); // Throws ZodError
+ *
+ * @throws {z.ZodError} Throws a ZodError if the input fails validation
  */
-export type PresentationType =
-  | PresentationType.IdTokenRequest
-  | PresentationType.VpTokenRequest
-  | PresentationType.IdAndVpTokenRequest;
+const vpTokenRequestSchema = z.object({
+  __type: z.literal('VpTokenRequest'),
+  presentation_definition: presentationDefinitionSchema,
+});
+
+/**
+ * Zod schema for validating ID and VP Token Request objects.
+ *
+ * This schema defines the structure and types for a combined ID and VP (Verifiable Presentation) Token Request:
+ * - __type: Must be the literal string 'IdAndVpTokenRequest'
+ * - id_token_type: An array of ID token types
+ * - presentation_definition: A Presentation Definition object
+ *
+ * @type {z.ZodObject<{
+ *   __type: z.ZodLiteral<'IdAndVpTokenRequest'>,
+ *   id_token_type: z.ZodArray<typeof idTokenTypeSchema>,
+ *   presentation_definition: typeof presentationDefinitionSchema
+ * }>}
+ *
+ * @example
+ * // Valid usage
+ * const validRequest = {
+ *   __type: 'IdAndVpTokenRequest',
+ *   id_token_type: ['subject_signed_id_token'],
+ *   presentation_definition: {
+ *     id: 'example_pd_id',
+ *     input_descriptors: [
+ *       // ... presentation definition details
+ *     ]
+ *   }
+ * };
+ * idAndVpTokenRequestSchema.parse(validRequest);
+ *
+ * // Invalid usage (will throw ZodError)
+ * const invalidRequest = {
+ *   __type: 'InvalidType',
+ *   id_token_type: ['invalid_type'],
+ *   presentation_definition: {}
+ * };
+ * idAndVpTokenRequestSchema.parse(invalidRequest); // Throws ZodError
+ *
+ * @throws {z.ZodError} Throws a ZodError if the input fails validation
+ */
+const idAndVpTokenRequestSchema = z.object({
+  __type: z.literal('IdAndVpTokenRequest'),
+  id_token_type: z.array(idTokenTypeSchema),
+  presentation_definition: presentationDefinitionSchema,
+});
+
+/**
+ * Base Zod schema for validating PresentationType objects without transformation.
+ *
+ * This schema uses a discriminated union based on the '__type' field to determine
+ * which specific PresentationType to validate. It supports:
+ * - IdTokenRequest
+ * - VpTokenRequest
+ * - IdAndVpTokenRequest
+ *
+ * This schema only performs validation and does not transform the input into
+ * class instances. It's used as a base for further processing or transformation.
+ *
+ * @type {z.ZodDiscriminatedUnion<
+ *   "__type",
+ *   [
+ *     typeof idTokenRequestSchema,
+ *     typeof vpTokenRequestSchema,
+ *     typeof idAndVpTokenRequestSchema
+ *   ]
+ */
+export const presentationTypeSchema = z.discriminatedUnion('__type', [
+  idTokenRequestSchema,
+  vpTokenRequestSchema,
+  idAndVpTokenRequestSchema,
+]);
+
+export type PresentationTypeJSON = z.infer<typeof presentationTypeSchema>;
 
 /**
  * Namespace containing implementations and type guards for various PresentationType.
  */
 export namespace PresentationType {
-  type Type = 'IdTokenRequest' | 'VpTokenRequest' | 'IdAndVpTokenRequest';
+  export const fromJSON: FromJSON<PresentationTypeJSON, PresentationType> = (
+    json
+  ) => {
+    switch (json.__type) {
+      case 'IdTokenRequest':
+        return new PresentationType.IdTokenRequest(json.id_token_type);
+      case 'VpTokenRequest': {
+        const pd = PresentationDefinition.deserialize(
+          json.presentation_definition
+        );
 
-  interface PresentationType {
-    readonly __type: Type;
+        return new PresentationType.VpTokenRequest(pd);
+      }
+      case 'IdAndVpTokenRequest': {
+        const pd = PresentationDefinition.deserialize(
+          json.presentation_definition
+        );
 
-    toJSON(): {
-      __type: Type;
-      [index: string]: unknown;
-    };
+        return new PresentationType.IdAndVpTokenRequest(json.id_token_type, pd);
+      }
+    }
+  };
+
+  interface Base {
+    __type: 'IdTokenRequest' | 'VpTokenRequest' | 'IdAndVpTokenRequest';
+
+    toJSON(): PresentationTypeJSON;
   }
 
   /**
    * Represents a request for an ID token.
    */
-  export class IdTokenRequest implements PresentationType {
+  export class IdTokenRequest implements Base {
     readonly __type = 'IdTokenRequest' as const;
-
-    /**
-     * Creates an instance of IdTokenRequest from a JSON object.
-     * @type {FromJSON<IdTokenRequest>}
-     * @param {unknown} json - The JSON object to create the IdTokenRequest from.
-     * @returns {IdTokenRequest} The created IdTokenRequest instance.
-     * @throws {Error} If the __type property in the JSON object is not 'IdTokenRequest'.
-     * @throws {Error} If the id_token_type property is missing in the JSON object.
-     */
-    static fromJSON: FromJSON<IdTokenRequest> = (json) => {
-      const { __type, id_token_type } = json as {
-        __type: string;
-        id_token_type: string[];
-      };
-
-      if (__type !== 'IdTokenRequest') {
-        throw new Error(
-          `Invalid __type. Expected 'IdTokenRequest', but '${__type}'`
-        );
-      }
-
-      if (!id_token_type) {
-        throw new Error('Missing id_token_type');
-      }
-
-      return new IdTokenRequest(
-        id_token_type.map((v) => IdTokenType.fromJSON(v))
-      );
-    };
 
     /**
      * Creates an instance of IdTokenRequest.
@@ -84,13 +180,27 @@ export namespace PresentationType {
     constructor(public idTokenType: IdTokenType[]) {}
 
     /**
-     * Returns the JSON representation of the IdTokenRequest instance.
-     * @returns {{ __type: 'IdTokenRequest'; id_token_type: string[] }} The JSON representation of the IdTokenRequest.
+     * Converts the instance to a JSON-serializable object.
+     *
+     * This method is automatically called by JSON.stringify() when serializing the object.
+     * It returns an object with the following properties:
+     * - __type: The type of the request (always 'IdTokenRequest' for this class)
+     * - id_token_type: An array of ID token types
+     *
+     * @returns {Object} An object representation of the instance
+     * @returns {string} returns.__type - The type of the request
+     * @returns {string[]} returns.id_token_type - An array of ID token types
+     *
+     * @example
+     * const request = new IdTokenRequest(['subject_signed_id_token']);
+     * const jsonString = JSON.stringify(request);
+     * console.log(jsonString);
+     * // Output: {"__type":"IdTokenRequest","id_token_type":["subject_signed_id_token"]}
      */
-    toJSON(): { __type: 'IdTokenRequest'; id_token_type: string[] } {
+    toJSON() {
       return {
         __type: this.__type,
-        id_token_type: this.idTokenType.map((v) => IdTokenType.toJSON(v)),
+        id_token_type: this.idTokenType,
       };
     }
   }
@@ -98,43 +208,8 @@ export namespace PresentationType {
   /**
    * Represents a request for a VP token.
    */
-  export class VpTokenRequest implements PresentationType {
+  export class VpTokenRequest implements Base {
     readonly __type = 'VpTokenRequest' as const;
-
-    /**
-     * Creates an instance of VpTokenRequest from a JSON object.
-     * @type {FromJSON<VpTokenRequest>}
-     * @param {unknown} json - The JSON object to create the VpTokenRequest from.
-     * @returns {VpTokenRequest} The created VpTokenRequest instance.
-     * @throws {Error} If the __type property in the JSON object is not 'VpTokenRequest'.
-     * @throws {Error} If the presentation_definition property in the JSON object is invalid.
-     */
-    static fromJSON: FromJSON<VpTokenRequest> = (json) => {
-      const { __type, presentation_definition } = json as {
-        __type: string;
-        presentation_definition: object;
-      };
-
-      if (__type !== 'VpTokenRequest') {
-        throw new Error(
-          `Invalid __type. Expected 'VpTokenRequest', but '${__type}'`
-        );
-      }
-
-      if (!presentation_definition) {
-        throw new Error('Missing presentation_definition');
-      }
-
-      const pd = PresentationDefinition.deserialize(presentation_definition);
-
-      if (!(pd instanceof PresentationDefinition)) {
-        throw new Error(
-          `Invalid presentation_definition: ${presentation_definition}`
-        );
-      }
-
-      return new VpTokenRequest(pd);
-    };
 
     /**
      * Creates an instance of VpTokenRequest.
@@ -143,10 +218,19 @@ export namespace PresentationType {
     constructor(public presentationDefinition: PresentationDefinition) {}
 
     /**
-     * Returns the JSON representation of the VpTokenRequest instance.
-     * @returns {{ __type: 'VpTokenRequest'; presentation_definition: object }} The JSON representation of the VpTokenRequest.
+     * Converts the instance to a JSON-serializable object.
+     *
+     * This method is automatically called by JSON.stringify() when serializing the object.
+     * It returns an object with the type of the request and the serialized presentation definition.
+     *
+     * @example
+     * const presentationDefinition = new PresentationDefinition({ id: 'example', input_descriptors: [] });
+     * const request = new VpTokenRequest(presentationDefinition);
+     * const jsonString = JSON.stringify(request);
+     * console.log(jsonString);
+     * // Output: {"__type":"VpTokenRequest","presentation_definition":{"id":"example","input_descriptors":[]}}
      */
-    toJSON(): { __type: 'VpTokenRequest'; presentation_definition: object } {
+    toJSON() {
       return {
         __type: this.__type,
         presentation_definition: this.presentationDefinition.serialize(),
@@ -157,43 +241,8 @@ export namespace PresentationType {
   /**
    * Represents a request for both an ID token and a VP token.
    */
-  export class IdAndVpTokenRequest implements PresentationType {
+  export class IdAndVpTokenRequest implements Base {
     readonly __type = 'IdAndVpTokenRequest' as const;
-
-    static fromJSON: FromJSON<IdAndVpTokenRequest> = (json) => {
-      const { __type, id_token_type, presentation_definition } = json as {
-        __type: string;
-        id_token_type: string[];
-        presentation_definition: object;
-      };
-
-      if (__type !== 'IdAndVpTokenRequest') {
-        throw new Error(
-          `Invalid __type. Expected 'IdAndVpTokenRequest', but '${__type}'`
-        );
-      }
-
-      if (!id_token_type) {
-        throw new Error('Missing id_token_type');
-      }
-
-      if (!presentation_definition) {
-        throw new Error('Missing presentation_definition');
-      }
-
-      const pd = PresentationDefinition.deserialize(presentation_definition);
-
-      if (!(pd instanceof PresentationDefinition)) {
-        throw new Error(
-          `Invalid presentation_definition: ${presentation_definition}`
-        );
-      }
-
-      return new IdAndVpTokenRequest(
-        id_token_type.map((v) => IdTokenType.fromJSON(v)),
-        pd
-      );
-    };
 
     /**
      * Creates an instance of IdAndVpTokenRequest.
@@ -205,16 +254,39 @@ export namespace PresentationType {
       public presentationDefinition: PresentationDefinition
     ) {}
 
-    toJSON(): {
-      __type: 'IdAndVpTokenRequest';
-      id_token_type: string[];
-      presentation_definition: object;
-    } {
+    /**
+     * Converts the instance to a JSON-serializable object.
+     *
+     * This method is automatically called by JSON.stringify() when serializing the object.
+     * It returns an object containing the type of the request, the array of ID token types,
+     * and the serialized presentation definition.
+     *
+     * @example
+     * const presentationDefinition = new PresentationDefinition({ id: 'example', input_descriptors: [] });
+     * const request = new IdAndVpTokenRequest(['subject_signed_id_token'], presentationDefinition);
+     * const jsonString = JSON.stringify(request);
+     * console.log(jsonString);
+     * // Output: {
+     * //   "__type": "IdAndVpTokenRequest",
+     * //   "id_token_type": ["subject_signed_id_token"],
+     * //   "presentation_definition": {"id":"example","input_descriptors":[]}
+     * // }
+     */
+    toJSON() {
       return {
         __type: this.__type,
-        id_token_type: this.idTokenType.map((v) => IdTokenType.toJSON(v)),
+        id_token_type: this.idTokenType,
         presentation_definition: this.presentationDefinition.serialize(),
       };
     }
   }
 }
+
+/**
+ * Represents the type of presentation request.
+ * @typedef {PresentationType.IdTokenRequest | PresentationType.VpTokenRequest | PresentationType.IdAndVpTokenRequest} PresentationType
+ */
+export type PresentationType =
+  | PresentationType.IdTokenRequest
+  | PresentationType.VpTokenRequest
+  | PresentationType.IdAndVpTokenRequest;

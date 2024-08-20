@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { MockConfiguration } from './MockConfiguration';
 import { ClientIdSchemeName } from './Configuration';
@@ -7,6 +8,7 @@ import {
   RequestId,
   ResponseModeOption,
   VerifierConfig,
+  UrlBuilder,
 } from '../domain';
 import { DurationLuxon } from '../adapters/out/cfg';
 
@@ -118,7 +120,9 @@ describe('MockConfiguration', () => {
       const requestId = new RequestId('request-id');
       const result = config.jarByReference();
 
-      expect(result.buildUrl(requestId).href).toBe(
+      expect(
+        UrlBuilder.buildUrlWithRequestId(result.urlBuilder, requestId).href
+      ).toBe(
         `${configuration.publicUrl()}/wallet/request.jwt/${requestId.value}`
       );
     });
@@ -144,7 +148,9 @@ describe('MockConfiguration', () => {
 
       const requestId = new RequestId('request-id');
       const url = (
-        result.__type === 'ByReference' ? result.buildUrl(requestId) : undefined
+        result.__type === 'ByReference'
+          ? UrlBuilder.buildUrlWithRequestId(result.urlBuilder, requestId)
+          : undefined
       )!;
 
       expect(url.href).toBe(
@@ -179,9 +185,9 @@ describe('MockConfiguration', () => {
       const requestId = new RequestId('request-id');
       const result = config.presentationDefinitionByReference();
 
-      expect(result.buildUrl(requestId).href).toBe(
-        `${configuration.publicUrl()}/wallet/pd/${requestId.value}`
-      );
+      expect(
+        UrlBuilder.buildUrlWithRequestId(result.urlBuilder, requestId).href
+      ).toBe(`${configuration.publicUrl()}/wallet/pd/${requestId.value}`);
     });
   });
 
@@ -205,7 +211,9 @@ describe('MockConfiguration', () => {
 
       const requestId = new RequestId('request-id');
       const url = (
-        result.__type === 'ByReference' ? result.buildUrl(requestId) : undefined
+        result.__type === 'ByReference'
+          ? UrlBuilder.buildUrlWithRequestId(result.urlBuilder, requestId)
+          : undefined
       )!;
 
       expect(url.href).toBe(
@@ -240,11 +248,11 @@ describe('MockConfiguration', () => {
 
   describe('responseUriBuilder', () => {
     it('returns response URI', () => {
-      const result = configuration.responseUriBuilder();
+      const result = configuration.responseUrlBuilder();
 
-      expect(result(new RequestId('hoge')).href).toBe(
-        `${configuration.publicUrl()}/wallet/direct_post`
-      );
+      expect(
+        UrlBuilder.buildUrlWithRequestId(result, new RequestId('hoge')).href
+      ).toBe(`${configuration.publicUrl()}/wallet/direct_post`);
     });
   });
 

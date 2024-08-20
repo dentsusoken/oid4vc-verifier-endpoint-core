@@ -15,9 +15,10 @@
  */
 
 import { z } from 'zod';
-import { FromJSON } from '../common/json/FromJSON';
+import { type FromJSON } from '../common/json/FromJSON';
 import { PresentationSubmission } from 'oid4vc-prex';
 import { Jwt } from '.';
+import { presentationSubmissionSchema } from './presentationSubmissionSchema';
 
 /**
  * Represents the response from a wallet.
@@ -29,44 +30,86 @@ export type WalletResponse =
   | WalletResponse.IdAndVpToken
   | WalletResponse.WalletResponseError;
 
-export namespace WalletResponse {
-  type Type = 'IdToken' | 'VpToken' | 'IdAndVpToken' | 'WalletResponseError';
+const idTokenSchema = z.object({
+  __type: z.literal('IdToken'),
+  id_token: z.string().min(1),
+});
 
-  export type WalletResponseJSONType = {
-    __type: Type;
-    [index: string]: unknown;
+const vpTokenSchema = z.object({
+  __type: z.literal('VpToken'),
+  vp_token: z.string().min(1),
+  presentation_submission: presentationSubmissionSchema,
+});
+
+const idAndVpTokenSchema = z.object({
+  __type: z.literal('IdAndVpToken'),
+  id_token: z.string().min(1),
+  vp_token: z.string().min(1),
+  presentation_submission: presentationSubmissionSchema,
+});
+
+const walletResponseErrorSchema = z.object({
+  __type: z.literal('WalletResponseError'),
+  value: z.string().min(1),
+  description: z.string().optional(),
+});
+
+export const walletResponseSchema = z.discriminatedUnion('__type', [
+  idTokenSchema,
+  vpTokenSchema,
+  idAndVpTokenSchema,
+  walletResponseErrorSchema,
+]);
+
+export type WalletResponseJSON = z.infer<typeof walletResponseSchema>;
+
+export namespace WalletResponse {
+  export const fromJson: FromJSON<WalletResponseJSON, WalletResponse> = (
+    json
+  ) => {
+    switch (json.__type) {
+      case 'IdToken':
+        return new IdToken(json.id_token);
+      case 'VpToken':
+        return new VpToken(
+          json.vp_token,
+          PresentationSubmission.deserialize(json.presentation_submission)
+        );
+      case 'IdAndVpToken':
+        return new IdAndVpToken(
+          json.id_token,
+          json.vp_token,
+          PresentationSubmission.deserialize(json.presentation_submission)
+        );
+      case 'WalletResponseError':
+        return new WalletResponseError(json.value, json.description);
+    }
   };
+
   /**
    * Interface for wallet response types.
    * @interface WalletResponse
    * @property {string} __type - The type of the wallet response.
    */
-  interface WalletResponse {
-    readonly __type: Type;
+  interface Base {
+    readonly __type:
+      | 'IdToken'
+      | 'VpToken'
+      | 'IdAndVpToken'
+      | 'WalletResponseError';
 
-    toJSON(): WalletResponseJSONType;
+    toJSON(): WalletResponseJSON;
   }
 
   /**
    * Represents an ID token wallet response.
    * @class IdToken
-   * @implements {WalletResponse}
+   * @implements {Base}
    * @property {string} __type - The type of the wallet response.
    * @property {Jwt} idToken - The ID token.
    */
-  export class IdToken implements WalletResponse {
-    static schema = z.object({
-      __type: z.literal('IdToken'),
-      id_token: z.string().min(1),
-    });
-
-    readonly __type = 'IdToken';
-
-    static fromJSON: FromJSON<IdToken> = (json) => {
-      const { id_token } = this.schema.parse(json);
-
-      return new IdToken(id_token);
-    };
+  export class IdToken implements Base {
+    readonly __type = 'IdToken' as const;
 
     /**
      * Creates an instance of IdToken.
@@ -80,7 +123,7 @@ export namespace WalletResponse {
       }
     }
 
-    toJSON = (): { __type: 'IdToken'; id_token: Jwt } => ({
+    toJSON = () => ({
       __type: this.__type,
       id_token: this.idToken,
     });
@@ -89,28 +132,13 @@ export namespace WalletResponse {
   /**
    * Represents a VP token wallet response.
    * @class VpToken
-   * @implements {WalletResponse}
+   * @implements {Base}
    * @property {string} __type - The type of the wallet response.
    * @property {Jwt} vpToken - The VP token.
    * @property {PresentationSubmission} presentationSubmission - The presentation submission.
    */
-  export class VpToken implements WalletResponse {
-    static schema = z.object({
-      __type: z.literal('VpToken'),
-      vp_token: z.string().min(1),
-      presentation_submission: z.any(),
-    });
-
-    readonly __type = 'VpToken';
-
-    static fromJSON: FromJSON<VpToken> = (json) => {
-      const { vp_token, presentation_submission } = this.schema.parse(json);
-
-      return new VpToken(
-        vp_token,
-        PresentationSubmission.deserialize(presentation_submission)
-      );
-    };
+  export class VpToken implements Base {
+    readonly __type = 'VpToken' as const;
 
     /**
      * Creates an instance of VpToken.
@@ -128,11 +156,7 @@ export namespace WalletResponse {
       }
     }
 
-    toJSON = (): {
-      __type: 'VpToken';
-      vp_token: Jwt;
-      presentation_submission: object;
-    } => ({
+    toJSON = () => ({
       __type: this.__type,
       vp_token: this.vpToken,
       presentation_submission: this.presentationSubmission.serialize(),
@@ -142,32 +166,14 @@ export namespace WalletResponse {
   /**
    * Represents an ID and VP token wallet response.
    * @class IdAndVpToken
-   * @implements {WalletResponse}
+   * @implements {Base}
    * @property {string} __type - The type of the wallet response.
    * @property {Jwt} idToken - The ID token.
    * @property {Jwt} vpToken - The VP token.
    * @property {PresentationSubmission} presentationSubmission - The presentation submission.
    */
-  export class IdAndVpToken implements WalletResponse {
-    static schema = z.object({
-      __type: z.literal('IdAndVpToken'),
-      id_token: z.string().min(1),
-      vp_token: z.string().min(1),
-      presentation_submission: z.any(),
-    });
-
-    readonly __type = 'IdAndVpToken';
-
-    static fromJSON: FromJSON<IdAndVpToken> = (json) => {
-      const { id_token, vp_token, presentation_submission } =
-        this.schema.parse(json);
-
-      return new IdAndVpToken(
-        id_token,
-        vp_token,
-        PresentationSubmission.deserialize(presentation_submission)
-      );
-    };
+  export class IdAndVpToken implements Base {
+    readonly __type = 'IdAndVpToken' as const;
 
     /**
      * Creates an instance of IdAndVpToken.
@@ -190,12 +196,7 @@ export namespace WalletResponse {
       }
     }
 
-    toJSON = (): {
-      __type: 'IdAndVpToken';
-      id_token: Jwt;
-      vp_token: Jwt;
-      presentation_submission: object;
-    } => ({
+    toJSON = () => ({
       __type: this.__type,
       id_token: this.idToken,
       vp_token: this.vpToken,
@@ -206,25 +207,13 @@ export namespace WalletResponse {
   /**
    * Represents a wallet response error.
    * @class WalletResponseError
-   * @implements {WalletResponse}
+   * @implements {Base}
    * @property {string} __type - The type of the wallet response.
    * @property {string} value - The error value.
    * @property {string} [description] - The optional error description.
    */
-  export class WalletResponseError implements WalletResponse {
-    static schema = z.object({
-      __type: z.literal('WalletResponseError'),
-      value: z.string().min(1),
-      description: z.string().optional(),
-    });
-
-    readonly __type = 'WalletResponseError';
-
-    static fromJSON: FromJSON<WalletResponseError> = (json) => {
-      const { value, description } = this.schema.parse(json);
-
-      return new WalletResponseError(value, description);
-    };
+  export class WalletResponseError implements Base {
+    readonly __type = 'WalletResponseError' as const;
 
     /**
      * Creates an instance of WalletResponseError.
@@ -234,11 +223,7 @@ export namespace WalletResponse {
      */
     constructor(public value: string, public description?: string) {}
 
-    toJSON = (): {
-      __type: 'WalletResponseError';
-      value: string;
-      description: string | undefined;
-    } => ({
+    toJSON = () => ({
       __type: this.__type,
       value: this.value,
       description: this.description,

@@ -1,24 +1,25 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 
 import { Result } from '../../kotlin';
 import {
   EphemeralECDHPrivateJwk,
-  ResponseModeOption,
+  IdTokenType,
   JarmOption,
   Presentation,
   TransactionId,
   RequestId,
   VerifierConfig,
   PresentationType,
-  IdTokenType,
+  ResponseModeOption,
   EmbedOption,
   Nonce,
   GetWalletResponseMethod,
   StaticSigningPrivateJwk,
   ClientMetaData,
   ClientIdScheme,
-  BuildUrl,
   SigningConfig,
+  UrlBuilder,
 } from '../../domain';
 import { GenerateEphemeralECDHPrivateJwk } from '../../ports/out/jose';
 import {
@@ -31,9 +32,7 @@ import { JwtSecuredAuthorizationRequestTO } from '../../ports/input/InitTransact
 
 describe('InitTransactionService.create', () => {
   describe('createEphemeralECDHPrivateJwk', () => {
-    const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
-      value: 'hoge',
-    };
+    const ephemeralECDHPrivateJwk = new EphemeralECDHPrivateJwk('hoge');
     const generatePrivateJwk: GenerateEphemeralECDHPrivateJwk = async () => {
       return Result.success(ephemeralECDHPrivateJwk);
     };
@@ -107,9 +106,9 @@ describe('InitTransactionService.create', () => {
     const ephemeralECDHPrivateExportedJwk = await exportJWK(
       ephemeralECDHPrivateKey
     );
-    const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
-      value: JSON.stringify(ephemeralECDHPrivateExportedJwk),
-    };
+    const ephemeralECDHPrivateJwk = new EphemeralECDHPrivateJwk(
+      JSON.stringify(ephemeralECDHPrivateExportedJwk)
+    );
 
     const clientMetaData = {
       idTokenSignedResponseAlg: 'ES256',
@@ -128,12 +127,13 @@ describe('InitTransactionService.create', () => {
       algorithm: 'ES256',
     } as SigningConfig);
 
-    const responseUriBuilder: BuildUrl<RequestId> = (requestId: RequestId) =>
-      new URL(`https://example.com/response/${requestId.value}`);
+    const responseUrlBuilder = new UrlBuilder.WithRequestId(
+      `https://example.com/response/`
+    );
     const verifierConfig = {
       clientIdScheme,
       clientMetaData,
-      responseUriBuilder,
+      responseUrlBuilder: responseUrlBuilder,
     } as VerifierConfig;
 
     const id = new TransactionId('transaction-id');
@@ -144,7 +144,7 @@ describe('InitTransactionService.create', () => {
     const requestId = new RequestId('request-id');
     const nonce = new Nonce('nonce');
     const responseMode = ResponseModeOption.DirectPostJwt;
-    const presentationDefinitionMode: EmbedOption<RequestId> =
+    const presentationDefinitionMode: EmbedOption =
       EmbedOption.ByValue.INSTANCE;
     const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
       'http://example.com/{requestId}'
@@ -189,8 +189,7 @@ describe('InitTransactionService.create', () => {
 
     it('should create JwtSecuredAuthorizationRequestTO with requestUri when jarOption is ByReference', async () => {
       const jarOption = new EmbedOption.ByReference(
-        (id: RequestId) =>
-          new URL(`https://example.com/request.jwt/${id.value}`)
+        new UrlBuilder.WithRequestId(`https://example.com/request.jwt/`)
       );
 
       const result = await createJwtSecuredAuthorizationRequestTO(

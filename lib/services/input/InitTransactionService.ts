@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  EmbedOption,
-  RequestId,
-  VerifierConfig,
-  Presentation,
-} from '../../domain';
+import { EmbedOption, VerifierConfig, Presentation } from '../../domain';
 import {
   GenerateTransactionId,
   GenerateRequestId,
@@ -57,8 +52,8 @@ type CreateParams = {
   verifierConfig: VerifierConfig;
   now: () => Date;
   generateEphemeralECDHPrivateJwk: GenerateEphemeralECDHPrivateJwk;
-  jarByReference: EmbedOption.ByReference<RequestId>;
-  presentationDefinitionByReference: EmbedOption.ByReference<RequestId>;
+  jarByReference: EmbedOption.ByReference;
+  presentationDefinitionByReference: EmbedOption.ByReference;
   createQueryWalletResponseRedirectUri: CreateQueryWalletResponseRedirectUri;
 };
 

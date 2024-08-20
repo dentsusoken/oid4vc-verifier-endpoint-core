@@ -13,6 +13,7 @@ import {
   ClientMetaData,
   EphemeralECDHPrivateJwk,
   JarmOption,
+  UrlBuilder,
 } from '../../../domain';
 import { RequestObject } from './RequestObject';
 import { PresentationDefinition } from 'oid4vc-prex';
@@ -21,10 +22,9 @@ describe('JWKS and Payload Utilities', () => {
   describe('getJwks', () => {
     it('should return JWKS when jwkOption is ByValue and privateJwk is provided', () => {
       const jwkOption = EmbedOption.ByValue.INSTANCE;
-      const privateJwk: EphemeralECDHPrivateJwk = {
-        value:
-          '{"kty":"EC","crv":"P-256","x":"abc","y":"def","d":"secret","use":"sig"}',
-      };
+      const privateJwk = new EphemeralECDHPrivateJwk(
+        '{"kty":"EC","crv":"P-256","x":"abc","y":"def","d":"secret","use":"sig"}'
+      );
       const result = getJwks(jwkOption, privateJwk);
       expect(result).toEqual({
         keys: [{ kty: 'EC', crv: 'P-256', x: 'abc', y: 'def', use: 'sig' }],
@@ -33,9 +33,9 @@ describe('JWKS and Payload Utilities', () => {
 
     it('should return undefined when jwkOption is not ByValue', () => {
       const jwkOption = new EmbedOption.ByReference(
-        () => new URL('https://example.com')
+        new UrlBuilder.WithRequestId('https://example.com/')
       );
-      const privateJwk: EphemeralECDHPrivateJwk = { value: '{}' };
+      const privateJwk = new EphemeralECDHPrivateJwk('{}');
       const result = getJwks(jwkOption, privateJwk);
       expect(result).toBeUndefined();
     });
@@ -43,9 +43,9 @@ describe('JWKS and Payload Utilities', () => {
 
   describe('getJwksUri', () => {
     it('should return JWKS URI when jwkOption is ByReference', () => {
-      const buildUrl = (id: RequestId) =>
-        new URL(`https://example.com/jwks/${id.value}`);
-      const jwkOption = new EmbedOption.ByReference(buildUrl);
+      const jwkOption = new EmbedOption.ByReference(
+        new UrlBuilder.WithRequestId('https://example.com/jwks/')
+      );
       const requestId = new RequestId('test-id');
       const result = getJwksUri(jwkOption, requestId);
       expect(result).toBe('https://example.com/jwks/test-id');
@@ -71,10 +71,9 @@ describe('JWKS and Payload Utilities', () => {
         jarmOption: new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM'),
       };
       const responseMode = 'direct_post.jwt';
-      const privateJWK: EphemeralECDHPrivateJwk = {
-        value:
-          '{"kty":"EC","crv":"P-256","x":"abc","y":"def","d":"secret","use":"sig"}',
-      };
+      const privateJWK = new EphemeralECDHPrivateJwk(
+        '{"kty":"EC","crv":"P-256","x":"abc","y":"def","d":"secret","use":"sig"}'
+      );
 
       const result = toClientMetaDataTO(
         requestId,

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { PresentationInMemoryStore } from './PresentationInMemoryStore';
 import { Presentation, RequestId, TransactionId } from '../../../domain';

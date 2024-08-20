@@ -1,44 +1,84 @@
 import { describe, it, expect } from 'vitest';
-import { EphemeralECDHPrivateJwk } from './EphemeralECDHPrivateJwk';
+import {
+  EphemeralECDHPrivateJwk,
+  ephemeralECDHPrivateJwkSchema,
+} from './EphemeralECDHPrivateJwk';
 import { ZodError } from 'zod';
 
 describe('EphemeralECDHPrivateJwk', () => {
-  describe('fromJSON', () => {
-    it('should create an EphemeralECDHPrivateJwk instance from a valid JSON string', () => {
-      const json = '{"kty":"EC","crv":"P-256","x":"abc","y":"def","d":"ghi"}';
-      const result = EphemeralECDHPrivateJwk.fromJSON(json);
-      expect(result).toEqual({ value: json });
+  const validJwk =
+    '{"kty":"EC","crv":"P-256","x":"example-x","y":"example-y","d":"example-d"}';
+
+  describe('constructor', () => {
+    it('should create an instance with a valid value', () => {
+      const jwk = new EphemeralECDHPrivateJwk(validJwk);
+      expect(jwk.value).toBe(validJwk);
     });
 
-    it('should throw a ZodError with the expected error details for an invalid JSON value', () => {
-      const invalidValue = '';
-
-      try {
-        EphemeralECDHPrivateJwk.fromJSON(invalidValue);
-        expect.fail('Expected a ZodError to be thrown');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ZodError);
-        expect(error instanceof ZodError && error.issues).toEqual([
-          {
-            code: 'too_small',
-            minimum: 1,
-            type: 'string',
-            inclusive: true,
-            exact: false,
-            message: 'String must contain at least 1 character(s)',
-            path: [],
-          },
-        ]);
-      }
+    it('should accept an invalid JSON string without throwing an error', () => {
+      expect(() => new EphemeralECDHPrivateJwk('invalid')).not.toThrow();
     });
   });
 
   describe('toJSON', () => {
-    it('should return the string representation of the EphemeralECDHPrivateJwk value', () => {
-      const value = '{"kty":"EC","crv":"P-256","x":"abc","y":"def","d":"ghi"}';
-      const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = { value };
-      const result = EphemeralECDHPrivateJwk.toJSON(ephemeralECDHPrivateJwk);
-      expect(result).toEqual(value);
+    it('should return the value as a string', () => {
+      const jwk = new EphemeralECDHPrivateJwk(validJwk);
+      expect(jwk.toJSON()).toBe(validJwk);
     });
+
+    it('should work with JSON.stringify', () => {
+      const jwk = new EphemeralECDHPrivateJwk(validJwk);
+      expect(JSON.stringify({ jwk })).toBe(
+        `{"jwk":${JSON.stringify(validJwk)}}`
+      );
+    });
+  });
+});
+
+describe('ephemeralECDHPrivateJwkSchema', () => {
+  const validJwk =
+    '{"kty":"EC","crv":"P-256","x":"example-x","y":"example-y","d":"example-d"}';
+
+  it('should accept valid JWK strings', () => {
+    expect(ephemeralECDHPrivateJwkSchema.parse(validJwk)).toBe(validJwk);
+  });
+
+  it('should throw a ZodError for an invalid JSON string', () => {
+    expect(() => ephemeralECDHPrivateJwkSchema.parse('invalid')).toThrow(
+      ZodError
+    );
+  });
+
+  it('should throw a ZodError for a JSON string missing required properties', () => {
+    const invalidJwk = '{"kty":"EC","crv":"P-256"}'; // missing x, y, and d
+    expect(() => ephemeralECDHPrivateJwkSchema.parse(invalidJwk)).toThrow(
+      ZodError
+    );
+  });
+
+  it('should throw a ZodError for non-string values', () => {
+    expect(() =>
+      ephemeralECDHPrivateJwkSchema.parse(123 as unknown as string)
+    ).toThrow(ZodError);
+    expect(() =>
+      ephemeralECDHPrivateJwkSchema.parse(null as unknown as string)
+    ).toThrow(ZodError);
+    expect(() =>
+      ephemeralECDHPrivateJwkSchema.parse(undefined as unknown as string)
+    ).toThrow(ZodError);
+    expect(() =>
+      ephemeralECDHPrivateJwkSchema.parse({} as unknown as string)
+    ).toThrow(ZodError);
+  });
+
+  it('should provide the correct error message for invalid input', () => {
+    try {
+      ephemeralECDHPrivateJwkSchema.parse('invalid');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ZodError);
+      expect(error instanceof ZodError && error.issues[0].message).toBe(
+        'Must be a valid JSON string representing a JWK with kty, crv, x, y, and d properties'
+      );
+    }
   });
 });

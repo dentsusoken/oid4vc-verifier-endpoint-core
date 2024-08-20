@@ -14,28 +14,35 @@
  * limitations under the License.
  */
 
-import { FromJSON } from '../common/json/FromJSON';
 import { z } from 'zod';
 
-const schema = z.string().min(1);
+/**
+ * Zod schema for validating request IDs.
+ *
+ * This schema ensures that a request ID is a non-empty string.
+ * It applies the following validations:
+ * - The value must be a string.
+ * - The string must have a minimum length of 1 character.
+ *
+ * @type {z.ZodString}
+ *
+ * @example
+ * // Valid usage
+ * requestIdScheme.parse('req-123'); // Returns 'req-123'
+ * requestIdScheme.parse('a'); // Returns 'a'
+ *
+ * // Invalid usage (will throw ZodError)
+ * requestIdScheme.parse(''); // Throws error: String must contain at least 1 character(s)
+ * requestIdScheme.parse(123); // Throws error: Expected string, received number
+ *
+ * @throws {z.ZodError} Throws a ZodError if the input fails validation
+ */
+export const requestIdScheme = z.string().min(1);
 
 /**
  * Represents a request ID.
  */
 export class RequestId {
-  /**
-   * Creates a RequestId instance from a JSON value.
-   * @type {FromJSON<RequestId>}
-   * @param {unknown} json - The JSON value representing the request ID.
-   * @returns {RequestId} The RequestId instance.
-   * @throws {ZodError} If the JSON value is not a valid non-empty string.
-   */
-  static fromJSON: FromJSON<RequestId> = (json) => {
-    const value = schema.parse(json);
-
-    return new RequestId(value);
-  };
-
   /**
    * Creates an instance of RequestId.
    * @param {string} value - The value of the request ID.

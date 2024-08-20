@@ -2,11 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { ClientMetaData } from './ClientMetaData';
 import { EmbedOption } from './EmbedOption';
 import { JarmOption } from './JarmOption';
-import { RequestId } from './RequestId';
 
 describe('ClientMetaData', () => {
   it('should create an instance of ClientMetaData with valid parameters', () => {
-    const mockJwkOption: EmbedOption<RequestId> = {} as EmbedOption<RequestId>;
+    const mockJwkOption = {} as EmbedOption;
     const mockJarmOption: JarmOption = {} as JarmOption;
 
     const clientMetaData = new ClientMetaData(
@@ -30,8 +29,8 @@ describe('ClientMetaData', () => {
   });
 
   it('should allow empty array for subjectSyntaxTypesSupported', () => {
-    const mockJwkOption: EmbedOption<RequestId> = {} as EmbedOption<RequestId>;
-    const mockJarmOption: JarmOption = {} as JarmOption;
+    const mockJwkOption = {} as EmbedOption;
+    const mockJarmOption = {} as JarmOption;
 
     const clientMetaData = new ClientMetaData(
       mockJwkOption,

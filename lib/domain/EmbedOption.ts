@@ -14,24 +14,67 @@
  * limitations under the License.
  */
 
-import { BuildUrl } from './BuildUrl';
+import { z } from 'zod';
+import { UrlBuilder, urlBuilderSchema } from './UrlBuilder';
+import { FromJSON } from '../common/json/FromJSON';
 
-export type EmbedOption<ID = never> =
-  | EmbedOption.ByValue
-  | EmbedOption.ByReference<ID>;
+export type EmbedOption = EmbedOption.ByValue | EmbedOption.ByReference;
+
+const byValueSchema = z.object({
+  __type: z.literal('ByValue'),
+});
+
+const byReferenceSchema = z.object({
+  __type: z.literal('ByReference'),
+  url_builder: urlBuilderSchema,
+});
+
+export const embedOptionSchema = z.discriminatedUnion('__type', [
+  byValueSchema,
+  byReferenceSchema,
+]);
+
+export type EmbedOptionJSON = z.infer<typeof embedOptionSchema>;
 
 export namespace EmbedOption {
-  export class ByValue {
+  export const fromJSON: FromJSON<EmbedOptionJSON, EmbedOption> = (json) => {
+    switch (json.__type) {
+      case 'ByValue':
+        return ByValue.INSTANCE;
+      case 'ByReference':
+        return new ByReference(UrlBuilder.fromJSON(json.url_builder));
+    }
+  };
+
+  interface Base {
+    readonly __type: 'ByValue' | 'ByReference';
+    toJSON(): EmbedOptionJSON;
+  }
+
+  export class ByValue implements Base {
     static readonly INSTANCE = new ByValue();
 
     readonly __type = 'ByValue' as const;
 
     private constructor() {}
+
+    toJSON() {
+      return {
+        __type: this.__type,
+      };
+    }
   }
 
-  export class ByReference<ID> {
+  export class ByReference implements Base {
     readonly __type = 'ByReference' as const;
 
-    constructor(public buildUrl: BuildUrl<ID>) {}
+    constructor(public urlBuilder: UrlBuilder) {}
+
+    toJSON() {
+      return {
+        __type: this.__type,
+        url_builder: this.urlBuilder.toJSON(),
+      };
+    }
   }
 }

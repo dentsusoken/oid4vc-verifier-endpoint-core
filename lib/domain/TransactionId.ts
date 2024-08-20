@@ -14,32 +14,35 @@
  * limitations under the License.
  */
 
-/**
- * Represents a transaction ID.
- */
-
-import { FromJSON } from '../common/json/FromJSON';
 import { z } from 'zod';
 
-const schema = z.string().min(1);
+/**
+ * Zod schema for validating transaction IDs.
+ *
+ * This schema ensures that a transaction ID is a non-empty string.
+ * It applies the following validations:
+ * - The value must be a string.
+ * - The string must have a minimum length of 1 character.
+ *
+ * @type {z.ZodString}
+ *
+ * @example
+ * // Valid usage
+ * transactionIdSchema.parse('abc123'); // Returns 'abc123'
+ * transactionIdSchema.parse('T-001'); // Returns 'T-001'
+ *
+ * // Invalid usage (will throw ZodError)
+ * transactionIdSchema.parse(''); // Throws error: String must contain at least 1 character(s)
+ * transactionIdSchema.parse(123); // Throws error: Expected string, received number
+ *
+ * @throws {z.ZodError} Throws a ZodError if the input fails validation
+ */
+export const transactionIdSchema = z.string().min(1);
 
 /**
  * Represents a transaction ID.
  */
 export class TransactionId {
-  /**
-   * Creates a TransactionId instance from a JSON value.
-   * @type {FromJSON<TransactionId>}
-   * @param {unknown} json - The JSON value representing the transaction ID.
-   * @returns {TransactionId} The TransactionId instance.
-   * @throws {ZodError} If the JSON value is not a valid non-empty string.
-   */
-  static fromJSON: FromJSON<TransactionId> = (json) => {
-    const value = schema.parse(json);
-
-    return new TransactionId(value);
-  };
-
   /**
    * Creates an instance of TransactionId.
    * @param {string} value - The value of the transaction ID.

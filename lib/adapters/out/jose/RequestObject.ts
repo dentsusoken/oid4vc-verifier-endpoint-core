@@ -15,7 +15,7 @@
  */
 
 import { PresentationDefinition } from 'oid4vc-prex';
-import { VerifierConfig, Presentation } from '../../../domain';
+import { VerifierConfig, Presentation, UrlBuilder } from '../../../domain';
 import {
   getScope,
   getIdTokenType,
@@ -103,7 +103,10 @@ export const requestObjectFromDomain = (
     nonce: presentation.nonce.value,
     state: presentation.requestId.value,
     responseMode,
-    responseUri: verifierConfig.responseUriBuilder(presentation.requestId),
+    responseUri: UrlBuilder.buildUrlWithRequestId(
+      verifierConfig.responseUrlBuilder,
+      presentation.requestId
+    ),
     issuedAt: now(),
   };
 

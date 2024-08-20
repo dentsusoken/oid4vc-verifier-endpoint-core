@@ -15,10 +15,24 @@
  */
 
 /**
- * Type definition for a function that converts JSON to a specific type.
- * @template T - The type to which the JSON will be converted.
- * @param {unknown} json - The JSON value to be converted.
- * @returns {T} The converted value of type T.
+ * Represents a function type that converts JSON data to a specific type.
+ *
+ * @template J The type of the input JSON data.
+ * @template T The type of the output after conversion.
+ *
+ * @param {J} json - The JSON data to be converted.
+ * @returns {T} The converted data of type T.
+ *
+ * @typedef {function(J): T} FromJSON
+ *
+ * @example
+ * // Define a FromJSON function for User type
+ * const userFromJSON: FromJSON<UserJSON, User> = (json) => {
+ *   return new User(json.name, json.age);
+ * };
+ *
+ * // Use the function
+ * const userJSON = { name: "John", age: 30 };
+ * const user = userFromJSON(userJSON);
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FromJSON<T> = (json: unknown) => T;
+export type FromJSON<J, T> = (json: J) => T;

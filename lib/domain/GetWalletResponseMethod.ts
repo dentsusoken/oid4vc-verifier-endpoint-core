@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { FromJSON } from '../common/json/FromJSON';
 import { z } from 'zod';
+import { FromJSON } from '../common/json/FromJSON';
 
 /**
  * Represents the method to get the wallet response.
@@ -26,22 +26,76 @@ export type GetWalletResponseMethod =
   | GetWalletResponseMethod.Redirect;
 
 /**
+ * Schema for the Poll object.
+ * @type {z.ZodObject<{__type: z.ZodLiteral<'Poll'>}, "strip", z.ZodTypeAny, {__type: "Poll"}, {__type: "Poll"}>}
+ */
+const pollSchema = z.object({
+  __type: z.literal('Poll'),
+});
+
+/**
+ * Schema for the Redirect object.
+ * @typedef {Object} RedirectSchema
+ * @property {string} __type - The type of the object, must be 'Redirect'.
+ * @property {string} redirect_uri_template - The template for the redirect URI, must be a valid URL.
+ */
+const redirectSchema = z.object({
+  __type: z.literal('Redirect'),
+  redirect_uri_template: z.string().url(),
+});
+
+/**
+ * Schema for the GetWalletResponseMethod discriminated union.
+ * @typedef {Object} GetWalletResponseMethodSchema
+ * @property {string} __type - The discriminator property, must be either 'Poll' or 'Redirect'.
+ * @property {string} [redirect_uri_template] - The template for the redirect URI, must be a valid URL. Required if __type is 'Redirect'.
+ */
+export const getWalletResponseMethodSchema = z.discriminatedUnion('__type', [
+  pollSchema,
+  redirectSchema,
+]);
+
+/**
+ * JSON type for the GetWalletResponseMethod discriminated union.
+ * @typedef {Object} GetWalletResponseMethodJSON
+ * @property {string} __type - The discriminator property, must be either 'Poll' or 'Redirect'.
+ * @property {string} [redirect_uri_template] - The template for the redirect URI, must be a valid URL. Required if __type is 'Redirect'.
+ */
+export type GetWalletResponseMethodJSON = z.infer<
+  typeof getWalletResponseMethodSchema
+>;
+
+/**
  * Namespace for GetWalletResponseMethod related classes and functions.
  * @namespace GetWalletResponseMethod
  */
 export namespace GetWalletResponseMethod {
   type Type = 'Poll' | 'Redirect';
 
-  export type GetWalletResponseMethodJSONType = {
-    __type: Type;
-    [index: string]: unknown;
+  /**
+   * Creates a GetWalletResponseMethod instance from its JSON representation.
+   * @function fromJSON
+   * @param {GetWalletResponseMethodJSON} json - The JSON representation of the GetWalletResponseMethod.
+   * @returns {GetWalletResponseMethod} The GetWalletResponseMethod instance created from the JSON.
+   * @throws {Error} If the __type property of the JSON is not recognized.
+   */
+  export const fromJSON: FromJSON<
+    GetWalletResponseMethodJSON,
+    GetWalletResponseMethod
+  > = (json) => {
+    switch (json.__type) {
+      case 'Poll':
+        return Poll.INSTANCE;
+      case 'Redirect':
+        return new Redirect(json.redirect_uri_template);
+    }
   };
 
   /**
    * Interface representing a GetWalletResponseMethod.
    * @interface GetWalletResponseMethod
    */
-  interface GetWalletResponseMethod {
+  interface Base {
     /**
      * The type of the GetWalletResponseMethod.
      * @type {('Poll' | 'Redirect')}
@@ -49,15 +103,19 @@ export namespace GetWalletResponseMethod {
      */
     readonly __type: Type;
 
-    toJSON(): GetWalletResponseMethodJSONType;
+    /**
+     * Converts the GetWalletResponseMethod to its JSON representation.
+     * @returns {GetWalletResponseMethodJSON} The JSON representation of the GetWalletResponseMethod.
+     */
+    toJSON(): GetWalletResponseMethodJSON;
   }
 
   /**
    * Represents a polling method to get the wallet response.
    * @class Poll
-   * @implements {GetWalletResponseMethod}
+   * @implements {Base}
    */
-  export class Poll implements GetWalletResponseMethod {
+  export class Poll implements Base {
     /**
      * The singleton instance of the Poll class.
      * @type {Poll}
@@ -66,22 +124,12 @@ export namespace GetWalletResponseMethod {
      */
     static readonly INSTANCE = new Poll();
 
-    static schema = z.object({
-      __type: z.literal('Poll'),
-    });
-
-    static fromJSON: FromJSON<Poll> = (json) => {
-      this.schema.parse(json);
-
-      return this.INSTANCE;
-    };
-
     /**
      * The type of the GetWalletResponseMethod.
      * @type {('Poll')}
      * @readonly
      */
-    readonly __type = 'Poll';
+    readonly __type = 'Poll' as const;
 
     /**
      * Private constructor to enforce singleton pattern.
@@ -89,7 +137,11 @@ export namespace GetWalletResponseMethod {
      */
     private constructor() {}
 
-    toJSON(): { __type: 'Poll' } {
+    /**
+     * Converts the Poll instance to its JSON representation.
+     * @returns {GetWalletResponseMethodJSON} The JSON representation of the Poll instance.
+     */
+    toJSON() {
       return { __type: this.__type };
     }
   }
@@ -97,26 +149,15 @@ export namespace GetWalletResponseMethod {
   /**
    * Represents a redirect method to get the wallet response.
    * @class Redirect
-   * @implements {GetWalletResponseMethod}
+   * @implements {Base}
    */
-  export class Redirect implements GetWalletResponseMethod {
-    static schema = z.object({
-      __type: z.literal('Redirect'),
-      redirect_uri_template: z.string().min(1),
-    });
-
+  export class Redirect implements Base {
     /**
      * The type of the GetWalletResponseMethod.
      * @type {('Redirect')}
      * @readonly
      */
-    readonly __type = 'Redirect';
-
-    static fromJSON: FromJSON<Redirect> = (json) => {
-      const { redirect_uri_template } = this.schema.parse(json);
-
-      return new Redirect(redirect_uri_template);
-    };
+    readonly __type = 'Redirect' as const;
 
     /**
      * Creates an instance of Redirect.
@@ -124,7 +165,11 @@ export namespace GetWalletResponseMethod {
      */
     constructor(public redirectUriTemplate: string) {}
 
-    toJSON(): { __type: 'Redirect'; redirect_uri_template: string } {
+    /**
+     * Converts the Redirect instance to its JSON representation.
+     * @returns {GetWalletResponseMethodJSON} The JSON representation of the Redirect instance.
+     */
+    toJSON() {
       return {
         __type: this.__type,
         redirect_uri_template: this.redirectUriTemplate,

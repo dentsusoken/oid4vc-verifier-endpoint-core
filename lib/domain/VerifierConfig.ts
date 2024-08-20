@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 import {
-  RequestId,
+  UrlBuilder,
   EmbedOption,
-  BuildUrl,
   ResponseModeOption,
   Duration,
   ClientMetaData,
@@ -34,16 +33,16 @@ export class VerifierConfig {
    * @param jarOption - The option for embedding the request as a JWT (JSON Web Token).
    * @param presentationDefinitionOption - The option for embedding the presentation definition.
    * @param responseModeOption - The option specifying how the response should be returned.
-   * @param responseUriBuilder - A function to build the URI for the response.
+   * @param responseUrlBuilder - A function to build the URL for the response.
    * @param maxAge - The maximum allowed age for the authentication.
    * @param clientMetaData - Metadata about the client.
    */
   constructor(
     public clientIdScheme: ClientIdScheme,
-    public jarOption: EmbedOption<RequestId>,
-    public presentationDefinitionOption: EmbedOption<RequestId>,
+    public jarOption: EmbedOption,
+    public presentationDefinitionOption: EmbedOption,
     public responseModeOption: ResponseModeOption,
-    public responseUriBuilder: BuildUrl<RequestId>,
+    public responseUrlBuilder: UrlBuilder,
     public maxAge: Duration,
     public clientMetaData: ClientMetaData
   ) {}

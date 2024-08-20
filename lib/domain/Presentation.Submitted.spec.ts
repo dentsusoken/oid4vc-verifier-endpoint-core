@@ -6,10 +6,11 @@ import {
   Nonce,
   ResponseCode,
   PresentationType,
-  IdTokenType,
   Presentation,
   WalletResponse,
+  IdTokenType,
 } from '.';
+import { PresentationDefinition } from 'oid4vc-prex';
 
 describe('Submitted', () => {
   const id = new TransactionId('transaction-id');
@@ -20,7 +21,7 @@ describe('Submitted', () => {
   const submittedAt = new Date('2023-06-01T10:02:00Z');
   const walletResponse = new WalletResponse.IdToken('aa');
   const nonce = new Nonce('nonce');
-  const responseCode = new ResponseCode('hoge');
+  const responseCode = new ResponseCode('response_code');
 
   it('should create a Submitted instance', () => {
     const submitted = new Presentation.Submitted(
@@ -125,6 +126,148 @@ describe('Submitted', () => {
         default:
           throw new Error('Expected presentation to be of type Submitted');
       }
+    });
+  });
+
+  describe('toJSON', () => {
+    it('should return a JSON', () => {
+      const id = new TransactionId('abc123');
+      const initiatedAt = new Date(0);
+      const type = new PresentationType.VpTokenRequest(
+        new PresentationDefinition()
+      );
+      const requestId = new RequestId('def456');
+      const requestObjectRetrievedAt = new Date(0);
+      const submittedAt = new Date(0);
+      const nonce = new Nonce('ghi789');
+      const responseCode = new ResponseCode('efg');
+
+      const presentation = new Presentation.Submitted(
+        id,
+        initiatedAt,
+        type,
+        requestId,
+        requestObjectRetrievedAt,
+        submittedAt,
+        walletResponse,
+        nonce,
+        responseCode
+      );
+
+      const json = presentation.toJSON();
+
+      expect(json).toEqual({
+        __type: 'Submitted',
+        id: 'abc123',
+        initiated_at: '1970-01-01T00:00:00.000Z',
+        type: {
+          __type: 'VpTokenRequest',
+          presentation_definition: {
+            format: undefined,
+            id: undefined,
+            input_descriptors: undefined,
+            name: undefined,
+            purpose: undefined,
+            submission_requirements: undefined,
+          },
+        },
+        request_id: 'def456',
+        request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
+        submitted_at: '1970-01-01T00:00:00.000Z',
+        wallet_response: {
+          __type: 'IdToken',
+          id_token: 'aa',
+        },
+        nonce: 'ghi789',
+        response_code: 'efg',
+      });
+    });
+  });
+
+  describe('fromJSON', () => {
+    it('should create an instance of Submitted from JSON', () => {
+      const json: Presentation.SubmittedJSON = {
+        __type: 'Submitted',
+        id: 'abc123',
+        initiated_at: '1970-01-01T00:00:00.000Z',
+        type: {
+          __type: 'VpTokenRequest',
+          presentation_definition: {
+            format: undefined,
+            id: undefined,
+            input_descriptors: undefined,
+            name: undefined,
+            purpose: undefined,
+            submission_requirements: undefined,
+          },
+        },
+        request_id: 'def456',
+        request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
+        submitted_at: '1970-01-01T00:00:00.000Z',
+        wallet_response: {
+          __type: 'IdToken',
+          id_token: 'aa',
+        },
+        nonce: 'ghi789',
+        response_code: 'efg',
+      };
+
+      const submitted = Presentation.Submitted.fromJSON(json);
+
+      expect(submitted).toBeInstanceOf(Presentation.Submitted);
+      expect(submitted.id).toEqual(new TransactionId('abc123'));
+      expect(submitted.initiatedAt).toEqual(
+        new Date('1970-01-01T00:00:00.000Z')
+      );
+      expect(submitted.type).toEqual(
+        new PresentationType.VpTokenRequest(new PresentationDefinition())
+      );
+      expect(submitted.requestId).toEqual(new RequestId('def456'));
+      expect(submitted.requestObjectRetrievedAt).toEqual(
+        new Date('1970-01-01T00:00:00.000Z')
+      );
+      expect(submitted.submittedAt).toEqual(
+        new Date('1970-01-01T00:00:00.000Z')
+      );
+      const expectedWalletResponse = new WalletResponse.IdToken('aa');
+      expect(submitted.walletResponse).toMatchObject({
+        __type: expectedWalletResponse.__type,
+        idToken: expectedWalletResponse.idToken,
+      });
+      expect(submitted.nonce).toEqual(new Nonce('ghi789'));
+      expect(submitted.responseCode).toEqual(new ResponseCode('efg'));
+    });
+
+    it('should create an instance of Submitted from JSON without responseCode', () => {
+      const json: Presentation.SubmittedJSON = {
+        __type: 'Submitted',
+        id: 'abc123',
+        initiated_at: '1970-01-01T00:00:00.000Z',
+        type: {
+          __type: 'VpTokenRequest',
+          presentation_definition: {
+            format: undefined,
+            id: undefined,
+            input_descriptors: undefined,
+            name: undefined,
+            purpose: undefined,
+            submission_requirements: undefined,
+          },
+        },
+        request_id: 'def456',
+        request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
+        submitted_at: '1970-01-01T00:00:00.000Z',
+        wallet_response: {
+          __type: 'IdToken',
+          id_token: 'aa',
+        },
+        nonce: 'ghi789',
+      };
+
+      const submitted = Presentation.Submitted.fromJSON(json);
+
+      expect(submitted).toBeInstanceOf(Presentation.Submitted);
+      expect(submitted.responseCode).toBeUndefined();
     });
   });
 });

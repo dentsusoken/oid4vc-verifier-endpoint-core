@@ -20,4 +20,25 @@
  * @param id - The identifier of the resource.
  * @returns The URL of the resource.
  */
+
+import { RequestId } from '.';
+
 export type BuildUrl<ID> = (id: ID) => URL;
+
+export namespace BuildUrl {
+  interface Base<ID> {
+    readonly __type: 'RequestId';
+
+    buildUrl(id: ID): URL;
+  }
+
+  export class WithRequestId implements Base<RequestId> {
+    readonly __type = 'RequestId' as const;
+
+    constructor(public baseUrl: string) {}
+
+    buildUrl(id: RequestId): URL {
+      return new URL(`${this.baseUrl}${id.value}`);
+    }
+  }
+}

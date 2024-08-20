@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { createGenerateEphemeralECDHPrivateJwkJoseInvoker } from './GenerateEphemeralECDHPrivateJwkJose';
 import { JWK } from 'jose';

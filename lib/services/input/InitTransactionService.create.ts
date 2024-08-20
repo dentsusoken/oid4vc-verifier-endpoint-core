@@ -20,7 +20,7 @@ import {
   EphemeralECDHPrivateJwk,
   Presentation,
   EmbedOption,
-  RequestId,
+  UrlBuilder,
   VerifierConfig,
 } from '../../domain';
 import { JwtSecuredAuthorizationRequestTO } from '../../ports/input/InitTransaction.types';
@@ -72,7 +72,7 @@ type CreateJwtSecuredAuthorizationRequestTORet = {
  */
 export const createJwtSecuredAuthorizationRequestTO = async (
   requested: Presentation.Requested,
-  jarOption: EmbedOption<RequestId>,
+  jarOption: EmbedOption,
   signRequestObject: SignRequestObject,
   verifierConfig: VerifierConfig,
   now: () => Date
@@ -93,7 +93,10 @@ export const createJwtSecuredAuthorizationRequestTO = async (
 
     return { requestTO: to, presentation: requestObjectRetrieved };
   } else {
-    const requestUri = jarOption.buildUrl(requested.requestId).href;
+    const requestUri = UrlBuilder.buildUrlWithRequestId(
+      jarOption.urlBuilder,
+      requested.requestId
+    ).href;
     const to = new JwtSecuredAuthorizationRequestTO(
       requested.id.value,
       verifierConfig.clientIdScheme.clientId,

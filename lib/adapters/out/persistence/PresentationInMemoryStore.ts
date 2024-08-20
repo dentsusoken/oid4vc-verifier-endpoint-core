@@ -26,17 +26,6 @@ interface PresentationStoredEntry {
   // Add other properties if needed
 }
 
-const getRequestId = (p: Presentation): RequestId | undefined => {
-  switch (p.__type) {
-    case 'Requested':
-    case 'RequestObjectRetrieved':
-    case 'Submitted':
-      return p.requestId;
-    case 'TimedOut':
-      return undefined;
-  }
-};
-
 export class PresentationInMemoryStore {
   private presentations: Map<string, PresentationStoredEntry> = new Map();
 
@@ -53,7 +42,7 @@ export class PresentationInMemoryStore {
     for (const entry of this.presentations.values()) {
       const presentation = entry.presentation;
 
-      if (getRequestId(presentation)?.value === requestId.value) {
+      if (presentation.requestId.value === requestId.value) {
         return presentation;
       }
     }

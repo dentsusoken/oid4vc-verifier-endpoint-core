@@ -32,8 +32,6 @@ const invoke: GenerateEphemeralECDHPrivateJwk = (ecdhAlg = 'ECDH-ES') =>
     jwk.kid = uuidv4();
     jwk.use = 'enc';
     jwk.alg = ecdhAlg;
-    const privateJwk: EphemeralECDHPrivateJwk = {
-      value: JSON.stringify(jwk),
-    };
+    const privateJwk = new EphemeralECDHPrivateJwk(JSON.stringify(jwk));
     return privateJwk;
   });

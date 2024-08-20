@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { PresentationDefinition } from 'oid4vc-prex';
 import { Result } from '../../kotlin';
@@ -14,9 +15,9 @@ import {
   Nonce,
   PresentationType,
   EmbedOption,
-  RequestId,
   ResponseModeOption,
   GetWalletResponseMethod,
+  UrlBuilder,
 } from '../../domain';
 import {
   IdTokenTypeTO,
@@ -132,12 +133,11 @@ describe('InitTransactionService.convert', () => {
   });
 
   describe('toEmbedOption', () => {
-    const byReference: EmbedOption.ByReference<RequestId> =
-      new EmbedOption.ByReference(
-        (id) => new URL(`https://example.com/${id.value}`)
-      );
+    const byReference: EmbedOption.ByReference = new EmbedOption.ByReference(
+      new UrlBuilder.WithRequestId(`https://example.com/`)
+    );
 
-    const defaultOption: EmbedOption<RequestId> = EmbedOption.ByValue.INSTANCE;
+    const defaultOption: EmbedOption = EmbedOption.ByValue.INSTANCE;
 
     it('should return the default option when input is undefined', () => {
       const result = toEmbedOption(undefined, byReference, defaultOption);

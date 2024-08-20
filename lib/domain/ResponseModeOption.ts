@@ -16,34 +16,67 @@
 
 import { z } from 'zod';
 
-import { FromJSON } from '../common/json/FromJSON';
+/**
+ * Namespace containing constants for response mode options.
+ *
+ * These constants represent the available response modes for the authorization response.
+ *
+ * @namespace
+ */
+export namespace ResponseModeOption {
+  /**
+   * Represents the direct post response mode.
+   * In this mode, the response is sent directly to the client via HTTP POST.
+   *
+   * @constant
+   * @type {string}
+   */
+  export const DirectPost = 'direct_post';
+
+  /**
+   * Represents the direct post JWT response mode.
+   * In this mode, the response is sent directly to the client via HTTP POST as a JWT.
+   *
+   * @constant
+   * @type {string}
+   */
+  export const DirectPostJwt = 'direct_post.jwt';
+}
 
 /**
- * Enum representing the response mode options for authorization responses.
+ * Zod schema for validating response mode options.
+ *
+ * This schema ensures that the response mode is one of the valid options defined in ResponseModeOption.
+ * It accepts either 'direct_post' or 'direct_post.jwt'.
+ *
+ * @type {z.ZodUnion<[z.ZodLiteral<"direct_post">, z.ZodLiteral<"direct_post.jwt">]>}
+ *
+ * @example
+ * // Valid usage
+ * responseModeOptionSchema.parse('direct_post'); // Returns 'direct_post'
+ * responseModeOptionSchema.parse('direct_post.jwt'); // Returns 'direct_post.jwt'
+ *
+ * // Invalid usage (will throw ZodError)
+ * responseModeOptionSchema.parse('invalid'); // Throws ZodError
+ *
+ * @throws {z.ZodError} Throws a ZodError if the input is not a valid response mode option
  */
-export enum ResponseModeOption {
-  /**
-   * Direct POST response mode.
-   * The authorization response is sent as a direct POST request to the client.
-   */
-  DirectPost = 'direct_post',
-
-  /**
-   * Direct POST JWT response mode.
-   * The authorization response is sent as a JWT in a direct POST request to the client.
-   */
-  DirectPostJwt = 'direct_post.jwt',
-}
-
-const schema = z.enum([
-  ResponseModeOption.DirectPost,
-  ResponseModeOption.DirectPostJwt,
+export const responseModeOptionSchema = z.union([
+  z.literal(ResponseModeOption.DirectPost),
+  z.literal(ResponseModeOption.DirectPostJwt),
 ]);
 
-export namespace ResponseModeOption {
-  export const fromJSON: FromJSON<ResponseModeOption> = (json) =>
-    schema.parse(json);
-
-  export const toJSON = (responseMode: ResponseModeOption): string =>
-    responseMode as string;
-}
+/**
+ * Type representing the valid response mode options.
+ *
+ * This type is inferred from the responseModeOptionSchema and can only be one of the following string literals:
+ * - 'direct_post'
+ * - 'direct_post.jwt'
+ *
+ * @typedef {z.infer<typeof responseModeOptionSchema>} ResponseModeOption
+ *
+ * @example
+ * const mode: ResponseModeOption = 'direct_post'; // Valid
+ * const invalidMode: ResponseModeOption = 'invalid'; // TypeScript compilation error
+ */
+export type ResponseModeOption = z.infer<typeof responseModeOptionSchema>;

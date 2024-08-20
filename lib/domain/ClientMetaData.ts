@@ -16,7 +16,6 @@
 
 import { EmbedOption } from './EmbedOption';
 import { JarmOption } from './JarmOption';
-import { RequestId } from './RequestId';
 
 /**
  * Represents the metadata of a client in the authentication process.
@@ -24,7 +23,7 @@ import { RequestId } from './RequestId';
 export class ClientMetaData {
   /**
    * Constructor for the class.
-   * @param {EmbedOption<RequestId>} jwkOption - The JWK (JSON Web Key) option for the request ID.
+   * @param {EmbedOption} jwkOption - The JWK (JSON Web Key) option for the request ID.
    * @param {string|undefined} idTokenSignedResponseAlg - The algorithm used for signing the ID token response.
    * @param {string|undefined} idTokenEncryptedResponseAlg - The algorithm used for encrypting the ID token response.
    * @param {string|undefined} idTokenEncryptedResponseEnc - The encryption method used for the ID token response.
@@ -32,7 +31,7 @@ export class ClientMetaData {
    * @param {JarmOption} jarmOption - The JARM (JWT Secured Authorization Response Mode) option.
    */
   constructor(
-    public jwkOption: EmbedOption<RequestId>,
+    public jwkOption: EmbedOption,
     public idTokenSignedResponseAlg: string | undefined,
     public idTokenEncryptedResponseAlg: string | undefined,
     public idTokenEncryptedResponseEnc: string | undefined,

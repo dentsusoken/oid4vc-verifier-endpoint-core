@@ -19,6 +19,7 @@ import {
   EphemeralECDHPrivateJwk,
   RequestId,
   EmbedOption,
+  UrlBuilder,
 } from '../../../domain';
 import { RequestObject } from './RequestObject';
 import { PresentationDefinition } from 'oid4vc-prex';
@@ -91,16 +92,17 @@ export const getJwks = (
 
 /**
  * Retrieves the JWKS URI based on the embed option and request ID
- * @param {EmbedOption<RequestId>} jwkOption - The embed option for JWK
+ * @param {EmbedOption} jwkOption - The embed option for JWK
  * @param {RequestId} requestId - The request ID
  * @returns {string | undefined} The JWKS URI or undefined
  */
 export const getJwksUri = (
-  jwkOption: EmbedOption<RequestId>,
+  jwkOption: EmbedOption,
   requestId: RequestId
 ): string | undefined => {
   if (jwkOption.__type === 'ByReference') {
-    return jwkOption.buildUrl(requestId).href;
+    return UrlBuilder.buildUrlWithRequestId(jwkOption.urlBuilder, requestId)
+      .href;
   }
 
   return undefined;

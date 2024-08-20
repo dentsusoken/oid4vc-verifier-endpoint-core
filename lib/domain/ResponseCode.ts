@@ -15,28 +15,68 @@
  */
 
 import { z } from 'zod';
-import { FromJSON } from '../common/json/FromJSON';
 
-const schema = z.string().min(1);
+/**
+ * Zod schema for validating response codes.
+ *
+ * This schema ensures that a response code is a non-empty string.
+ * It applies the following validations:
+ * - The value must be a string.
+ * - The string must have a minimum length of 1 character.
+ *
+ * @type {z.ZodString}
+ *
+ * @example
+ * // Valid usage
+ * responseCodeSchema.parse('200'); // Returns '200'
+ * responseCodeSchema.parse('ERROR_001'); // Returns 'ERROR_001'
+ *
+ * // Invalid usage (will throw ZodError)
+ * responseCodeSchema.parse(''); // Throws error: String must contain at least 1 character(s)
+ * responseCodeSchema.parse(123); // Throws error: Expected string, received number
+ *
+ * @throws {z.ZodError} Throws a ZodError if the input fails validation
+ */
+export const responseCodeSchema = z.string().min(1);
 
 /**
  * Represents a response code.
  *
- * @class ResponseCode
+ * This class encapsulates a response code value, ensuring it is not empty or undefined.
  *
- * @param {string} value - The value of the response code.
+ * @class
+ * @example
+ * // Create a valid ResponseCode instance
+ * const validCode = new ResponseCode('200');
+ * console.log(validCode.value); // Outputs: '200'
+ *
+ * // Attempting to create an invalid ResponseCode will throw an error
+ * try {
+ *   const invalidCode = new ResponseCode('');
+ * } catch (error) {
+ *   console.error(error.message); // Outputs: 'value is required'
+ * }
  */
 export class ResponseCode {
-  static fromJSON: FromJSON<ResponseCode> = (json) => {
-    const value = schema.parse(json);
-
-    return new ResponseCode(value);
-  };
-
+  /**
+   * Creates an instance of ResponseCode.
+   *
+   * @param {string} value - The response code value.
+   * @throws {Error} Throws an Error if the value is falsy (empty, null, undefined, etc.).
+   */
   constructor(public value: string) {
-    schema.parse(value);
+    if (!value) {
+      throw new Error('value is required');
+    }
   }
 
+  /**
+   * Returns the string representation of the ResponseCode.
+   *
+   * This method is used for JSON serialization.
+   *
+   * @returns {string} The response code value.
+   */
   toJSON(): string {
     return this.value;
   }

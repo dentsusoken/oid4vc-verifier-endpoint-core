@@ -21,7 +21,6 @@ import {
   IdTokenType,
   Nonce,
   PresentationType,
-  RequestId,
   ResponseCode,
   ResponseModeOption,
 } from '../../domain';
@@ -103,15 +102,15 @@ export const toPresentationType = (
 /**
  * Converts an EmbedModeTO value to an EmbedOption instance.
  * @param {EmbedModeTO | undefined} to - The EmbedModeTO value to convert.
- * @param {EmbedOption.ByReference<RequestId>} byReference - The EmbedOption.ByReference instance to use when 'to' is EmbedModeTO.ByReference.
- * @param {EmbedOption<RequestId>} defaultOption - The default EmbedOption to use when 'to' is undefined.
- * @returns {EmbedOption<RequestId>} The corresponding EmbedOption instance.
+ * @param {EmbedOption.ByReference} byReference - The EmbedOption.ByReference instance to use when 'to' is EmbedModeTO.ByReference.
+ * @param {EmbedOption} defaultOption - The default EmbedOption to use when 'to' is undefined.
+ * @returns {EmbedOption} The corresponding EmbedOption instance.
  */
 export const toEmbedOption = (
   to: EmbedModeTO | undefined,
-  byReference: EmbedOption.ByReference<RequestId>,
-  defaultOption: EmbedOption<RequestId>
-): EmbedOption<RequestId> => {
+  byReference: EmbedOption.ByReference,
+  defaultOption: EmbedOption
+): EmbedOption => {
   if (!to) {
     return defaultOption;
   }

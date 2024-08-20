@@ -16,44 +16,42 @@
 
 import { z } from 'zod';
 
-import { FromJSON } from '../common/json/FromJSON';
-
 /**
- * Represents the type of an ID token.
- * @enum {string}
+ * Namespace containing constants for IdTokenType values.
+ * @namespace
  */
-export enum IdTokenType {
+export namespace IdTokenType {
   /**
-   * ID token signed by the subject (user).
+   * Represents an ID token signed by the subject (user).
+   * @constant
+   * @type {string}
    */
-  SubjectSigned = 'subject_signed_id_token',
+  export const SubjectSigned = 'subject_signed_id_token';
 
   /**
-   * ID token signed by the attester (identity provider).
+   * Represents an ID token signed by the attester (identity provider).
+   * @constant
+   * @type {string}
    */
-  AttesterSigned = 'attester_signed_id_token',
+  export const AttesterSigned = 'attester_signed_id_token';
 }
 
 /**
  * Zod schema for validating IdTokenType values.
+ * This schema ensures that only valid IdTokenType values are accepted.
+ *
+ * @constant
+ * @type {z.ZodUnion<[z.ZodLiteral<"subject_signed_id_token">, z.ZodLiteral<"attester_signed_id_token">]>}
  */
-const schema = z.enum([IdTokenType.SubjectSigned, IdTokenType.AttesterSigned]);
+export const idTokenTypeSchema = z.union([
+  z.literal(IdTokenType.SubjectSigned),
+  z.literal(IdTokenType.AttesterSigned),
+]);
 
-export namespace IdTokenType {
-  /**
-   * Creates an IdTokenType value from a JSON string.
-   * @type {FromJSON<IdTokenType>}
-   * @param {unknown} json - The JSON string representing the IdTokenType value.
-   * @returns {IdTokenType} The parsed IdTokenType value.
-   * @throws {ZodError} If the JSON string is not a valid IdTokenType value.
-   */
-  export const fromJSON: FromJSON<IdTokenType> = (json) => schema.parse(json);
-
-  /**
-   * Converts an IdTokenType value to its JSON representation.
-   * @param {IdTokenType} idTokenType - The IdTokenType value to convert.
-   * @returns {string} The JSON representation of the IdTokenType value.
-   */
-  export const toJSON = (idTokenType: IdTokenType): string =>
-    idTokenType as string;
-}
+/**
+ * Represents the type of an ID token.
+ * This type is inferred from the idTokenTypeSchema and can only be one of the valid IdTokenType values.
+ *
+ * @typedef {z.infer<typeof idTokenTypeSchema>} IdTokenType
+ */
+export type IdTokenType = z.infer<typeof idTokenTypeSchema>;

@@ -15,28 +15,85 @@
  */
 
 import { z } from 'zod';
-import { FromJSON } from '../common/json/FromJSON';
-
-const schema = z.string().min(1);
 
 /**
- * Represents an ephemeral encryption private key in JWK (JSON Web Key) format.
- * This interface is used for temporary or one-time encryption purposes.
- * The key is expected to be short-lived and not stored for long-term use.
+ * Zod schema for validating the structure of a JWK (JSON Web Key) object.
+ *
+ * This schema ensures that the JWK object contains the following required properties:
+ * - kty: Key Type (string)
+ * - crv: Curve (string)
+ * - x: X Coordinate (string)
+ * - y: Y Coordinate (string)
+ * - d: Private Key (string)
+ *
+ * @type {z.ZodObject<{kty: z.ZodString, crv: z.ZodString, x: z.ZodString, y: z.ZodString, d: z.ZodString}>}
  */
-export interface EphemeralECDHPrivateJwk {
+const jwkSchema = z.object({
+  kty: z.string(),
+  crv: z.string(),
+  x: z.string(),
+  y: z.string(),
+  d: z.string(),
+});
+
+/**
+ * Zod schema for validating an ephemeral ECDH private key in JWK format as a JSON string.
+ *
+ * This schema applies the following validations:
+ * 1. The input must be a string.
+ * 2. The string must be a valid JSON.
+ * 3. The parsed JSON object must conform to the jwkSchema structure.
+ *
+ * @type {z.ZodEffects<z.ZodString>}
+ *
+ * @example
+ * // Valid usage
+ * const validJwk = '{"kty":"EC","crv":"P-256","x":"example-x","y":"example-y","d":"example-d"}';
+ * ephemeralECDHPrivateJwkSchema.parse(validJwk); // Returns the validJwk string
+ *
+ * // Invalid usage (will throw ZodError)
+ * ephemeralECDHPrivateJwkSchema.parse('{"kty":"EC"}'); // Missing required properties
+ * ephemeralECDHPrivateJwkSchema.parse('not a json'); // Not a valid JSON string
+ *
+ * @throws {z.ZodError} Throws a ZodError if the input fails validation
+ */
+export const ephemeralECDHPrivateJwkSchema = z.string().refine(
+  (str) => {
+    try {
+      const parsed = JSON.parse(str);
+      return jwkSchema.safeParse(parsed).success;
+    } catch {
+      return false;
+    }
+  },
+  {
+    message:
+      'Must be a valid JSON string representing a JWK with kty, crv, x, y, and d properties',
+  }
+);
+
+/**
+ * Represents an ephemeral ECDH private key in JWK format.
+ *
+ * This class encapsulates a JWK string representing an ephemeral ECDH private key.
+ * It provides methods for JSON serialization.
+ */
+export class EphemeralECDHPrivateJwk {
   /**
-   * The string representation of the ephemeral private key in JWK format.
-   * This should be a valid JSON string representing a JWK for an encryption key.
+   * Creates a new instance of EphemeralECDHPrivateJwk.
+   *
+   * @param {string} value - The JWK string representing the ephemeral ECDH private key.
    */
-  readonly value: string;
-}
+  constructor(public value: string) {}
 
-export namespace EphemeralECDHPrivateJwk {
-  export const fromJSON: FromJSON<EphemeralECDHPrivateJwk> = (json) =>
-    ({ value: schema.parse(json) } as EphemeralECDHPrivateJwk);
-
-  export const toJSON = (
-    ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk
-  ): string => ephemeralECDHPrivateJwk.value;
+  /**
+   * Returns the JWK string for JSON serialization.
+   *
+   * This method is used by JSON.stringify() to serialize the object.
+   *
+   * @returns {string} The JWK string.
+   */
+  toJSON(): string {
+    return this.value;
+  }
 }

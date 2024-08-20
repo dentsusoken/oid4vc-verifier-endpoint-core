@@ -1,83 +1,62 @@
 import { describe, it, expect } from 'vitest';
-import { Nonce } from './Nonce';
+import { Nonce, nonceSchema } from './Nonce';
 import { ZodError } from 'zod';
 
 describe('Nonce', () => {
   describe('constructor', () => {
-    it('should create an instance of Nonce with the provided value', () => {
-      const value = 'abc123';
-      const nonce = new Nonce(value);
-      expect(nonce).toBeInstanceOf(Nonce);
-      expect(nonce.value).toBe(value);
+    it('should create an instance with a valid value', () => {
+      const nonce = new Nonce('abc123');
+      expect(nonce.value).toBe('abc123');
     });
 
-    it('should throw an error if the value is falsy', () => {
-      expect(() => new Nonce('')).toThrowError('value is required');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect(() => new Nonce(null as any)).toThrowError('value is required');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect(() => new Nonce(undefined as any)).toThrowError(
+    it('should throw an error if value is empty', () => {
+      expect(() => new Nonce('')).toThrow('value is required');
+    });
+
+    it('should throw an error if value is null', () => {
+      expect(() => new Nonce(null as unknown as string)).toThrow(
+        'value is required'
+      );
+    });
+
+    it('should throw an error if value is undefined', () => {
+      expect(() => new Nonce(undefined as unknown as string)).toThrow(
         'value is required'
       );
     });
   });
 
-  describe('fromJSON', () => {
-    it('should create an instance of Nonce from the provided JSON value', () => {
-      const value = 'abc123';
-      const nonce = Nonce.fromJSON(value);
-      expect(nonce).toBeInstanceOf(Nonce);
-      expect(nonce.value).toBe(value);
+  describe('toJSON', () => {
+    it('should return the value as a string', () => {
+      const nonce = new Nonce('abc123');
+      expect(nonce.toJSON()).toBe('abc123');
     });
 
-    it('should throw a ZodError with the expected error object when the JSON value is an empty string', () => {
-      const json = '';
-
-      try {
-        Nonce.fromJSON(json);
-        expect.fail('Expected a ZodError to be thrown');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ZodError);
-        expect(error instanceof ZodError && error.issues).toEqual([
-          {
-            code: 'too_small',
-            minimum: 1,
-            type: 'string',
-            inclusive: true,
-            exact: false,
-            message: 'String must contain at least 1 character(s)',
-            path: [],
-          },
-        ]);
-      }
-    });
-
-    it('should throw a ZodError with the expected error object when the JSON value is not a string', () => {
-      const json = 123;
-
-      try {
-        Nonce.fromJSON(json);
-        expect.fail('Expected a ZodError to be thrown');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ZodError);
-        expect(error instanceof ZodError && error.issues).toEqual([
-          {
-            code: 'invalid_type',
-            expected: 'string',
-            received: 'number',
-            path: [],
-            message: 'Expected string, received number',
-          },
-        ]);
-      }
+    it('should work with JSON.stringify', () => {
+      const nonce = new Nonce('abc123');
+      expect(JSON.stringify({ nonce })).toBe('{"nonce":"abc123"}');
     });
   });
+});
 
-  describe('toJSON', () => {
-    it('should return the JSON representation of the Nonce', () => {
-      const value = 'abc123';
-      const nonce = new Nonce(value);
-      expect(nonce.toJSON()).toBe(value);
-    });
+describe('nonceSchema', () => {
+  it('should accept valid strings', () => {
+    expect(nonceSchema.parse('a')).toBe('a');
+    expect(nonceSchema.parse('abc123')).toBe('abc123');
+  });
+
+  it('should throw a ZodError for an empty string', () => {
+    expect(() => nonceSchema.parse('')).toThrow(ZodError);
+  });
+
+  it('should throw a ZodError for non-string values', () => {
+    expect(() => nonceSchema.parse(123 as unknown as string)).toThrow(ZodError);
+    expect(() => nonceSchema.parse(null as unknown as string)).toThrow(
+      ZodError
+    );
+    expect(() => nonceSchema.parse(undefined as unknown as string)).toThrow(
+      ZodError
+    );
+    expect(() => nonceSchema.parse({} as unknown as string)).toThrow(ZodError);
   });
 });

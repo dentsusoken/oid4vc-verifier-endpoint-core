@@ -16,7 +16,7 @@
 
 export * from './AuthorizationResponse';
 export * from './EmbedOption';
-export * from './BuildUrl';
+export * from './UrlBuilder';
 export * from './types';
 export * from './JarmOption';
 export * from './ClientMetaData';
@@ -37,3 +37,5 @@ export * from './ResponseCode';
 export * from './ResponseModeOption';
 export * from './GetWalletResponseMethod';
 export * from './Presentation';
+export * from './presentationDefinitionSchema';
+export * from './iso8601Schema';

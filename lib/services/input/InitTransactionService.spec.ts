@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { TransactionId } from '../../domain';
 import { PresentationDefinition } from 'oid4vc-prex';

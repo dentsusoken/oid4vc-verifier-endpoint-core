@@ -15,13 +15,12 @@
  */
 
 import {
-  BuildUrl,
   ClientIdScheme,
   ClientMetaData,
   Duration,
   EmbedOption,
   JarmOption,
-  RequestId,
+  UrlBuilder,
   ResponseModeOption,
   SigningConfig,
   VerifierConfig,
@@ -115,15 +114,15 @@ export interface Configuration {
 
   /**
    * Function to get the JAR option by reference
-   * @returns {EmbedOption.ByReference<RequestId>} JAR option by reference
+   * @returns {EmbedOption.ByReference} JAR option by reference
    */
-  jarByReference(): EmbedOption.ByReference<RequestId>;
+  jarByReference(): EmbedOption.ByReference;
 
   /**
    * Function to get the JAR option
    * @returns {EmbedOption<RequestId>} JAR option
    */
-  jarOption(): EmbedOption<RequestId>;
+  jarOption(): EmbedOption;
 
   /**
    * Function to get the response mode option name
@@ -145,15 +144,15 @@ export interface Configuration {
 
   /**
    * Function to get the presentation definition option by reference
-   * @returns {EmbedOption.ByReference<RequestId>} Presentation definition option by reference
+   * @returns {EmbedOption.ByReference} Presentation definition option by reference
    */
-  presentationDefinitionByReference(): EmbedOption.ByReference<RequestId>;
+  presentationDefinitionByReference(): EmbedOption.ByReference;
 
   /**
    * Function to get the presentation definition option
-   * @returns {EmbedOption<RequestId>} Presentation definition option
+   * @returns {EmbedOption} Presentation definition option
    */
-  presentationDefinitionOption(): EmbedOption<RequestId>;
+  presentationDefinitionOption(): EmbedOption;
 
   /**
    * Function to get the maximum age
@@ -163,9 +162,9 @@ export interface Configuration {
 
   /**
    * Function to get the JWK option
-   * @returns {EmbedOption<RequestId>} JWK option
+   * @returns {EmbedOption} JWK option
    */
-  jwkOption(): EmbedOption<RequestId>;
+  jwkOption(): EmbedOption;
 
   /**
    * Function to get the signed response algorithm for the ID token
@@ -223,9 +222,9 @@ export interface Configuration {
 
   /**
    * Function to get the response URI builder
-   * @returns {BuildUrl<RequestId>} Response URI builder
+   * @returns {UrlBuilder} Response URI builder
    */
-  responseUriBuilder(): BuildUrl<RequestId>;
+  responseUrlBuilder(): UrlBuilder;
 
   /**
    * Function to get the verifier configuration

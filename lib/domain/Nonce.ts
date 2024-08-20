@@ -14,22 +14,54 @@
  * limitations under the License.
  */
 
-import { FromJSON } from '../common/json/FromJSON';
 import { z } from 'zod';
 
-const schema = z.string().min(1);
+/**
+ * Zod schema for validating nonce values.
+ *
+ * This schema ensures that a nonce is a non-empty string.
+ * It applies the following validations:
+ * - The value must be a string.
+ * - The string must have a minimum length of 1 character.
+ *
+ * @type {z.ZodString}
+ *
+ * @example
+ * // Valid usage
+ * nonceSchema.parse('abc123'); // Returns 'abc123'
+ * nonceSchema.parse('a'); // Returns 'a'
+ *
+ * // Invalid usage (will throw ZodError)
+ * nonceSchema.parse(''); // Throws error: String must contain at least 1 character(s)
+ * nonceSchema.parse(123); // Throws error: Expected string, received number
+ *
+ * @throws {z.ZodError} Throws a ZodError if the input fails validation
+ */
+export const nonceSchema = z.string().min(1);
+
 /**
  * Represents a nonce.
+ *
+ * A nonce is a unique, typically random or pseudo-random number that is used only once
+ * in a cryptographic communication. This class encapsulates a nonce value, ensuring it is non-empty.
+ *
+ * @class
+ * @example
+ * // Create a valid Nonce instance
+ * const validNonce = new Nonce('abc123');
+ * console.log(validNonce.value); // Outputs: 'abc123'
+ *
+ * // Attempting to create an invalid Nonce will throw an error
+ * try {
+ *   const invalidNonce = new Nonce('');
+ * } catch (error) {
+ *   console.error(error.message); // Outputs: 'value is required'
+ * }
  */
 export class Nonce {
-  static fromJSON: FromJSON<Nonce> = (json) => {
-    const value = schema.parse(json);
-
-    return new Nonce(value);
-  };
-
   /**
    * Creates an instance of Nonce.
+   *
    * @param {string} value - The value of the nonce.
    * @throws {Error} If the value is falsy (empty, null, undefined, etc.).
    */
@@ -39,6 +71,13 @@ export class Nonce {
     }
   }
 
+  /**
+   * Returns the string representation of the Nonce.
+   *
+   * This method is used for JSON serialization.
+   *
+   * @returns {string} The nonce value.
+   */
   toJSON(): string {
     return this.value;
   }

@@ -89,9 +89,9 @@ describe('PostWalletResponse.convert', () => {
 
     const jarmJwt = await enc.encrypt(recipientKeyPair.publicKey);
     const jarmOption = new JarmOption.Encrypted('ECDH-ES+A256KW', 'A256GCM');
-    const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
-      value: JSON.stringify(privateJwk),
-    };
+    const ephemeralECDHPrivateJwk = new EphemeralECDHPrivateJwk(
+      JSON.stringify(privateJwk)
+    );
     const verifyJarmJwt = createVerifyJarmJwtJoseInvoker();
 
     it('should return response data for DirectPost response', async () => {

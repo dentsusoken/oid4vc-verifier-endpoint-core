@@ -5,10 +5,9 @@ import {
   ClientIdScheme,
   EmbedOption,
   ResponseModeOption,
-  BuildUrl,
   ClientMetaData,
-  RequestId,
   SigningConfig,
+  UrlBuilder,
 } from '.';
 import { DurationLuxon } from '../adapters/out/cfg';
 
@@ -18,11 +17,12 @@ describe('VerifierConfig', () => {
     clientId: 'mock-id',
     jarSigning: {} as SigningConfig,
   };
-  const mockRequestJarOption = {} as EmbedOption<RequestId>;
-  const mockPresentationDefinitionEmbedOption = {} as EmbedOption<RequestId>;
+  const mockRequestJarOption = {} as EmbedOption;
+  const mockPresentationDefinitionEmbedOption = {} as EmbedOption;
   const mockResponseModeOption = {} as ResponseModeOption;
-  const mockResponseUriBuilder: BuildUrl<RequestId> = (id) =>
-    new URL(`http://example.com/${id.value}`);
+  const mockResponseUrlBuilder = new UrlBuilder.WithRequestId(
+    `http://example.com/`
+  );
   const mockMaxAge = DurationLuxon.Factory.ofSeconds(3600);
   const mockClientMetaData = {} as ClientMetaData;
 
@@ -32,7 +32,7 @@ describe('VerifierConfig', () => {
       mockRequestJarOption,
       mockPresentationDefinitionEmbedOption,
       mockResponseModeOption,
-      mockResponseUriBuilder,
+      mockResponseUrlBuilder,
       mockMaxAge,
       mockClientMetaData
     );
@@ -43,7 +43,7 @@ describe('VerifierConfig', () => {
       mockPresentationDefinitionEmbedOption
     );
     expect(config.responseModeOption).toBe(mockResponseModeOption);
-    expect(config.responseUriBuilder).toBe(mockResponseUriBuilder);
+    expect(config.responseUrlBuilder).toBe(mockResponseUrlBuilder);
     expect(config.maxAge).toBe(mockMaxAge);
     expect(config.clientMetaData).toBe(mockClientMetaData);
   });

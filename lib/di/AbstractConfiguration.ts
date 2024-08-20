@@ -26,12 +26,11 @@ import {
   ClientIdScheme,
   ClientMetaData,
   EmbedOption,
-  RequestId,
   ResponseModeOption,
   Duration,
   JarmOption,
   VerifierConfig,
-  BuildUrl,
+  UrlBuilder,
 } from '../domain';
 import { importJWK } from 'jose';
 import * as ParseJarmOptionJose from '../adapters/out/jose/ParseJarmOptionJose';
@@ -47,15 +46,8 @@ export abstract class AbstractConfiguration implements Configuration {
   #jarSigning: SigningConfig | undefined;
   #clientIdScheme: ClientIdScheme | undefined;
   #verifierConfig: VerifierConfig | undefined;
-  #jarByReference: EmbedOption.ByReference<RequestId> =
-    new EmbedOption.ByReference(
-      (id: RequestId) =>
-        new URL(`${this.publicUrl()}/wallet/request.jwt/${id.value}`)
-    );
-  #presentationDefinitionByReference: EmbedOption.ByReference<RequestId> =
-    new EmbedOption.ByReference(
-      (id: RequestId) => new URL(`${this.publicUrl()}/wallet/pd/${id.value}`)
-    );
+  #jarByReference: EmbedOption.ByReference | undefined;
+  #presentationDefinitionByReference: EmbedOption.ByReference | undefined;
 
   /**
    * Abstract method to get the private JWK used for signing the JAR
@@ -179,17 +171,37 @@ export abstract class AbstractConfiguration implements Configuration {
   };
 
   /**
-   * Function to get the JAR option by reference
-   * @type {() => EmbedOption.ByReference<RequestId>}
+   * Retrieves the JAR by reference option.
+   * @returns {EmbedOption.ByReference} The JAR by reference option.
    */
-  jarByReference = (): EmbedOption.ByReference<RequestId> =>
-    this.#jarByReference;
+  jarByReference = (): EmbedOption.ByReference => {
+    if (this.#jarByReference) {
+      return this.#jarByReference;
+    }
+
+    this.#jarByReference = new EmbedOption.ByReference(
+      new UrlBuilder.WithRequestId(`${this.publicUrl()}/wallet/request.jwt/`)
+    );
+
+    return this.#jarByReference;
+  };
 
   /**
-   * Function to get the JAR option
-   * @type {() => EmbedOption<RequestId>}
+   * Determines and returns the JAR embed option.
+   * @returns {EmbedOption} The JAR embed option, either ByValue or ByReference.
+   * @description This method checks the JAR option name and returns the appropriate EmbedOption.
+   * If the option name is 'by_value', it returns the ByValue singleton instance.
+   * Otherwise, it returns the ByReference option.
+   *
+   * @example
+   * const embedOption = instance.jarOption();
+   * if (embedOption instanceof EmbedOption.ByValue) {
+   *   console.log('JAR is embedded by value');
+   * } else {
+   *   console.log('JAR is embedded by reference');
+   * }
    */
-  jarOption = (): EmbedOption<RequestId> => {
+  jarOption = (): EmbedOption => {
     if (this.jarOptionName() === 'by_value') {
       return EmbedOption.ByValue.INSTANCE;
     }
@@ -206,16 +218,25 @@ export abstract class AbstractConfiguration implements Configuration {
 
   /**
    * Function to get the presentation definition option by reference
-   * @type {() => EmbedOption.ByReference<RequestId>}
+   * @type {() => EmbedOption.ByReference}
    */
-  presentationDefinitionByReference = (): EmbedOption.ByReference<RequestId> =>
-    this.#presentationDefinitionByReference;
+  presentationDefinitionByReference = (): EmbedOption.ByReference => {
+    if (this.#presentationDefinitionByReference) {
+      return this.#presentationDefinitionByReference;
+    }
+
+    this.#presentationDefinitionByReference = new EmbedOption.ByReference(
+      new UrlBuilder.WithRequestId(`${this.publicUrl()}/wallet/pd/`)
+    );
+
+    return this.#presentationDefinitionByReference;
+  };
 
   /**
    * Function to get the presentation definition option
-   * @type {() => EmbedOption<RequestId>}
+   * @type {() => EmbedOption}
    */
-  presentationDefinitionOption = (): EmbedOption<RequestId> => {
+  presentationDefinitionOption = (): EmbedOption => {
     if (this.presentationDefinitionOptionName() === 'by_value') {
       return EmbedOption.ByValue.INSTANCE;
     }
@@ -225,9 +246,9 @@ export abstract class AbstractConfiguration implements Configuration {
 
   /**
    * Function to get the JWK option
-   * @type {() => EmbedOption<RequestId>}
+   * @type {() => EmbedOption}
    */
-  jwkOption = (): EmbedOption<RequestId> => EmbedOption.ByValue.INSTANCE;
+  jwkOption = (): EmbedOption => EmbedOption.ByValue.INSTANCE;
 
   /**
    * Function to get the signed response algorithm for the ID token
@@ -300,12 +321,11 @@ export abstract class AbstractConfiguration implements Configuration {
     );
 
   /**
-   * Function to get the response URI builder
-   * @type {() => BuildUrl<RequestId>}
+   * Function to get the response URL builder
+   * @type {() => UrlBuilder}
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  responseUriBuilder = (): BuildUrl<RequestId> => (_) =>
-    new URL(`${this.publicUrl()}/wallet/direct_post`);
+  responseUrlBuilder = (): UrlBuilder =>
+    new UrlBuilder.Fix(`${this.publicUrl()}/wallet/direct_post`);
 
   /**
    * Function to get the verifier configuration
@@ -321,7 +341,7 @@ export abstract class AbstractConfiguration implements Configuration {
       this.jarOption(),
       this.presentationDefinitionOption(),
       this.responseModeOption(),
-      this.responseUriBuilder(),
+      this.responseUrlBuilder(),
       this.maxAge(),
       this.clientMetaData()
     );

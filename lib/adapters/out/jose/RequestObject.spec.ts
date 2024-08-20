@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { requestObjectFromDomain } from './RequestObject';
 import {
@@ -14,6 +15,7 @@ import {
   Nonce,
   GetWalletResponseMethod,
   StaticSigningPrivateJwk,
+  UrlBuilder,
 } from '../../../domain';
 import { PresentationDefinition } from 'oid4vc-prex';
 
@@ -30,11 +32,12 @@ describe('requestObjectFromDomain', () => {
   };
   const clientIdScheme = new ClientIdScheme.PreRegistered(clientId, jarSigning);
 
-  const urlBuilder = (id: RequestId) =>
-    new URL(`https://example.com/direct_post/${id.value}`);
+  const urlBuilder = new UrlBuilder.WithRequestId(
+    `https://example.com/direct_post/`
+  );
   const mockVerifierConfig = {
     clientIdScheme,
-    responseUriBuilder: urlBuilder,
+    responseUrlBuilder: urlBuilder,
   } as VerifierConfig;
 
   it('should create a RequestObject for IdTokenRequest', () => {
@@ -46,7 +49,7 @@ describe('requestObjectFromDomain', () => {
       new Nonce('test-nonce'),
       undefined,
       ResponseModeOption.DirectPost,
-      undefined,
+      EmbedOption.ByValue.INSTANCE,
       GetWalletResponseMethod.Poll.INSTANCE
     );
 

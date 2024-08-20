@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import {
   getScope,
@@ -17,6 +18,7 @@ import {
   RequestId,
   ClientIdScheme,
   SigningConfig,
+  UrlBuilder,
 } from '../../../domain';
 import { PresentationDefinition } from 'oid4vc-prex';
 
@@ -191,7 +193,7 @@ describe('Presentation Type Utilities', () => {
         mockPresentationDefinition
       );
       const mode = new EmbedOption.ByReference(
-        () => new URL('https://example.com')
+        new UrlBuilder.Fix('https://example.com')
       );
       expect(getPresentationDefinition(mode, type)).toBeUndefined();
     });
@@ -208,8 +210,12 @@ describe('Presentation Type Utilities', () => {
 
     it('should return URL when mode is ByReference', () => {
       const mockUrl = new URL('https://example.com');
-      const mode = new EmbedOption.ByReference(() => mockUrl);
-      expect(getPresentationDefinitionUri(mode, mockRequestId)).toBe(mockUrl);
+      const mode = new EmbedOption.ByReference(
+        new UrlBuilder.Fix(mockUrl.href)
+      );
+      expect(getPresentationDefinitionUri(mode, mockRequestId)).toEqual(
+        mockUrl
+      );
     });
 
     it('should return undefined when mode is ByValue', () => {

@@ -9,7 +9,6 @@ import {
   StaticSigningPrivateJwk,
   EphemeralECDHPrivateJwk,
   EmbedOption,
-  BuildUrl,
   PresentationType,
   TransactionId,
   Nonce,
@@ -17,6 +16,7 @@ import {
   GetWalletResponseMethod,
   ClientIdScheme,
   SigningConfig,
+  UrlBuilder,
 } from '../../../domain';
 import { exportJWK, generateKeyPair } from 'jose';
 import { PresentationDefinition } from 'oid4vc-prex';
@@ -34,9 +34,9 @@ describe('SignRequestObjectJose', async () => {
     value: JSON.stringify(staticSigningPrivateExportedJwk),
   };
   const ephemeralECDHPrivateKey = (await generateKeyPair('ES256')).privateKey;
-  const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
-    value: JSON.stringify(await exportJWK(ephemeralECDHPrivateKey)),
-  };
+  const ephemeralECDHPrivateJwk = new EphemeralECDHPrivateJwk(
+    JSON.stringify(await exportJWK(ephemeralECDHPrivateKey))
+  );
   const clientMetaData = {
     idTokenSignedResponseAlg: 'ES256',
     idTokenEncryptedResponseAlg: 'ECDH-ES+A256KW',
@@ -49,8 +49,9 @@ describe('SignRequestObjectJose', async () => {
       jweEnc: () => 'A256GCM',
     },
   } as ClientMetaData;
-  const responseUriBuilder: BuildUrl<RequestId> = (requestId: RequestId) =>
-    new URL(`https://example.com/response/${requestId.value}`);
+  const responseUrlBuilder = new UrlBuilder.WithRequestId(
+    `https://example.com/response/`
+  );
 
   const mockAt = new Date('2023-06-08T10:00:00Z');
   const now = () => mockAt;
@@ -86,7 +87,7 @@ describe('SignRequestObjectJose', async () => {
       const mockVerifierConfig = {
         clientIdScheme,
         clientMetaData,
-        responseUriBuilder,
+        responseUrlBuilder: responseUrlBuilder,
       } as VerifierConfig;
 
       const signRequestObject = createSignRequestObjectJoseInvoker();

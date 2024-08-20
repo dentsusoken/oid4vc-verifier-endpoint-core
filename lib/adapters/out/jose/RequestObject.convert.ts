@@ -16,12 +16,13 @@
 
 import { PresentationDefinition } from 'oid4vc-prex';
 import {
-  IdTokenType,
   EmbedOption,
   ResponseModeOption,
   PresentationType,
   RequestId,
   ClientIdScheme,
+  UrlBuilder,
+  IdTokenType,
 } from '../../../domain';
 
 /**
@@ -134,14 +135,17 @@ export const getPresentationDefinition = (
  *
  */
 export const getPresentationDefinitionUri = (
-  presentationDefinitionMode: EmbedOption<RequestId> | undefined,
+  presentationDefinitionMode: EmbedOption | undefined,
   requestId: RequestId
 ): URL | undefined => {
   if (!presentationDefinitionMode) {
     return undefined;
   }
   return presentationDefinitionMode.__type == 'ByReference'
-    ? presentationDefinitionMode.buildUrl(requestId)
+    ? UrlBuilder.buildUrlWithRequestId(
+        presentationDefinitionMode.urlBuilder,
+        requestId
+      )
     : undefined;
 };
 

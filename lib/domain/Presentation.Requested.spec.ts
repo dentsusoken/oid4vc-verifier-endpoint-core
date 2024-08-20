@@ -5,10 +5,10 @@ import {
   RequestId,
   Nonce,
   EphemeralECDHPrivateJwk,
-  ResponseModeOption,
+  IdTokenType,
   EmbedOption,
   GetWalletResponseMethod,
-  IdTokenType,
+  ResponseModeOption,
   Presentation,
   PresentationType,
 } from '.';
@@ -20,12 +20,9 @@ describe('Requested', () => {
   const type = new PresentationType.IdTokenRequest([IdTokenType.SubjectSigned]);
   const requestId = new RequestId('request-id');
   const nonce = new Nonce('nonce');
-  const ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk = {
-    value: 'hoge',
-  };
+  const ephemeralECDHPrivateJwk = new EphemeralECDHPrivateJwk('hoge');
   const responseMode = ResponseModeOption.DirectPostJwt;
-  const presentationDefinitionMode: EmbedOption<RequestId> =
-    EmbedOption.ByValue.INSTANCE;
+  const presentationDefinitionMode = EmbedOption.ByValue.INSTANCE;
   const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
     'http://example.com/{requestId}'
   );
@@ -163,18 +160,13 @@ describe('Requested', () => {
 
   describe('toJSON', () => {
     it('should return a JSON', () => {
-      const id = new TransactionId('abc123');
       const initiatedAt = new Date(0);
       const type = new PresentationType.VpTokenRequest(
         new PresentationDefinition()
       );
       const requestId = new RequestId('def456');
       const nonce = new Nonce('ghi789');
-      const ephemeralECDHPrivateJwk = {
-        value: 'hoge',
-      } as EphemeralECDHPrivateJwk;
       const responseMode = ResponseModeOption.DirectPost;
-      const presentationDefinitionMode = EmbedOption.ByValue.INSTANCE;
       const getWalletResponseMethod = GetWalletResponseMethod.Poll.INSTANCE;
 
       const presentation = new Presentation.Requested(
@@ -192,20 +184,118 @@ describe('Requested', () => {
       const json = presentation.toJSON();
 
       expect(json).toEqual({
-        id: 'abc123',
+        __type: 'Requested',
+        id: 'transaction-id',
         initiated_at: '1970-01-01T00:00:00.000Z',
         type: {
           __type: 'VpTokenRequest',
-          presentation_definition: {},
+          presentation_definition: {
+            format: undefined,
+            id: undefined,
+            input_descriptors: undefined,
+            name: undefined,
+            purpose: undefined,
+            submission_requirements: undefined,
+          },
         },
         request_id: 'def456',
         nonce: 'ghi789',
         ephemeral_ecdh_private_jwk: 'hoge',
         response_mode: 'direct_post',
+        presentation_definition_mode: {
+          __type: 'ByValue',
+        },
         get_wallet_response_method: {
           __type: 'Poll',
         },
       });
+    });
+  });
+
+  describe('fromJSON', () => {
+    it('should create an instance of Requested from JSON', () => {
+      const json: Presentation.RequestedJSON = {
+        __type: 'Requested',
+        id: 'transaction-id',
+        initiated_at: '1970-01-01T00:00:00.000Z',
+        type: {
+          __type: 'VpTokenRequest',
+          presentation_definition: {
+            format: undefined,
+            id: undefined,
+            input_descriptors: undefined,
+            name: undefined,
+            purpose: undefined,
+            submission_requirements: undefined,
+          },
+        },
+        request_id: 'def456',
+        nonce: 'ghi789',
+        ephemeral_ecdh_private_jwk: 'hoge',
+        response_mode: 'direct_post',
+        presentation_definition_mode: {
+          __type: 'ByValue',
+        },
+        get_wallet_response_method: {
+          __type: 'Poll',
+        },
+      };
+
+      const requested = Presentation.Requested.fromJSON(json);
+
+      expect(requested).toBeInstanceOf(Presentation.Requested);
+      expect(requested.id).toEqual(new TransactionId('transaction-id'));
+      expect(requested.initiatedAt).toEqual(
+        new Date('1970-01-01T00:00:00.000Z')
+      );
+      expect(requested.type).toEqual(
+        new PresentationType.VpTokenRequest(new PresentationDefinition())
+      );
+      expect(requested.requestId).toEqual(new RequestId('def456'));
+      expect(requested.nonce).toEqual(new Nonce('ghi789'));
+      expect(requested.ephemeralECDHPrivateJwk).toEqual(
+        new EphemeralECDHPrivateJwk('hoge')
+      );
+      expect(requested.responseMode).toEqual(ResponseModeOption.DirectPost);
+      expect(requested.presentationDefinitionMode).toEqual(
+        EmbedOption.ByValue.INSTANCE
+      );
+      expect(requested.getWalletResponseMethod).toEqual(
+        GetWalletResponseMethod.Poll.INSTANCE
+      );
+    });
+
+    it('should create an instance of Requested from JSON without ephemeralECDHPrivateJwk', () => {
+      const json: Presentation.RequestedJSON = {
+        __type: 'Requested',
+        id: 'transaction-id',
+        initiated_at: '1970-01-01T00:00:00.000Z',
+        type: {
+          __type: 'VpTokenRequest',
+          presentation_definition: {
+            format: undefined,
+            id: undefined,
+            input_descriptors: undefined,
+            name: undefined,
+            purpose: undefined,
+            submission_requirements: undefined,
+          },
+        },
+        request_id: 'def456',
+        nonce: 'ghi789',
+        response_mode: 'direct_post',
+        presentation_definition_mode: {
+          __type: 'ByValue',
+        },
+        get_wallet_response_method: {
+          __type: 'Poll',
+        },
+      };
+
+      const requested = Presentation.Requested.fromJSON(json);
+
+      expect(requested).toBeInstanceOf(Presentation.Requested);
+      expect(requested.ephemeralECDHPrivateJwk).toBeUndefined();
     });
   });
 });
