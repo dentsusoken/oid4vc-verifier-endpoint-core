@@ -15,11 +15,8 @@
  */
 
 import { PresentationDefinition } from 'oid4vc-prex';
-import {
-  IdTokenType,
-  idTokenTypeSchema,
-  presentationDefinitionSchema,
-} from '.';
+import { IdTokenType, idTokenTypeSchema } from './IdTokenType';
+import { presentationDefinitionSchema } from './presentationDefinitionSchema';
 import { FromJSON } from '../common/json/FromJSON';
 import { z } from 'zod';
 

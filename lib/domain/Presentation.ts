@@ -15,29 +15,26 @@
  */
 
 import { z } from 'zod';
+import { TransactionId, transactionIdSchema } from './TransactionId';
+import { PresentationType, presentationTypeSchema } from './PresentationType';
+import { RequestId, requestIdScheme } from './RequestId';
 import {
-  TransactionId,
-  PresentationType,
-  RequestId,
   EphemeralECDHPrivateJwk,
-  ResponseModeOption,
-  EmbedOption,
-  GetWalletResponseMethod,
-  Nonce,
-  WalletResponse,
-  ResponseCode,
-  transactionIdSchema,
-  presentationTypeSchema,
-  requestIdScheme,
-  nonceSchema,
   ephemeralECDHPrivateJwkSchema,
+} from './EphemeralECDHPrivateJwk';
+import {
+  ResponseModeOption,
   responseModeOptionSchema,
+} from './ResponseModeOption';
+import { EmbedOption, embedOptionSchema } from './EmbedOption';
+import {
+  GetWalletResponseMethod,
   getWalletResponseMethodSchema,
-  responseCodeSchema,
-  iso8601Schema,
-  walletResponseSchema,
-  embedOptionSchema,
-} from '.';
+} from './GetWalletResponseMethod';
+import { Nonce, nonceSchema } from './Nonce';
+import { WalletResponse, walletResponseSchema } from './WalletResponse';
+import { ResponseCode, responseCodeSchema } from './ResponseCode';
+import { iso8601Schema } from './iso8601Schema';
 import { FromJSON } from '../common/json/FromJSON';
 import { Result, runCatching } from '../kotlin';
 

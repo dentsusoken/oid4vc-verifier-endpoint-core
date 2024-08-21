@@ -17,7 +17,7 @@
 import { z } from 'zod';
 import { type FromJSON } from '../common/json/FromJSON';
 import { PresentationSubmission } from 'oid4vc-prex';
-import { Jwt } from '.';
+import { Jwt } from './types';
 import { presentationSubmissionSchema } from './presentationSubmissionSchema';
 
 /**

@@ -15,7 +15,7 @@
  */
 
 import { z } from 'zod';
-import { RequestId } from '.';
+import { RequestId } from './RequestId';
 import { FromJSON } from '../common/json/FromJSON';
 
 /**

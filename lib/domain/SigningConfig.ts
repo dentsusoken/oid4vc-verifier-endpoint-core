@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { StaticSigningPrivateJwk } from './';
+import { StaticSigningPrivateJwk } from './StaticSigningPrivateJwk';
 
 /**
  * Configuration for signing operations.

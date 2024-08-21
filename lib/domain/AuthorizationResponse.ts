@@ -15,7 +15,7 @@
  */
 
 import { PresentationSubmission } from 'oid4vc-prex';
-import { Jwt } from '.';
+import { Jwt } from './types';
 
 /**
  * Represents the data structure for an authorization response.

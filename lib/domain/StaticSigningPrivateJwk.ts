@@ -16,22 +16,18 @@
 
 /**
  * Represents a static signing private key in JWK (JSON Web Key) format.
- * This interface is used for long-term or permanent digital signature purposes.
- * Unlike ephemeral keys, static keys are intended for repeated use over an extended period.
+ * @class
  */
-export interface StaticSigningPrivateJwk {
+export class StaticSigningPrivateJwk {
   /**
-   * The string representation of the static private signing key in JWK format.
-   * This should be a valid JSON string representing a JWK for a signing key.
-   *
-   * @example
-   * {
-   *   "kty": "EC",
-   *   "crv": "P-256",
-   *   "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
-   *   "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
-   *   "d": "jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI"
-   * }
+   * Creates an instance of StaticSigningPrivateJwk.
+   * @constructor
+   * @param {string} value - The JWK string representation of the static signing private key.
+   * @throws {Error} If the value is falsy (empty, null, undefined, etc.).
    */
-  readonly value: string;
+  constructor(public value: string) {
+    if (!value) {
+      throw new Error('value is required');
+    }
+  }
 }
