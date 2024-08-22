@@ -6,7 +6,7 @@ Verifier Frontend が Verifier Backend に対して、Wallet から提示され�
 
 ## URL
 
-`http://localhost:8787/ui/presentations/:transactionId`
+`https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/ui/presentations/:transactionId`
 
 ## リクエスト
 
@@ -51,7 +51,7 @@ Verifier Frontend が Verifier Backend に対して、Wallet から提示され�
 ## サンプルリクエスト
 
 ```sh
-curl 'http://localhost:8787/ui/presentations/mvvvOhohzUA6ub4pKYq8KFj_MMf3oS7OIx_bHNrFOwloEqWCVud7QeMqoCzpdSdFMxYmT6c01p66GoPKESMJ3A?response_code=72cebde7-1ede-4363-a845-dee8ace9d68d'
+curl 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/ui/presentations/mvvvOhohzUA6ub4pKYq8KFj_MMf3oS7OIx_bHNrFOwloEqWCVud7QeMqoCzpdSdFMxYmT6c01p66GoPKESMJ3A?response_code=72cebde7-1ede-4363-a845-dee8ace9d68d'
 ```
 
 ## サンプルレスポンス

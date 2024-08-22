@@ -1,4 +1,4 @@
-# Init Transaction
+# Initiate Transaction
 
 ## 概要
 
@@ -6,7 +6,7 @@ VP 提示フローの開始をリクエストをするためのエンドポイ�
 
 ## URL
 
-`http://localhost:8787/ui/presentations`
+`https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/ui/presentations`
 
 ## リクエスト
 
@@ -22,7 +22,7 @@ VP 提示フローの開始をリクエストをするためのエンドポイ�
 | id_token_type                                                                 | string             | No   | `type`が`id_token`の場合、Wallet から要求される`id_token`のタイプ。`subject_signed_id_token`または`attester_signed_id_token`が指定される。                                                                                                        |
 | presentation_definition                                                       | JSON               | No   | `type`が`vp_token`の場合に、提示される VP の定義を表す JSON オブジェクト。                                                                                                                                                                        |
 | presentation_definition.id                                                    | string             | Yes  | UUID のような一意の値を指定する。                                                                                                                                                                                                                 |
-| presentation_definition.input_descriptors                                     | 配列               | Yes  | Input Descriptor Objects の配列。                                                                                                                                                                                                                 |
+| presentation_definition.input_descriptors                                     | JSON[]               | Yes  | Input Descriptor Objects の配列。                                                                                                                                                                                                                 |
 | presentation_definition.input_descriptors.id                                  | string             | Yes  | 他の Input Descriptor Objects と衝突しない ID                                                                                                                                                                                                     |
 | presentation_definition.input_descriptors.name                                | string             | No   | 人間が識別しやすい Input Descriptor Objects の名称。                                                                                                                                                                                              |
 | presentation_definition.input_descriptors.purpose                             | string             | No   | Claim のデータが要求されている目的。                                                                                                                                                                                                              |
@@ -66,7 +66,7 @@ VP 提示フローの開始をリクエストをするためのエンドポイ�
 ## サンプルリクエスト
 
 ```sh
-curl  -X POST 'http://localhost:8787/ui/presentations' \
+curl  -X POST 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/ui/presentations' \
 -H "Content-type: application/json" \
 --data-raw '{
     "type": "vp_token",
@@ -104,7 +104,7 @@ curl  -X POST 'http://localhost:8787/ui/presentations' \
 {
   "presentation_id": "WQf87pNgNyDZP8PCL_9-sOXAOPfWD8dwWUyyMlRyVvA_aEG6CqMfe1SBRIVoreyVMZjPNAmde2dYwbaFp_rdDA",
   "client_id": "Verifier",
-  "request_uri": "http://localhost:8787/wallet/request.jwt/En-jBwmrLHl_aIvRep6zKv4aAjpluWWIglynp9iIGN2gKOiPl58EBThiMGlYRuW9OaL0muqz_0JNUhP_u4pkyA"
+  "request_uri": "https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/wallet/request.jwt/En-jBwmrLHl_aIvRep6zKv4aAjpluWWIglynp9iIGN2gKOiPl58EBThiMGlYRuW9OaL0muqz_0JNUhP_u4pkyA"
 }
 ```
 

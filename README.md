@@ -33,6 +33,13 @@ EUDIWのプロジェクトが公開している[verifier-endpoint]をベース�
 - [Markdown](docs/sequence/cross_device.md)
 - [PDF](docs/sequence/cross_device.pdf)
 
+### APIドキュメント
+
+#### フロントエンド
+
+- [Initiate Transaction](docs/api/frontend/InitiateTransaction.md)
+- [Get Wallet Response](docs/api/frontend/GetWalletResponse.md)
+
 ## 補足
 
 ご提示の内容は、以下をベースに作成を行っております。  
