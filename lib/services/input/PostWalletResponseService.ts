@@ -99,6 +99,10 @@ export const createPostWalletResponseServiceInvoker =
         .getOrThrow();
       await storePresentation(submitted);
 
+      if (walletResponse.__type !== 'WalletResponseError') {
+        console.info('Verified Successfully : ', submitted.id.value);
+      }
+
       return createWalletResponseAcceptedTO(
         presentation.getWalletResponseMethod,
         createQueryWalletResponseRedirectUri,
