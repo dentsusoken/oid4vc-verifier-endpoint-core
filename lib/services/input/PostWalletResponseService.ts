@@ -100,7 +100,7 @@ export const createPostWalletResponseServiceInvoker =
       await storePresentation(submitted);
 
       if (walletResponse.__type !== 'WalletResponseError') {
-        console.info('Verified Successfully : ', submitted.id.value);
+        console.info(`Verified Successfully : ${submitted.id.value}`);
       }
 
       return createWalletResponseAcceptedTO(
