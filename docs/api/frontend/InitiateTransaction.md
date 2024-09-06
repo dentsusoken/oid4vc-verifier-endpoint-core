@@ -22,7 +22,7 @@ VP 提示フローの開始をリクエストをするためのエンドポイ�
 | id_token_type                                                                 | string             | No   | `type`が`id_token`の場合、Wallet から要求される`id_token`のタイプ。`subject_signed_id_token`または`attester_signed_id_token`が指定される。                                                                                                        |
 | presentation_definition                                                       | JSON               | No   | `type`が`vp_token`の場合に、提示される VP の定義を表す JSON オブジェクト。                                                                                                                                                                        |
 | presentation_definition.id                                                    | string             | Yes  | UUID のような一意の値を指定する。                                                                                                                                                                                                                 |
-| presentation_definition.input_descriptors                                     | JSON[]               | Yes  | Input Descriptor Objects の配列。                                                                                                                                                                                                                 |
+| presentation_definition.input_descriptors                                     | JSON[]             | Yes  | Input Descriptor Objects の配列。                                                                                                                                                                                                                 |
 | presentation_definition.input_descriptors.id                                  | string             | Yes  | 他の Input Descriptor Objects と衝突しない ID                                                                                                                                                                                                     |
 | presentation_definition.input_descriptors.name                                | string             | No   | 人間が識別しやすい Input Descriptor Objects の名称。                                                                                                                                                                                              |
 | presentation_definition.input_descriptors.purpose                             | string             | No   | Claim のデータが要求されている目的。                                                                                                                                                                                                              |
@@ -65,10 +65,14 @@ VP 提示フローの開始をリクエストをするためのエンドポイ�
 
 ## サンプルリクエスト
 
+> [!NOTE]
+> サンプルの curl コマンドでは、リクエストパラメータに含まれるシングルコーテーションがエスケープされています。  
+> 実装に合わせて、エスケープを取り除くなどの修正を行ってください。
+
 ```sh
-curl  -X POST 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/ui/presentations' \
--H "Content-type: application/json" \
---data-raw '{
+curl --location 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/ui/presentations' \
+--header 'Content-Type: application/json' \
+--data '{
     "type": "vp_token",
     "presentation_definition": {
       "id": "5db00636-73fb-425a-b5a3-482d26d0d602",
@@ -81,11 +85,11 @@ curl  -X POST 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/ui
           "constraints": {
             "fields": [
               {
-                "path": ["$[''org.iso.18013.5.1''][''given_name'']"],
+                "path": ["$['\''org.iso.18013.5.1'\'']['\''given_name'\'']"],
                 "intent_to_retain": false
               },
               {
-                "path": ["$[''org.iso.18013.5.1''][''document_number'']"],
+                "path": ["$['\''org.iso.18013.5.1'\'']['\''document_number'\'']"],
                 "intent_to_retain": false
               }
             ]
@@ -94,8 +98,7 @@ curl  -X POST 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/ui
       ]
     },
     "nonce": "3b75b9b1-2463-4d4a-b921-adc21642c43c"
-  }
-  '
+  }'
 ```
 
 ## サンプルレスポンス
