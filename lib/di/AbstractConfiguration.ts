@@ -180,7 +180,9 @@ export abstract class AbstractConfiguration implements Configuration {
     }
 
     this.#jarByReference = new EmbedOption.ByReference(
-      new UrlBuilder.WithRequestId(`${this.publicUrl()}/wallet/request.jwt/`)
+      new UrlBuilder.WithRequestId(
+        `${this.publicUrl()}${this.requestJWTPath('')}`
+      )
     );
 
     return this.#jarByReference;
@@ -226,7 +228,9 @@ export abstract class AbstractConfiguration implements Configuration {
     }
 
     this.#presentationDefinitionByReference = new EmbedOption.ByReference(
-      new UrlBuilder.WithRequestId(`${this.publicUrl()}/wallet/pd/`)
+      new UrlBuilder.WithRequestId(
+        `${this.publicUrl()}${this.presentationDefinitionPath('')}`
+      )
     );
 
     return this.#presentationDefinitionByReference;
@@ -325,7 +329,7 @@ export abstract class AbstractConfiguration implements Configuration {
    * @type {() => UrlBuilder}
    */
   responseUrlBuilder = (): UrlBuilder =>
-    new UrlBuilder.Fix(`${this.publicUrl()}/wallet/direct_post`);
+    new UrlBuilder.Fix(`${this.publicUrl()}${this.walletResponsePath()}`);
 
   /**
    * Function to get the verifier configuration
@@ -357,6 +361,46 @@ export abstract class AbstractConfiguration implements Configuration {
     const signingJwk = JSON.parse(this.jarSigningPrivateJwk());
     await importJWK(signingJwk);
   }
+
+  /**
+   * initiate transaction path for Verifier Frontend
+   */
+  initTransactionPath = (): string => '/ui/presentations';
+  /**
+   * get wallet response path for Verifier Frontend
+   * @param {string} placeholder - Placeholder for path parameter
+   */
+  getWalletResponsePath = (placeholder: string): string =>
+    '/ui/presentations/{placeholder}'.replace('{placeholder}', placeholder);
+  /**
+   * get public JWK set path for Wallet
+   */
+  getPublicJWKSetPath = (): string => '/wallet/public-keys.json';
+  /**
+   * get request object path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
+   */
+  requestJWTPath = (placeholder: string): string =>
+    '/wallet/request.jwt/{placeholder}'.replace('{placeholder}', placeholder);
+  /**
+   * get presentation definition path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
+   */
+  presentationDefinitionPath = (placeholder: string): string =>
+    '/wallet/pd/{placeholder}'.replace('{placeholder}', placeholder);
+  /**
+   * get jarm JWK set path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
+   */
+  jarmJWKSetPath = (placeholder: string): string =>
+    '/wallet/jarm/{placeholder}/jwks.json'.replace(
+      '{placeholder}',
+      placeholder
+    );
+  /**
+   * post wallet response path for Wallet
+   */
+  walletResponsePath = (): string => '/wallet/direct_post/';
 }
 
 /**
