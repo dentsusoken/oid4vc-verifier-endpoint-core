@@ -368,6 +368,7 @@ export abstract class AbstractConfiguration implements Configuration {
   initTransactionPath = (): string => '/ui/presentations';
   /**
    * get wallet response path for Verifier Frontend
+   * @param {string} placeholder - Placeholder for path parameter
    */
   getWalletResponsePath = (placeholder: string): string =>
     '/ui/presentations/{placeholder}'.replace('{placeholder}', placeholder);
@@ -377,16 +378,19 @@ export abstract class AbstractConfiguration implements Configuration {
   getPublicJWKSetPath = (): string => '/wallet/public-keys.json';
   /**
    * get request object path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
    */
   requestJWTPath = (placeholder: string): string =>
     '/wallet/request.jwt/{placeholder}'.replace('{placeholder}', placeholder);
   /**
    * get presentation definition path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
    */
   presentationDefinitionPath = (placeholder: string): string =>
     '/wallet/pd/{placeholder}'.replace('{placeholder}', placeholder);
   /**
    * get jarm JWK set path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
    */
   jarmJWKSetPath = (placeholder: string): string =>
     '/wallet/jarm/{placeholder}/jwks.json'.replace(

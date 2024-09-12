@@ -238,6 +238,7 @@ export interface Configuration {
   initTransactionPath(): string;
   /**
    * get wallet response path for Verifier Frontend
+   * @param {string} placeholder - Placeholder for path parameter
    */
   getWalletResponsePath(placeholder: string): string;
   /**
@@ -246,14 +247,17 @@ export interface Configuration {
   getPublicJWKSetPath(): string;
   /**
    * get request object path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
    */
   requestJWTPath(placeholder: string): string;
   /**
    * get presentation definition path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
    */
   presentationDefinitionPath(placeholder: string): string;
   /**
    * get jarm JWK set path for Wallet
+   * @param {string} placeholder - Placeholder for path parameter
    */
   jarmJWKSetPath(placeholder: string): string;
   /**
