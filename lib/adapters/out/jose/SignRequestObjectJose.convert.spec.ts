@@ -120,9 +120,7 @@ describe('JWKS and Payload Utilities', () => {
         responseMode: 'direct_post',
         issuedAt: new Date('2023-06-08T10:00:00Z'),
         idTokenType: ['subject_signed'],
-        presentationDefinition: {
-          serialize: () => ({}),
-        } as PresentationDefinition,
+        presentationDefinition: {} as PresentationDefinition,
         presentationDefinitionUri: new URL('https://example.com/pd'),
         responseUri: new URL('https://example.com/response'),
       };

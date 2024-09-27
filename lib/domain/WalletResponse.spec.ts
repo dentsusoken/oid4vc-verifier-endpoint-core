@@ -27,7 +27,7 @@ describe('WalletResponse', () => {
   describe('VpToken', () => {
     it('should create an instance of VpToken', () => {
       const vpToken = 'vp-token';
-      const presentationSubmission = new PresentationSubmission();
+      const presentationSubmission = {} as PresentationSubmission;
       const walletResponse = new WalletResponse.VpToken(
         vpToken,
         presentationSubmission
@@ -46,7 +46,7 @@ describe('WalletResponse', () => {
     });
 
     it('should throw an error if vpToken is not provided', () => {
-      const presentationSubmission = new PresentationSubmission();
+      const presentationSubmission = {} as PresentationSubmission;
       expect(
         () => new WalletResponse.VpToken('', presentationSubmission)
       ).toThrowError('vpToken is required');
@@ -57,7 +57,7 @@ describe('WalletResponse', () => {
     it('should create an instance of IdAndVpToken', () => {
       const idToken = 'id-token';
       const vpToken = 'vp-token';
-      const presentationSubmission = new PresentationSubmission();
+      const presentationSubmission = {} as PresentationSubmission;
       const walletResponse = new WalletResponse.IdAndVpToken(
         idToken,
         vpToken,
@@ -74,13 +74,13 @@ describe('WalletResponse', () => {
         __type: 'IdAndVpToken',
         id_token: idToken,
         vp_token: vpToken,
-        presentation_submission: presentationSubmission.serialize(),
+        presentation_submission: presentationSubmission.toJSON(),
       });
     });
 
     it('should throw an error if idToken is not provided', () => {
       const vpToken = 'vp-token';
-      const presentationSubmission = new PresentationSubmission();
+      const presentationSubmission = {} as PresentationSubmission;
       expect(
         () =>
           new WalletResponse.IdAndVpToken('', vpToken, presentationSubmission)
@@ -89,7 +89,7 @@ describe('WalletResponse', () => {
 
     it('should throw an error if vpToken is not provided', () => {
       const idToken = 'id-token';
-      const presentationSubmission = new PresentationSubmission();
+      const presentationSubmission = {} as PresentationSubmission;
       expect(
         () =>
           new WalletResponse.IdAndVpToken(idToken, '', presentationSubmission)
@@ -132,11 +132,17 @@ describe('WalletResponse', () => {
     });
 
     it('should create an instance of VpToken from JSON', () => {
-      const json: WalletResponseJSON = {
-        __type: 'VpToken',
-        vp_token: 'vp-token',
-        presentation_submission: {},
-      };
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const json = new WalletResponse.VpToken(
+        vpToken,
+        presentationSubmission
+      ).toJSON();
+      // const json: WalletResponseJSON = {
+      //   __type: 'VpToken',
+      //   vp_token: 'vp-token',
+      //   presentation_submission: { id: 'id' } as PresentationSubmission,
+      // };
       const walletResponse = WalletResponse.fromJson(json);
 
       expect(walletResponse).toBeInstanceOf(WalletResponse.VpToken);
@@ -150,12 +156,20 @@ describe('WalletResponse', () => {
     });
 
     it('should create an instance of IdAndVpToken from JSON', () => {
-      const json: WalletResponseJSON = {
-        __type: 'IdAndVpToken',
-        id_token: 'id-token',
-        vp_token: 'vp-token',
-        presentation_submission: {},
-      };
+      const idToken = 'id-token';
+      const vpToken = 'vp-token';
+      const presentationSubmission = {} as PresentationSubmission;
+      const json = new WalletResponse.IdAndVpToken(
+        idToken,
+        vpToken,
+        presentationSubmission
+      ).toJSON();
+      // const json: WalletResponseJSON = {
+      //   __type: 'IdAndVpToken',
+      //   id_token: 'id-token',
+      //   vp_token: 'vp-token',
+      //   presentation_submission: {} as PresentationSubmission,
+      // };
       const walletResponse = WalletResponse.fromJson(json);
 
       expect(walletResponse).toBeInstanceOf(WalletResponse.IdAndVpToken);
@@ -212,7 +226,7 @@ describe('WalletResponse', () => {
     it('should correctly identify VpToken', () => {
       const walletResponse = new WalletResponse.VpToken(
         'vp-token',
-        new PresentationSubmission()
+        {} as PresentationSubmission
       );
 
       if (walletResponse.__type === 'VpToken') {
@@ -234,7 +248,7 @@ describe('WalletResponse', () => {
       const walletResponse = new WalletResponse.IdAndVpToken(
         'id-token',
         'vp-token',
-        new PresentationSubmission()
+        {} as PresentationSubmission
       );
 
       if (walletResponse.__type === 'IdAndVpToken') {

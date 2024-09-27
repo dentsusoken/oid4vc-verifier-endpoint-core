@@ -42,7 +42,7 @@ describe('createGetWalletResponseServiceInvoker', async () => {
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPostJwt,
       jarMode: EmbedModeTO.ByReference,
-      presentationDefinition: new PresentationDefinition(),
+      presentationDefinition: {} as PresentationDefinition,
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
     };

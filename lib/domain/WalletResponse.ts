@@ -16,9 +16,11 @@
 
 import { z } from 'zod';
 import { type FromJSON } from '../common/json/FromJSON';
-import { PresentationSubmission } from 'oid4vc-prex';
+import {
+  PresentationSubmission,
+  presentationSubmissionSchema,
+} from 'oid4vc-prex';
 import { Jwt } from './types';
-import { presentationSubmissionSchema } from './presentationSubmissionSchema';
 
 /**
  * Represents the response from a wallet.
@@ -73,13 +75,13 @@ export namespace WalletResponse {
       case 'VpToken':
         return new VpToken(
           json.vp_token,
-          PresentationSubmission.deserialize(json.presentation_submission)
+          PresentationSubmission.fromJSON(json.presentation_submission)
         );
       case 'IdAndVpToken':
         return new IdAndVpToken(
           json.id_token,
           json.vp_token,
-          PresentationSubmission.deserialize(json.presentation_submission)
+          PresentationSubmission.fromJSON(json.presentation_submission)
         );
       case 'WalletResponseError':
         return new WalletResponseError(json.value, json.description);
@@ -159,7 +161,7 @@ export namespace WalletResponse {
     toJSON = () => ({
       __type: this.__type,
       vp_token: this.vpToken,
-      presentation_submission: this.presentationSubmission.serialize(),
+      presentation_submission: this.presentationSubmission.toJSON(),
     });
   }
 
@@ -200,7 +202,7 @@ export namespace WalletResponse {
       __type: this.__type,
       id_token: this.idToken,
       vp_token: this.vpToken,
-      presentation_submission: this.presentationSubmission.serialize(),
+      presentation_submission: this.presentationSubmission.toJSON(),
     });
   }
 

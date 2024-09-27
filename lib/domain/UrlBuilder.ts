@@ -36,7 +36,10 @@ import { FromJSON } from '../common/json/FromJSON';
  * const fixBuilder: UrlBuilder = new UrlBuilder.Fix('https://example.com/fixed');
  * const fixedUrl = fixBuilder.buildUrl(new RequestId('123')); // RequestId is ignored
  */
-export type UrlBuilder = UrlBuilder.WithRequestId | UrlBuilder.Fix;
+export type UrlBuilder =
+  | UrlBuilder.WithRequestId
+  | UrlBuilder.WithRequestIdTemplate
+  | UrlBuilder.Fix;
 
 /**
  * Schema for the WithRequestId URL builder.
@@ -45,6 +48,11 @@ export type UrlBuilder = UrlBuilder.WithRequestId | UrlBuilder.Fix;
 const withRequestIdSchema = z.object({
   __type: z.literal('WithRequestId'),
   base_url: z.string().url(),
+});
+
+const withRequestIdTemplateSchema = z.object({
+  __type: z.literal('WithRequestIdTemplate'),
+  template: z.string().min(1),
 });
 
 /**
@@ -72,6 +80,7 @@ const fixSchema = z.object({
 
 export const urlBuilderSchema = z.discriminatedUnion('__type', [
   withRequestIdSchema,
+  withRequestIdTemplateSchema,
   fixSchema,
 ]);
 
@@ -96,6 +105,8 @@ export namespace UrlBuilder {
     switch (json.__type) {
       case 'WithRequestId':
         return new WithRequestId(json.base_url);
+      case 'WithRequestIdTemplate':
+        return new WithRequestIdTemplate(json.template);
       case 'Fix':
         return new Fix(json.url);
     }
@@ -130,6 +141,8 @@ export namespace UrlBuilder {
     switch (urlBuilder.__type) {
       case 'WithRequestId':
         return urlBuilder.buildUrl(requestId);
+      case 'WithRequestIdTemplate':
+        return urlBuilder.buildUrl(requestId);
       case 'Fix':
         return urlBuilder.buildUrl(undefined as never);
     }
@@ -144,7 +157,7 @@ export namespace UrlBuilder {
    * @property {function(): UrlBuilderJSON} toJSON - Function to convert the URL builder to its JSON representation.
    */
   interface Base<ID> {
-    readonly __type: 'WithRequestId' | 'Fix';
+    readonly __type: 'WithRequestId' | 'WithRequestIdTemplate' | 'Fix';
 
     buildUrl(id: ID): URL;
 
@@ -187,6 +200,28 @@ export namespace UrlBuilder {
       return {
         __type: this.__type,
         base_url: this.baseUrl,
+      };
+    }
+  }
+
+  export class WithRequestIdTemplate implements Base<RequestId> {
+    readonly __type = 'WithRequestIdTemplate' as const;
+
+    constructor(public template: string) {}
+
+    buildUrl(id: RequestId): URL {
+      return new URL(`${this.template.replace(':requestId', id.value)}`);
+    }
+
+    /**
+     * Converts the URL builder to its JSON representation.
+     * @method toJSON
+     * @returns {UrlBuilderJSON} The JSON representation of the URL builder.
+     */
+    toJSON() {
+      return {
+        __type: this.__type,
+        template: this.template,
       };
     }
   }

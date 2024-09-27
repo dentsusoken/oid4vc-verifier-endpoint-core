@@ -195,7 +195,7 @@ describe('RequestObjectRetrieved', () => {
       const id = new TransactionId('abc123');
       const initiatedAt = new Date(0);
       const type = new PresentationType.VpTokenRequest(
-        new PresentationDefinition()
+        {} as PresentationDefinition
       );
       const requestId = new RequestId('def456');
       const requestObjectRetrievedAt = new Date(0);
@@ -255,7 +255,7 @@ describe('RequestObjectRetrieved', () => {
           __type: 'VpTokenRequest',
           presentation_definition: {
             format: undefined,
-            id: undefined,
+            id: 'id',
             input_descriptors: undefined,
             name: undefined,
             purpose: undefined,
@@ -283,7 +283,7 @@ describe('RequestObjectRetrieved', () => {
         new Date('1970-01-01T00:00:00.000Z')
       );
       expect(requestObjectRetrieved.type).toEqual(
-        new PresentationType.VpTokenRequest(new PresentationDefinition())
+        new PresentationType.VpTokenRequest({} as PresentationDefinition)
       );
       expect(requestObjectRetrieved.requestId).toEqual(new RequestId('def456'));
       expect(requestObjectRetrieved.requestObjectRetrievedAt).toEqual(
@@ -309,12 +309,7 @@ describe('RequestObjectRetrieved', () => {
         type: {
           __type: 'VpTokenRequest',
           presentation_definition: {
-            format: undefined,
-            id: undefined,
-            input_descriptors: undefined,
-            name: undefined,
-            purpose: undefined,
-            submission_requirements: undefined,
+            id: 'id',
           },
         },
         request_id: 'def456',

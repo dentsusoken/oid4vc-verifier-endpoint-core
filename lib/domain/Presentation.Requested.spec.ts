@@ -162,7 +162,7 @@ describe('Requested', () => {
     it('should return a JSON', () => {
       const initiatedAt = new Date(0);
       const type = new PresentationType.VpTokenRequest(
-        new PresentationDefinition()
+        {} as PresentationDefinition
       );
       const requestId = new RequestId('def456');
       const nonce = new Nonce('ghi789');
@@ -221,12 +221,12 @@ describe('Requested', () => {
         type: {
           __type: 'VpTokenRequest',
           presentation_definition: {
-            format: undefined,
-            id: undefined,
-            input_descriptors: undefined,
-            name: undefined,
-            purpose: undefined,
-            submission_requirements: undefined,
+            // format: undefined,
+            id: 'id',
+            // input_descriptors: undefined,
+            // name: undefined,
+            // purpose: undefined,
+            // submission_requirements: undefined,
           },
         },
         request_id: 'def456',
@@ -249,7 +249,7 @@ describe('Requested', () => {
         new Date('1970-01-01T00:00:00.000Z')
       );
       expect(requested.type).toEqual(
-        new PresentationType.VpTokenRequest(new PresentationDefinition())
+        new PresentationType.VpTokenRequest({} as PresentationDefinition)
       );
       expect(requested.requestId).toEqual(new RequestId('def456'));
       expect(requested.nonce).toEqual(new Nonce('ghi789'));
@@ -274,7 +274,7 @@ describe('Requested', () => {
           __type: 'VpTokenRequest',
           presentation_definition: {
             format: undefined,
-            id: undefined,
+            id: 'id',
             input_descriptors: undefined,
             name: undefined,
             purpose: undefined,

@@ -87,10 +87,9 @@ export class InitTransactionTO {
    */
   @Expose({ name: 'presentation_definition' })
   @Type(() => PresentationDefinition)
-  @Transform(
-    ({ value }) => value && PresentationDefinition.deserialize(value),
-    { toClassOnly: true }
-  )
+  @Transform(({ value }) => value && PresentationDefinition.fromJSON(value), {
+    toClassOnly: true,
+  })
   presentationDefinition?: PresentationDefinition;
 
   /**

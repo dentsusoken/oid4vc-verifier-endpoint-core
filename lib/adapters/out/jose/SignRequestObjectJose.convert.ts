@@ -182,7 +182,7 @@ export const toPayload = (
   ) {
     //if (requestObject.presentationDefinition) {
     payload.presentation_definition =
-      requestObject.presentationDefinition.serialize();
+      requestObject.presentationDefinition.toJSON();
   }
 
   if (requestObject.presentationDefinitionUri) {

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import { PresentationDefinition } from 'oid4vc-prex';
+import {
+  PresentationDefinition,
+  presentationDefinitionSchema,
+} from 'oid4vc-prex';
 import { IdTokenType, idTokenTypeSchema } from './IdTokenType';
-import { presentationDefinitionSchema } from './presentationDefinitionSchema';
 import { FromJSON } from '../common/json/FromJSON';
 import { z } from 'zod';
 
@@ -123,7 +125,24 @@ const idAndVpTokenRequestSchema = z.object({
  *     typeof idAndVpTokenRequestSchema
  *   ]
  */
-export const presentationTypeSchema = z.discriminatedUnion('__type', [
+// export const presentationTypeSchema = z.discriminatedUnion('__type', [
+//   idTokenRequestSchema,
+//   vpTokenRequestSchema,
+//   idAndVpTokenRequestSchema,
+// ]);
+
+export const presentationTypeSchema: z.ZodType<
+  | { __type: 'IdTokenRequest'; id_token_type: IdTokenType[] }
+  | {
+      __type: 'VpTokenRequest';
+      presentation_definition: PresentationDefinition;
+    }
+  | {
+      __type: 'IdAndVpTokenRequest';
+      id_token_type: IdTokenType[];
+      presentation_definition: PresentationDefinition;
+    }
+> = z.discriminatedUnion('__type', [
   idTokenRequestSchema,
   vpTokenRequestSchema,
   idAndVpTokenRequestSchema,
@@ -142,14 +161,14 @@ export namespace PresentationType {
       case 'IdTokenRequest':
         return new PresentationType.IdTokenRequest(json.id_token_type);
       case 'VpTokenRequest': {
-        const pd = PresentationDefinition.deserialize(
+        const pd = PresentationDefinition.fromJSON(
           json.presentation_definition
         );
 
         return new PresentationType.VpTokenRequest(pd);
       }
       case 'IdAndVpTokenRequest': {
-        const pd = PresentationDefinition.deserialize(
+        const pd = PresentationDefinition.fromJSON(
           json.presentation_definition
         );
 
@@ -230,7 +249,7 @@ export namespace PresentationType {
     toJSON() {
       return {
         __type: this.__type,
-        presentation_definition: this.presentationDefinition.serialize(),
+        presentation_definition: this.presentationDefinition.toJSON(),
       };
     }
   }
@@ -273,7 +292,7 @@ export namespace PresentationType {
       return {
         __type: this.__type,
         id_token_type: this.idTokenType,
-        presentation_definition: this.presentationDefinition.serialize(),
+        presentation_definition: this.presentationDefinition.toJSON(),
       };
     }
   }

@@ -37,5 +37,4 @@ export * from './ResponseCode';
 export * from './ResponseModeOption';
 export * from './GetWalletResponseMethod';
 export * from './Presentation';
-export * from './presentationDefinitionSchema';
 export * from './iso8601Schema';

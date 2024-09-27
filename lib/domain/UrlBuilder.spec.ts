@@ -38,6 +38,40 @@ describe('UrlBuilder', () => {
     });
   });
 
+  describe('WithRequestIdTemplate', () => {
+    it('should create an instance of WithRequestIdTemplate', () => {
+      const template = 'https://example.com/:requestId';
+      const urlBuilder = new UrlBuilder.WithRequestIdTemplate(template);
+
+      expect(urlBuilder).toBeInstanceOf(UrlBuilder.WithRequestIdTemplate);
+      expect(urlBuilder.template).toBe(template);
+      expect(urlBuilder.__type).toBe('WithRequestIdTemplate');
+    });
+
+    it('should build the correct URL', () => {
+      const template = 'https://example.com/:requestId';
+      const requestId = new RequestId('123');
+      const urlBuilder = new UrlBuilder.WithRequestIdTemplate(template);
+
+      const url = urlBuilder.buildUrl(requestId);
+
+      expect(url).toBeInstanceOf(URL);
+      expect(url.href).toBe('https://example.com/123');
+    });
+
+    it('should convert to JSON correctly', () => {
+      const template = 'https://example.com/:requestId';
+      const urlBuilder = new UrlBuilder.WithRequestIdTemplate(template);
+
+      const json = urlBuilder.toJSON();
+
+      expect(json).toEqual({
+        __type: 'WithRequestIdTemplate',
+        template: template,
+      });
+    });
+  });
+
   describe('Fix', () => {
     it('should create an instance of Fix', () => {
       const url = 'https://example.com/fixed';
@@ -89,6 +123,23 @@ describe('UrlBuilder', () => {
       }
     });
 
+    it('should create a WithRequestIdTemplate instance from JSON', () => {
+      const json: UrlBuilderJSON = {
+        __type: 'WithRequestIdTemplate',
+        template: 'https://example.com/:requestId',
+      };
+
+      const urlBuilder = UrlBuilder.fromJSON(json);
+
+      expect(urlBuilder.__type).toBe('WithRequestIdTemplate');
+
+      if (urlBuilder.__type === 'WithRequestIdTemplate') {
+        expect(urlBuilder.template).toBe('https://example.com/:requestId');
+      } else {
+        expect.fail('Expected urlBuilder to be of type WithRequestIdTemplate');
+      }
+    });
+
     it('should create a Fix instance from JSON', () => {
       const json: UrlBuilderJSON = {
         __type: 'Fix',
@@ -119,6 +170,17 @@ describe('UrlBuilder', () => {
       expect(result.href).toBe('https://example.com/123');
     });
 
+    it('should build URL correctly with WithRequestIdTemplate', () => {
+      const template = 'https://example.com/:requestId';
+      const requestId = new RequestId('123');
+      const urlBuilder = new UrlBuilder.WithRequestIdTemplate(template);
+
+      const result = UrlBuilder.buildUrlWithRequestId(urlBuilder, requestId);
+
+      expect(result).toBeInstanceOf(URL);
+      expect(result.href).toBe('https://example.com/123');
+    });
+
     it('should build URL correctly with Fix', () => {
       const fixedUrl = 'https://example.com/fixed';
       const requestId = new RequestId('123'); // This will be ignored
@@ -128,6 +190,19 @@ describe('UrlBuilder', () => {
 
       expect(result).toBeInstanceOf(URL);
       expect(result.href).toBe('https://example.com/fixed');
+    });
+
+    it('should handle different RequestId values for WithRequestIdTemplate', () => {
+      const template = 'https://example.com/:requestId';
+      const urlBuilder = new UrlBuilder.WithRequestIdTemplate(template);
+
+      const requestId1 = new RequestId('abc');
+      const result1 = UrlBuilder.buildUrlWithRequestId(urlBuilder, requestId1);
+      expect(result1.href).toBe('https://example.com/abc');
+
+      const requestId2 = new RequestId('xyz');
+      const result2 = UrlBuilder.buildUrlWithRequestId(urlBuilder, requestId2);
+      expect(result2.href).toBe('https://example.com/xyz');
     });
 
     it('should handle different RequestId values for WithRequestId', () => {
@@ -173,6 +248,28 @@ describe('UrlBuilder', () => {
           break;
         default:
           expect.fail('Expected urlBuilder to be of type WithRequestId');
+      }
+    });
+
+    it('should correctly identify WithRequestIdTemplate', () => {
+      const urlBuilder = new UrlBuilder.WithRequestIdTemplate(
+        'https://example.com/:requestId'
+      );
+
+      if (urlBuilder.__type === 'WithRequestIdTemplate') {
+        expect(urlBuilder.template).toBe('https://example.com/:requestId');
+      } else {
+        expect.fail('Expected urlBuilder to be of type WithRequestIdTemplate');
+      }
+
+      switch (urlBuilder.__type) {
+        case 'WithRequestIdTemplate':
+          expect(urlBuilder.template).toBe('https://example.com/:requestId');
+          break;
+        default:
+          expect.fail(
+            'Expected urlBuilder to be of type WithRequestIdTemplate'
+          );
       }
     });
 

@@ -41,10 +41,9 @@ export class WalletResponseTO {
    */
   @Expose({ name: 'presentation_submission' })
   @Type(() => PresentationSubmission)
-  @Transform(
-    ({ value }) => value && PresentationSubmission.deserialize(value),
-    { toClassOnly: true }
-  )
+  @Transform(({ value }) => value && PresentationSubmission.fromJSON(value), {
+    toClassOnly: true,
+  })
   @Transform(({ value }) => value && value.serialize(), { toPlainOnly: true })
   presentationSubmission?: PresentationSubmission;
 

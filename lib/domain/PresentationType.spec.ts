@@ -36,7 +36,7 @@ describe('PresentationType', () => {
 
   describe('VpTokenRequest', () => {
     it('should create an instance correctly', () => {
-      const pd = new PresentationDefinition();
+      const pd = {} as PresentationDefinition;
       const request = new PresentationType.VpTokenRequest(pd);
 
       expect(request.__type).toBe('VpTokenRequest');
@@ -44,7 +44,7 @@ describe('PresentationType', () => {
     });
 
     it('should serialize to JSON correctly', () => {
-      const pd = PresentationDefinition.deserialize({
+      const pd = PresentationDefinition.fromJSON({
         id: 'test',
       });
       const request = new PresentationType.VpTokenRequest(pd);
@@ -60,7 +60,7 @@ describe('PresentationType', () => {
   describe('IdAndVpTokenRequest', () => {
     it('should create an instance correctly', () => {
       const idTokenTypes: IdTokenType[] = [IdTokenType.SubjectSigned];
-      const pd = PresentationDefinition.deserialize({
+      const pd = PresentationDefinition.fromJSON({
         id: 'test',
       });
       const request = new PresentationType.IdAndVpTokenRequest(
@@ -75,7 +75,7 @@ describe('PresentationType', () => {
 
     it('should serialize to JSON correctly', () => {
       const idTokenTypes: IdTokenType[] = [IdTokenType.SubjectSigned];
-      const pd = PresentationDefinition.deserialize({
+      const pd = PresentationDefinition.fromJSON({
         id: 'test',
       });
       const request = new PresentationType.IdAndVpTokenRequest(
@@ -145,11 +145,11 @@ describe('PresentationType', () => {
       IdTokenType.SubjectSigned,
     ]);
     const vpTokenRequest = new PresentationType.VpTokenRequest(
-      PresentationDefinition.deserialize({ id: 'test', input_descriptors: [] })
+      PresentationDefinition.fromJSON({ id: 'test', input_descriptors: [] })
     );
     const idAndVpTokenRequest = new PresentationType.IdAndVpTokenRequest(
       [IdTokenType.SubjectSigned],
-      PresentationDefinition.deserialize({ id: 'test', input_descriptors: [] })
+      PresentationDefinition.fromJSON({ id: 'test', input_descriptors: [] })
     );
 
     describe('Using if statements', () => {

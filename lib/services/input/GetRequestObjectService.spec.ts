@@ -37,7 +37,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPost,
       jarMode: EmbedModeTO.ByReference,
-      presentationDefinition: new PresentationDefinition(),
+      presentationDefinition: {} as PresentationDefinition,
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
     };

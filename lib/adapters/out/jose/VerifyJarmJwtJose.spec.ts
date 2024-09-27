@@ -85,7 +85,7 @@ describe('VerifyJarmJwtJose', () => {
       const to = result.getOrThrow();
       console.log(to);
       expect(to.vpToken).toEqual('vpToken');
-      expect(to.presentationSubmission).toEqual(new PresentationSubmission());
+      expect(to.presentationSubmission).toEqual({} as PresentationSubmission);
     });
 
     it('should return an error when JARM JWT decryption fails', async () => {
