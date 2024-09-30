@@ -9,7 +9,7 @@ import {
   AuthorizationResponse,
   ResponseModeOption,
 } from '../../domain';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from 'oid4vc-prex';
 import {
   EmbedModeTO,
   IdTokenTypeTO,
@@ -48,7 +48,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPostJwt,
       jarMode: EmbedModeTO.ByReference,
-      presentationDefinition: {} as PresentationDefinition,
+      presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
     };
@@ -81,13 +81,13 @@ describe('createGetRequestObjectServiceInvoker', async () => {
         },
       ],
     };
-    const presentationSubmissionJsonStr = JSON.stringify(
-      presentationSubmission
-    );
+    // const presentationSubmissionJsonStr = JSON.stringify(
+    //   presentationSubmission
+    // );
     const payload = {
       state: presentation.requestId.value,
       vp_token: 'vpToken',
-      presentation_submission: presentationSubmissionJsonStr,
+      presentation_submission: presentationSubmission,
     };
 
     const enc = new CompactEncrypt(
@@ -109,7 +109,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     const postWalletResponseResult = await postWalletResponse(
       authorizationResponse
     );
-    //console.log(postWalletResponseResult);
+    console.log(postWalletResponseResult);
     expect(postWalletResponseResult.isSuccess).toBe(true);
     const walletResponseAcceptedTO = postWalletResponseResult.getOrThrow();
 

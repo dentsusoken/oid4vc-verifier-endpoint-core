@@ -22,7 +22,9 @@ describe('Presentation.fromJSON', () => {
       initiated_at: '2023-06-08T10:00:00Z',
       type: {
         __type: 'VpTokenRequest',
-        presentation_definition: {},
+        presentation_definition: {
+          id: 'id',
+        },
       },
       request_id: 'request-id',
       nonce: 'nonce-value',
@@ -67,7 +69,7 @@ describe('Presentation.fromJSON', () => {
       initiated_at: '2023-06-08T10:00:00Z',
       type: {
         __type: 'VpTokenRequest',
-        presentation_definition: {},
+        presentation_definition: { id: 'id' },
       },
       request_id: 'request-id',
       request_object_retrieved_at: '2023-06-08T10:05:00Z',
@@ -110,7 +112,7 @@ describe('Presentation.fromJSON', () => {
       initiated_at: '2023-06-08T10:00:00Z',
       type: {
         __type: 'VpTokenRequest',
-        presentation_definition: {},
+        presentation_definition: { id: 'id' },
       },
       request_id: 'request-id',
       request_object_retrieved_at: '2023-06-08T10:05:00Z',

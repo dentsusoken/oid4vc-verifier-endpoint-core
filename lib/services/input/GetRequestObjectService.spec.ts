@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { RequestId, Presentation } from '../../domain';
 import { Result } from '../../kotlin';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from 'oid4vc-prex';
 import {
   EmbedModeTO,
   IdTokenTypeTO,
@@ -37,7 +37,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPost,
       jarMode: EmbedModeTO.ByReference,
-      presentationDefinition: {} as PresentationDefinition,
+      presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
     };

@@ -1,6 +1,11 @@
 import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
-import { PresentationSubmission } from 'oid4vc-prex';
+import {
+  DescriptorMap,
+  Id,
+  JsonPath,
+  PresentationSubmission,
+} from 'oid4vc-prex';
 import { WalletResponse, WalletResponseJSON } from '.';
 
 describe('WalletResponse', () => {
@@ -27,7 +32,11 @@ describe('WalletResponse', () => {
   describe('VpToken', () => {
     it('should create an instance of VpToken', () => {
       const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
+      const presentationSubmission = new PresentationSubmission(
+        new Id('id'),
+        new Id('did'),
+        [new DescriptorMap(new Id('id'), '{}', JsonPath.fromString('*')!)]
+      );
       const walletResponse = new WalletResponse.VpToken(
         vpToken,
         presentationSubmission
@@ -41,7 +50,17 @@ describe('WalletResponse', () => {
       expect(walletResponse.toJSON()).toEqual({
         __type: 'VpToken',
         vp_token: vpToken,
-        presentation_submission: {},
+        presentation_submission: {
+          id: 'id',
+          definition_id: 'did',
+          descriptor_map: [
+            {
+              id: 'id',
+              format: '{}',
+              path: '*',
+            },
+          ],
+        },
       });
     });
 
@@ -57,7 +76,11 @@ describe('WalletResponse', () => {
     it('should create an instance of IdAndVpToken', () => {
       const idToken = 'id-token';
       const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
+      const presentationSubmission = new PresentationSubmission(
+        new Id('id'),
+        new Id('did'),
+        [new DescriptorMap(new Id('id'), '{}', JsonPath.fromString('*')!)]
+      );
       const walletResponse = new WalletResponse.IdAndVpToken(
         idToken,
         vpToken,
@@ -67,14 +90,24 @@ describe('WalletResponse', () => {
       expect(walletResponse).toBeInstanceOf(WalletResponse.IdAndVpToken);
       expect(walletResponse.idToken).toBe(idToken);
       expect(walletResponse.vpToken).toBe(vpToken);
-      expect(walletResponse.presentationSubmission).toBe(
+      expect(walletResponse.presentationSubmission).toEqual(
         presentationSubmission
       );
       expect(walletResponse.toJSON()).toEqual({
         __type: 'IdAndVpToken',
         id_token: idToken,
         vp_token: vpToken,
-        presentation_submission: presentationSubmission.toJSON(),
+        presentation_submission: {
+          id: 'id',
+          definition_id: 'did',
+          descriptor_map: [
+            {
+              id: 'id',
+              format: '{}',
+              path: '*',
+            },
+          ],
+        },
       });
     });
 
@@ -133,7 +166,11 @@ describe('WalletResponse', () => {
 
     it('should create an instance of VpToken from JSON', () => {
       const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
+      const presentationSubmission = new PresentationSubmission(
+        new Id('id'),
+        new Id('did'),
+        [new DescriptorMap(new Id('id'), '{}', JsonPath.fromString('*')!)]
+      );
       const json = new WalletResponse.VpToken(
         vpToken,
         presentationSubmission
@@ -158,7 +195,11 @@ describe('WalletResponse', () => {
     it('should create an instance of IdAndVpToken from JSON', () => {
       const idToken = 'id-token';
       const vpToken = 'vp-token';
-      const presentationSubmission = {} as PresentationSubmission;
+      const presentationSubmission = new PresentationSubmission(
+        new Id('id'),
+        new Id('did'),
+        [new DescriptorMap(new Id('id'), '{}', JsonPath.fromString('*')!)]
+      );
       const json = new WalletResponse.IdAndVpToken(
         idToken,
         vpToken,

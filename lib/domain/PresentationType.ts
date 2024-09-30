@@ -16,6 +16,7 @@
 
 import {
   PresentationDefinition,
+  PresentationDefinitionJSON,
   presentationDefinitionSchema,
 } from 'oid4vc-prex';
 import { IdTokenType, idTokenTypeSchema } from './IdTokenType';
@@ -135,12 +136,12 @@ export const presentationTypeSchema: z.ZodType<
   | { __type: 'IdTokenRequest'; id_token_type: IdTokenType[] }
   | {
       __type: 'VpTokenRequest';
-      presentation_definition: PresentationDefinition;
+      presentation_definition: PresentationDefinitionJSON;
     }
   | {
       __type: 'IdAndVpTokenRequest';
       id_token_type: IdTokenType[];
-      presentation_definition: PresentationDefinition;
+      presentation_definition: PresentationDefinitionJSON;
     }
 > = z.discriminatedUnion('__type', [
   idTokenRequestSchema,
@@ -148,6 +149,9 @@ export const presentationTypeSchema: z.ZodType<
   idAndVpTokenRequestSchema,
 ]);
 
+export type IdTokenRequestJSON = z.infer<typeof idTokenRequestSchema>;
+export type VpTokenRequestJSON = z.infer<typeof vpTokenRequestSchema>;
+export type IdAndVpTokenRequestJSON = z.infer<typeof idAndVpTokenRequestSchema>;
 export type PresentationTypeJSON = z.infer<typeof presentationTypeSchema>;
 
 /**
@@ -246,7 +250,7 @@ export namespace PresentationType {
      * console.log(jsonString);
      * // Output: {"__type":"VpTokenRequest","presentation_definition":{"id":"example","input_descriptors":[]}}
      */
-    toJSON() {
+    toJSON(): VpTokenRequestJSON {
       return {
         __type: this.__type,
         presentation_definition: this.presentationDefinition.toJSON(),
@@ -288,7 +292,7 @@ export namespace PresentationType {
      * //   "presentation_definition": {"id":"example","input_descriptors":[]}
      * // }
      */
-    toJSON() {
+    toJSON(): IdAndVpTokenRequestJSON {
       return {
         __type: this.__type,
         id_token_type: this.idTokenType,

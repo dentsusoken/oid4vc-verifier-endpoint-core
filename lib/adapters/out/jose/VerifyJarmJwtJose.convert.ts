@@ -43,7 +43,7 @@ export const toAuthorizationResponseData = async (
     // ...payload,
   } as AuthorizationResponseData;
   if (presentation_submission) {
-    data.presentationSubmission = PresentationSubmission.deserialize(
+    data.presentationSubmission = PresentationSubmission.fromJSON(
       presentation_submission
     );
   }

@@ -252,7 +252,7 @@ describe('MockConfiguration', () => {
 
       expect(
         UrlBuilder.buildUrlWithRequestId(result, new RequestId('hoge')).href
-      ).toBe(`${configuration.publicUrl()}/wallet/direct_post`);
+      ).toBe(`${configuration.publicUrl()}/wallet/direct_post/`);
     });
   });
 
