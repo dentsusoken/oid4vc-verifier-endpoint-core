@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { TransactionId } from '../../domain';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from 'oid4vc-prex';
 import {
   EmbedModeTO,
   IdTokenTypeTO,
@@ -47,7 +47,7 @@ describe('createInitTransactionServiceInvoker', async () => {
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPost,
       jarMode: EmbedModeTO.ByReference,
-      presentationDefinition: {} as PresentationDefinition,
+      presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
     };
@@ -83,7 +83,7 @@ describe('createInitTransactionServiceInvoker', async () => {
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPost,
       jarMode: EmbedModeTO.ByReference,
-      presentationDefinition: {} as PresentationDefinition,
+      presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
     };

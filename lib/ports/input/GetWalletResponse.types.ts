@@ -44,7 +44,7 @@ export class WalletResponseTO {
   @Transform(({ value }) => value && PresentationSubmission.fromJSON(value), {
     toClassOnly: true,
   })
-  @Transform(({ value }) => value && value.serialize(), { toPlainOnly: true })
+  @Transform(({ value }) => value && value.toJSON(), { toPlainOnly: true })
   presentationSubmission?: PresentationSubmission;
 
   /**

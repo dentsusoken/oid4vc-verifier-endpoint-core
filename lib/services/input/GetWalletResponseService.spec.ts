@@ -7,7 +7,11 @@ import {
   Presentation,
   ResponseCode,
 } from '../../domain';
-import { PresentationDefinition, PresentationSubmission } from 'oid4vc-prex';
+import {
+  Id,
+  PresentationDefinition,
+  PresentationSubmission,
+} from 'oid4vc-prex';
 import {
   EmbedModeTO,
   IdTokenTypeTO,
@@ -42,7 +46,7 @@ describe('createGetWalletResponseServiceInvoker', async () => {
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPostJwt,
       jarMode: EmbedModeTO.ByReference,
-      presentationDefinition: {} as PresentationDefinition,
+      presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
     };

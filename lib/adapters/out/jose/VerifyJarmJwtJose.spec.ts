@@ -10,7 +10,7 @@ import {
 } from 'jose';
 import { createVerifyJarmJwtJoseInvoker } from './VerifyJarmJwtJose';
 import { EphemeralECDHPrivateJwk, JarmOption } from '../../../domain';
-import { PresentationSubmission } from 'oid4vc-prex';
+import { Id, PresentationSubmission } from 'oid4vc-prex';
 
 describe('VerifyJarmJwtJose', () => {
   describe('JWE', () => {
@@ -61,7 +61,11 @@ describe('VerifyJarmJwtJose', () => {
 
       const payload = {
         vp_token: 'vpToken',
-        presentation_submission: {},
+        presentation_submission: {
+          id: 'id',
+          definition_id: 'did',
+          descriptor_map: [],
+        },
       };
 
       const enc = new CompactEncrypt(
@@ -85,7 +89,9 @@ describe('VerifyJarmJwtJose', () => {
       const to = result.getOrThrow();
       console.log(to);
       expect(to.vpToken).toEqual('vpToken');
-      expect(to.presentationSubmission).toEqual({} as PresentationSubmission);
+      expect(to.presentationSubmission).toEqual(
+        new PresentationSubmission(new Id('id'), new Id('did'), [])
+      );
     });
 
     it('should return an error when JARM JWT decryption fails', async () => {

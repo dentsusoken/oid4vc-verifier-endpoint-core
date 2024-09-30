@@ -12,7 +12,7 @@ import {
   Presentation,
   PresentationType,
 } from '.';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from 'oid4vc-prex';
 
 describe('Requested', () => {
   const id = new TransactionId('transaction-id');
@@ -162,7 +162,7 @@ describe('Requested', () => {
     it('should return a JSON', () => {
       const initiatedAt = new Date(0);
       const type = new PresentationType.VpTokenRequest(
-        {} as PresentationDefinition
+        new PresentationDefinition(new Id('id'))
       );
       const requestId = new RequestId('def456');
       const nonce = new Nonce('ghi789');
@@ -191,7 +191,7 @@ describe('Requested', () => {
           __type: 'VpTokenRequest',
           presentation_definition: {
             format: undefined,
-            id: undefined,
+            id: 'id',
             input_descriptors: undefined,
             name: undefined,
             purpose: undefined,
@@ -249,7 +249,9 @@ describe('Requested', () => {
         new Date('1970-01-01T00:00:00.000Z')
       );
       expect(requested.type).toEqual(
-        new PresentationType.VpTokenRequest({} as PresentationDefinition)
+        new PresentationType.VpTokenRequest(
+          new PresentationDefinition(new Id('id'))
+        )
       );
       expect(requested.requestId).toEqual(new RequestId('def456'));
       expect(requested.nonce).toEqual(new Nonce('ghi789'));
