@@ -85,7 +85,7 @@ describe('VerifyJarmJwtJose', () => {
         jarmJwt
       );
 
-      expect(result.isSuccess).toBe(true);
+      expect(result.isSuccess()).toBe(true);
       const to = result.getOrThrow();
       console.log(to);
       expect(to.vpToken).toEqual('vpToken');
@@ -112,8 +112,8 @@ describe('VerifyJarmJwtJose', () => {
         jarmJwt
       );
 
-      expect(result.isFailure).toBe(true);
-      const ex = result.exceptionOrUndefined();
+      expect(result.isFailure()).toBe(true);
+      const ex = result.error;
       expect(ex).toBeDefined();
     });
   });

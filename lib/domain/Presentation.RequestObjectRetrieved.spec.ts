@@ -100,7 +100,7 @@ describe('RequestObjectRetrieved', () => {
       responseCode
     );
 
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const submitted = result.getOrThrow();
     expect(submitted.constructor).toBe(Presentation.Submitted);
     expect(submitted.id).toBe(id);

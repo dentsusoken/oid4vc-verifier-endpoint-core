@@ -24,7 +24,7 @@ import {
 } from '../../ports/out/persistence';
 import { createPostWalletResponseServiceInvoker } from './PostWalletResponseService';
 import { VerifyJarmJwt } from '../../ports/out/jose';
-import { Result } from '../../kotlin';
+import { Result } from 'oid4vc-core/utils';
 import {
   CreateQueryWalletResponseRedirectUri,
   GenerateResponseCode,
@@ -55,7 +55,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
 
     const initTransactionResult = await initTransaction(initTransactionTO);
 
-    expect(initTransactionResult.isSuccess).toBe(true);
+    expect(initTransactionResult.isSuccess()).toBe(true);
     const requestUri = initTransactionResult.getOrThrow().requestUri!;
     //console.log(requestUri);
     const index = requestUri.lastIndexOf('/');
@@ -109,8 +109,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     const postWalletResponseResult = await postWalletResponse(
       authorizationResponse
     );
-    console.log(postWalletResponseResult);
-    expect(postWalletResponseResult.isSuccess).toBe(true);
+    expect(postWalletResponseResult.isSuccess()).toBe(true);
     const walletResponseAcceptedTO = postWalletResponseResult.getOrThrow();
 
     const submitted = await loadPresentationByRequestId(requestId);
@@ -151,10 +150,8 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     );
 
     const result = await postWalletResponse(authorizationResponse);
-    expect(result.isFailure);
-    expect(result.exceptionOrUndefined()?.message).toBe(
-      'Not found presentation'
-    );
+    expect(result.isFailure());
+    expect(result.error?.message).toBe('Not found presentation');
   });
 
   it('should throw error when presentation type is not RequestObjectRetrieved', async () => {
@@ -183,10 +180,8 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     );
 
     const result = await postWalletResponse(authorizationResponse);
-    expect(result.isFailure);
-    expect(result.exceptionOrUndefined()?.message).toBe(
-      'Invalid presentation status'
-    );
+    expect(result.isFailure());
+    expect(result.error?.message).toBe('Invalid presentation status');
   });
 
   it('should throw error when the response mode of the presentation does not match the response mode of the authorization response', async () => {
@@ -216,9 +211,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     );
 
     const result = await postWalletResponse(authorizationResponse);
-    expect(result.isFailure);
-    expect(result.exceptionOrUndefined()?.message).toBe(
-      'Unexpected response mode'
-    );
+    expect(result.isFailure());
+    expect(result.error?.message).toBe('Unexpected response mode');
   });
 });

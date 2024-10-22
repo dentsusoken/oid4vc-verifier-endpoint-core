@@ -17,7 +17,7 @@
 import { GenerateTransactionId } from '../../../ports/out/cfg';
 import { TransactionId } from '../../../domain';
 import { randomBase64URL } from '../../../utils';
-import { runAsyncCatching } from '../../../kotlin';
+import { runAsyncCatching } from 'oid4vc-core/utils';
 
 const DEFAULT_BYTE_LENGTH = 32;
 

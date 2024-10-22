@@ -16,7 +16,7 @@ describe('createCreateQueryWalletResponseRedirectUri', () => {
 
     const result = createQueryWalletResponseRedirectUri(template, responseCode);
 
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const url = result.getOrThrow();
     expect(url.href).toBe('https://example.com/callback?code=123456');
   });
@@ -27,8 +27,8 @@ describe('createCreateQueryWalletResponseRedirectUri', () => {
 
     const result = createQueryWalletResponseRedirectUri(template, responseCode);
 
-    expect(result.isFailure).toBe(true);
-    expect(result.exceptionOrUndefined()?.message).toBe(
+    expect(result.isFailure()).toBe(true);
+    expect(result.error?.message).toBe(
       'Expected response_code place holder not found in template'
     );
   });
@@ -39,7 +39,7 @@ describe('createCreateQueryWalletResponseRedirectUri', () => {
 
     const result = createQueryWalletResponseRedirectUri(template, responseCode);
 
-    expect(result.isFailure).toBe(true);
-    expect(result.exceptionOrUndefined()).toBeInstanceOf(TypeError);
+    expect(result.isFailure()).toBe(true);
+    expect(result.error).toBeInstanceOf(TypeError);
   });
 });

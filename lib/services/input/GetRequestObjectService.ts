@@ -21,7 +21,7 @@ import {
   StorePresentation,
 } from '../../ports/out/persistence';
 import { GetRequestObject, QueryResponse } from '../../ports/input';
-import { runAsyncCatching } from '../../kotlin';
+import { runAsyncCatching } from 'oid4vc-core/utils';
 
 export type GetRequestObjectServiceCreateParams = {
   loadPresentationByRequestId: LoadPresentationByRequestId;
@@ -66,10 +66,8 @@ export const createGetRequestObjectServiceInvoker =
       return jwt;
     });
 
-    if (result.isFailure) {
-      return new QueryResponse.InvalidState(
-        `${result.exceptionOrUndefined()?.toString()}`
-      );
+    if (result.isFailure()) {
+      return new QueryResponse.InvalidState(`${result.error?.toString()}`);
     }
 
     return new QueryResponse.Found(result.getOrThrow());

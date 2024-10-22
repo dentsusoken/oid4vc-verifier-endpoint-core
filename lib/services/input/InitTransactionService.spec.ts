@@ -54,7 +54,7 @@ describe('createInitTransactionServiceInvoker', async () => {
 
     const result = await initTransaction(initTransactionTO);
 
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const requestTO = result.getOrThrow();
     //console.log(requestTO);
     expect(requestTO).toBeInstanceOf(JwtSecuredAuthorizationRequestTO);
@@ -90,7 +90,7 @@ describe('createInitTransactionServiceInvoker', async () => {
 
     const result = await initTransaction(initTransactionTO);
 
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const requestTO = result.getOrThrow();
     //console.log(requestTO);
     expect(requestTO).toBeInstanceOf(JwtSecuredAuthorizationRequestTO);
