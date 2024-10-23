@@ -15,7 +15,7 @@
  */
 
 import { Jwt, Presentation, VerifierConfig } from '../../../domain';
-import { Result } from '../../../kotlin';
+import { Result } from 'oid4vc-core/utils';
 
 /**
  * Interface for signing a request object.

@@ -15,7 +15,7 @@
  */
 
 import { TransactionId } from '../../../domain';
-import { Result } from '../../../kotlin';
+import { Result } from 'oid4vc-core/utils';
 
 /**
  * A port for generating [TransactionId]

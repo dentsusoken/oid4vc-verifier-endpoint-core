@@ -163,7 +163,7 @@ export const toGetWalletResponseMethod = (
     new ResponseCode('test')
   );
 
-  if (result.isFailure) {
+  if (result.isFailure()) {
     throw new Error('Invalid wallet response template');
   }
 

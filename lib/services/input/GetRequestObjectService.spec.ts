@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { RequestId, Presentation } from '../../domain';
-import { Result } from '../../kotlin';
+import { Result } from 'oid4vc-core/utils';
 import { Id, PresentationDefinition } from 'oid4vc-prex';
 import {
   EmbedModeTO,
@@ -44,7 +44,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
 
     const initTransactionResult = await initTransaction(initTransactionTO);
 
-    expect(initTransactionResult.isSuccess).toBe(true);
+    expect(initTransactionResult.isSuccess()).toBe(true);
     const requestUri = initTransactionResult.getOrThrow().requestUri!;
     //console.log(requestUri);
     const index = requestUri.lastIndexOf('/');

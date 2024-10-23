@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { PresentationDefinition } from 'oid4vc-prex';
-import { Result } from '../../kotlin';
+import { Result } from 'oid4vc-core/utils';
 import {
   toIdTokenTypes,
   toNonce,

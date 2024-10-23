@@ -15,7 +15,7 @@
  */
 
 import { CreateQueryWalletResponseRedirectUri } from '../../../ports/out/cfg';
-import { runCatching, assert } from '../../../kotlin';
+import { runCatching, assert } from 'oid4vc-core/utils';
 
 /**
  * The placeholder string used for the response code

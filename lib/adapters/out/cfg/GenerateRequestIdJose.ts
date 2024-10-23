@@ -16,7 +16,7 @@
 
 import { GenerateRequestId } from '../../../ports/out/cfg';
 import { RequestId } from '../../../domain';
-import { runAsyncCatching } from '../../../kotlin';
+import { runAsyncCatching } from 'oid4vc-core/utils';
 
 import { randomBase64URL } from '../../../utils';
 

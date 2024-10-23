@@ -53,7 +53,7 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const initTransactionResult = await initTransaction(initTransactionTO);
 
-    expect(initTransactionResult.isSuccess).toBe(true);
+    expect(initTransactionResult.isSuccess()).toBe(true);
     const requestUri = initTransactionResult.getOrThrow().requestUri!;
     //console.log(requestUri);
     const index = requestUri.lastIndexOf('/');
@@ -105,7 +105,7 @@ describe('createGetWalletResponseServiceInvoker', async () => {
       authorizationResponse
     );
     //console.log(postWalletResponseResult);
-    expect(postWalletResponseResult.isSuccess).toBe(true);
+    expect(postWalletResponseResult.isSuccess()).toBe(true);
     const walletResponseAcceptedTO = postWalletResponseResult.getOrThrow();
 
     const submitted = await loadPresentationByRequestId(requestId);

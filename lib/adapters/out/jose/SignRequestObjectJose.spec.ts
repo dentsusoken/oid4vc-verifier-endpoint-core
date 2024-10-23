@@ -97,7 +97,7 @@ describe('SignRequestObjectJose', async () => {
         mockPresentation
       );
 
-      expect(result.isSuccess).toBe(true);
+      expect(result.isSuccess()).toBe(true);
       const jwt = result.getOrThrow();
       const pieces = jwt.split('.');
       expect(pieces.length).toBe(3);

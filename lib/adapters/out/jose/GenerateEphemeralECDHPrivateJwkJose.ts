@@ -18,7 +18,7 @@ import { generateKeyPair, exportJWK } from 'jose';
 import { v4 as uuidv4 } from 'uuid';
 import { EphemeralECDHPrivateJwk } from '../../../domain';
 import { GenerateEphemeralECDHPrivateJwk } from '../../../ports/out/jose';
-import { runAsyncCatching } from '../../../kotlin';
+import { runAsyncCatching } from 'oid4vc-core/utils';
 
 export const createGenerateEphemeralECDHPrivateJwkJoseInvoker =
   (): GenerateEphemeralECDHPrivateJwk => invoke;
