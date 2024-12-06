@@ -6,7 +6,7 @@ Wallet から Verifier に対して認可レスポンスを返すためのエン
 
 ## URL
 
-https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev//wallet/direct_post
+https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/wallet/direct_post/
 
 ## リクエスト
 
@@ -16,10 +16,113 @@ https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev//wallet/direct_po
 
 ### パラメータ
 
-| パラメータ | 型     | 必須 | 説明                                                                 |
-| ---------- | ------ | ---- | -------------------------------------------------------------------- |
-| state      | string | No   | 認可リクエストから取得できる state パラメータ                        |
-| response   | string | No   | id_token、vp_token、presentation_submission の情報を含む JARM 文字列 |
+| パラメータ | 型     | 必須 | 説明                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| state      | string | No   | [Get Authorization Request](GetAuthorizationRequest.md)のレスポンスパラメータの`state`パラメータ。                                                                                                                                                                                                                              |
+| response   | string | No   | Verifierの公開鍵（[Get Authorization Request](GetAuthorizationRequest.md)のレスポンスパラメータの`client_metadata.jwks`または`client_metadata.jwks_uri`から取得）を使用して暗号化されたJWE形式の文字列。暗号化前のペイロードには後述のパラメータを含む。詳細は[JARM](https://openid.net/specs/oauth-v2-jarm.html)の仕様を参照。 |
+
+#### JWEの構造
+
+##### ヘッダーパラメータ
+
+| パラメータ | 説明                         | 許容される値          |
+| ---------- | ---------------------------- | --------------------- |
+| alg        | 鍵管理アルゴリズム           | ECDH-ES+A256KW        |
+| enc        | コンテンツ暗号化アルゴリズム | A256GCM               |
+| kid        | 公開鍵のID                   | Verifierの公開鍵のkid |
+| epk        | 一時的な公開鍵情報           | EC公開鍵（P-256）     |
+
+##### ペイロードパラメータ
+
+| パラメータ              | 型     | 必須 | 説明                                                                                                                                                                                                                                             |
+| ----------------------- | ------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| vp_token                | string | No   | vp_token を示す文字列、[Get Authorization Request](GetAuthorizationRequest.md)のレスポンスパラメータの`response_type`が`vp_token`の場合は必須。                                                                                                  |
+| presentation_submission | JSON   | No   | [presentation_submission](https://github.com/dentsusoken/oid4vc-prex/blob/main/docs/PresentationSubmission.md) のJSON、 [Get Authorization Request](GetAuthorizationRequest.md)のレスポンスパラメータの`response_type`が`vp_token`の場合は必須。 |
+| state                   | string | No   | [Get Authorization Request](GetAuthorizationRequest.md)のレスポンスパラメータの`state`パラメータ。                                                                                                                                               |
+
+サンプルペイロード:
+
+```json
+{
+  "vp_token": "o2d2ZXJzaW9uYzEuMGlkb2N1bWVudHOBo2dkb2NUeXBldW9yZy5pc28uMTgwMTMuNS4xLm1ETGxpc3N1ZXJTaWduZWSiam5hbWVTcGFjZXOhcW9yZy5pc28uMTgwMTMuNS4xgtgYWFKkaGRpZ2VzdElEAWZyYW5kb21QSAgsu9yxmrqDa9shKK4cRHFlbGVtZW50SWRlbnRpZmllcmpnaXZlbl9uYW1lbGVsZW1lbnRWYWx1ZWRJbmdh2BhYW6RoZGlnZXN0SUQCZnJhbmRvbVBhDm5iv14nW8ZrvzbGPs2fcWVsZW1lbnRJZGVudGlmaWVyb2RvY3VtZW50X251bWJlcmxlbGVtZW50VmFsdWVoMTIzNDU2NzhqaXNzdWVyQXV0aIRDoQEmoRghWQGyMIIBrjCCAVWgAwIBAgIUO4JGOFKhSzaYPysIXdnNmA3kjrswCgYIKoZIzj0EAwIwLTErMCkGA1UEAwwidHcyNC1vYXV0aC1zZXJ2ZXIuYW4uci5hcHBzcG90LmNvbTAeFw0yNDAzMjcwNzM2NDFaFw0zNDAzMjUwNzM2NDFaMC0xKzApBgNVBAMMInR3MjQtb2F1dGgtc2VydmVyLmFuLnIuYXBwc3BvdC5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATKHMBkz8Dyo_Ch5_KzRVJP1W0hqg9StzjL3mRLVfQmX-wUMMY91qsuF3iXu-9g9h2ePUHMuVIbhVgtM-932iywo1MwUTAdBgNVHQ4EFgQUUYVneVlglmWCf588GqePoPTyFA4wHwYDVR0jBBgwFoAUUYVneVlglmWCf588GqePoPTyFA4wDwYDVR0TAQH_BAUwAwEB_zAKBggqhkjOPQQDAgNHADBEAiAyGPiRDxjQASnL-p-Ew18nFQAxiy9CQhqiduJ1DA5yFwIgSN-9boIrs1Y8luK_Ev8eFmQx5wPByP97jOJ3tY64DQxZAdnYGFkB1KZndmVyc2lvbmMxLjBvZGlnZXN0QWxnb3JpdGhtZ1NIQS0yNTZsdmFsdWVEaWdlc3RzoXFvcmcuaXNvLjE4MDEzLjUuMaIBWCC6Iwll1JcdH0u8zVabyfSZOz8ALHsnANTm-YJ_zZq_UQJYIEgLyoWipw94FZOKaXrdJMLHXnO2CREZMkWPZQvDvt8DbWRldmljZUtleUluZm-iaWRldmljZUtleaYBAgJYJEQ0M0FFRDU4LUIwQjktNEQ3Mi1BODZGLUVCOTE3Njg5RUMyNwMmIAEhWCDt9Ys7frGcrv7gHzyvFU5rrcqdlErVPoPL5fcntBE97iJYIAzkKtfg2Bp3ZhNyOY9XrRRS_2je5S9OKQJrscjuZPUocWtleUF1dGhvcml6YXRpb25zoWpuYW1lU3BhY2VzgXFvcmcuaXNvLjE4MDEzLjUuMWdkb2NUeXBldW9yZy5pc28uMTgwMTMuNS4xLm1ETGx2YWxpZGl0eUluZm-jZnNpZ25lZMB0MjAyNC0xMi0wNlQwMTowMzo0NlppdmFsaWRGcm9twHQyMDI0LTEyLTA2VDAxOjAzOjQ2Wmp2YWxpZFVudGlswHQyMDI1LTEyLTA2VDAxOjAzOjQ2WlhApdEpNgUsOsamsXaF9DkODnSqHzb1Z549tjkm36ydX2Ne6hTD37ow7MzrxsiQriOBAz-7fP2esHL6P9z2PCQR62xkZXZpY2VTaWduZWSiam5hbWVTcGFjZXPYGEGgamRldmljZUF1dGihb2RldmljZVNpZ25hdHVyZYRDoQEmoPZYQGikrcu_Gb8ay6Jbh5pLd76JBeqibEziur2fJUemJtQKhSstFpxG1cY1GHHtv5Qc2NF0t0uk2LtN8VPkHeiogC9mc3RhdHVzAA",
+  "presentation_submission": {
+    "id": "8826D44D-E79C-4609-B3FC-D1A5A381088F",
+    "definition_id": "7bfdafcc-4530-4ceb-b641-1bcaccaaad3f",
+    "descriptor_map": [
+      { "id": "org.iso.18013.5.1.mDL", "format": "mso_mdoc", "path": "$" }
+    ]
+  },
+  "state": "9FvvJaVr5Aad60rEz7jGexUbYl4jeFRgVpdNrGImjgaW7LF7W5odSCHhCc_gzJxAmuVLGzO27k3aPMJC_O3PLw"
+}
+```
+
+#### TypeScriptによるJWE作成サンプル
+
+```typescript
+import * as jose from 'jose';
+
+async function createJWE(payload: string | object, publicKey: jose.JWK) {
+  try {
+    const ephemeralKeyPair = await jose.generateKeyPair('ES256');
+    const rawEpk = await jose.exportJWK(ephemeralKeyPair.publicKey);
+
+    const enc = new jose.CompactEncrypt(
+      new TextEncoder().encode(
+        typeof payload === 'string' ? payload : JSON.stringify(payload)
+      )
+    );
+
+    enc.setProtectedHeader({
+      alg: 'ECDH-ES+A256KW',
+      enc: 'A256GCM',
+      kid: publicKey.kid,
+      epk: {
+        kty: 'EC',
+        crv: 'P-256',
+        x: rawEpk.x,
+        y: rawEpk.y,
+      },
+    });
+
+    const jwe = await enc.encrypt(
+      await jose.importJWK({
+        ...publicKey,
+        alg: 'ECDH-ES+A256KW',
+      })
+    );
+    return jwe;
+  } catch (error) {
+    console.error('JWE creation error:', error);
+    throw error;
+  }
+}
+
+const payload = {
+  vp_token: "...",
+  presentation_submission: {
+    id: "8826D44D-E79C-4609-B3FC-D1A5A381088F",
+    definition_id: "7bfdafcc-4530-4ceb-b641-1bcaccaaad3f",
+    descriptor_map: [
+      { id: "org.iso.18013.5.1.mDL", format: "mso_mdoc", path: "$" }
+    ]
+  },
+  state: "..."
+};
+
+const publicKey = {
+  kty: 'EC',
+  crv: 'P-256',
+  x: 'pCwoicSWU-iYbFOE1e9zWpRsEF4SCvlLP9Y9hCECjdA',
+  y: 'cYam1clmctfGPoopuZV4uByYT69fc-I4Iqosy3_1E4c',
+  kid: '55a67782-2a82-491c-9852-2988d2901416',
+  use: 'enc',
+  alg: 'ECDH-ES'
+};
+
+createJWE(payload, publicKey)
+  .then(jwe => console.log(jwe))
+  .catch(error => console.error('Error:', error));
+```
 
 ## レスポンス
 
@@ -29,17 +132,17 @@ https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev//wallet/direct_po
 
 ### パラメータ
 
-| パラメータ   | 型     | 必須 | 説明                                                                                    |
-| ------------ | ------ | ---- | --------------------------------------------------------------------------------------- |
-| redirect_uri | string | No   | Wallet から Verifier にリダイレクトする URI を指定するパラメータ、Same Deviceの場合のみ |
+| パラメータ   | 型     | 必須 | 説明                                                                                                                                                                                                            |
+| ------------ | ------ | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| redirect_uri | string | No   | Wallet から Verifier にリダイレクトする URI を指定するパラメータ、[Initiate Transaction](../frontend/InitiateTransaction.md)のリクエストパラメータに`wallet_response_redirect_uri_template`を指定した場合のみ。 |
 
 ## サンプルリクエスト
 
 ```sh
-curl --location 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/wallet/direct_post/' \
+curl -v 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/wallet/direct_post/' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'state=9KEALO4iuNRSD9BghlEvvDRiqvkdbl_5Pdqa7tlYp1IXsxvsNUt0j_ygnRTSQU0sDLF1XjIEAwTU57gNEY7_Cg' \
---data-urlencode 'response=eyJlcGsiOnsieSI6IjBIMEtZamtUZFV6cVM2cDVVR3BXd1ItSTh4a21oR3hYV2ROZXZ3WmtMNzgiLCJjcnYiOiJQLTI1NiIsImtpZCI6IjE2NUQzQ0M5LTc2MDgtNERERS1CMDI0LTdDRkEyNDIzMzM1NCIsIngiOiIwNDZndkpBMnBiUDh4eTFHQkNrV3FUaVZnZlhqV2NBVFBNZnNPVk4xOEEwIiwia3R5IjoiRUMifSwiZW5jIjoiQTI1NkdDTSIsImFwdSI6IlduQmpTVTUwUjFOT1VqZHlWak5IZEc1V1pFcHFadyIsImtpZCI6IjVlOTM3MmRkLWNkYzQtNDIwZC1hZWYxLWVlZTA5YmYwMDVlNCIsImFsZyI6IkVDREgtRVMrQTI1NktXIiwiYXB2IjoiTURobE56Um1OMkV0WWpWaVlpMDBOakEzTFRreE9Ea3RNRFl6TkRBNFkyRmlNREV4In0.p56HFyYbrHTYX-8QsZEhGTUpzgMTAoUTo831KmZ-Z0peSR9UsCESqA.4nr7tI2Wchg9mPS8.EzoBgBy-HumILbFYfKrPO_k6vXGNSwgoUqCnAHND4nmqaAlvAcN8f8IJQ9OPzrPyDl-Nidg7AVrQEu10MXcQGXbj7QlG8sn-UIpbENPAFYnhZHQ9wy5KADBzcg5dPEvslsspKh1pZHbSnPYi9SuAhbdQEGc9fq9VmxR3ul-pK3mXQQmaTtOQdJu2Ne_TveN7RLRUrKjtqdxkZHPtPYKt67ZDJ_7VqdDnyBfqz3UOy_V2LfxIrggrWoWduMDftWLyDicCFvrEBfl0nFEkE9wJM-LpsLAa4GwDS0Zju9P2GE4NuNy_I5dOwHZzJyHDov8zRv-AULDcHa0NmQiKhF-hw8G8BIt_dT-4TZHg6bti5R9nCjZs5VrCybqcPGFXjoK_3nt-KowMzh24Vko5OD8PEC-gfDDcedGMhZUHuvpUv-32RQTJ9EAwVnd_XZ8BEYgpfTpNiGJ-sQWMxnA4WyHns_Lmna_uEb2mrDrYR1l-Q17R5rdfUtkklCJskZODlx-6tPP9qwugCvmxpP4V8seQnKmrWTfxp3nSTwocsiNiMBvbt8LbeR2xhy_B8Qb9A4qN3m2HDJ0Wz_wttcml-1vC4IrueXc1TFeuIfF7uIIX7_4BnO9f9yrPHyGZqn5uJauN92OwchytScBa027gUWOgH_mN_vUf77fgiw_VSqdYlp2OqyrY-xAKP4Ahs6bqJfwGNNh_Wjtn9PUt2tnkG85JYH1ub3XcganhxvCx8Os6m-J7-yyoGz8nx9OOZobyPK1xYfYR7PgRjc1LEq0fFzQI2dRDbx7g5VRazwIBGaGKrUJj2o6Fh3nAn7LeI7AX0JIh4lZrJFf0YzwYAcdAuC8HMhZvHa9PvfmaI0-uPw6j02ca0429_vwI8AgKRHsNaVyHd9hlQQlrPwv_g7fHCDL8E_FrCi6O0yWAB6Ekju0jRApD_Ig2rnqAAYLBaedKWdT3py8UPumXneFOOixyKC3upSYosKYYYYwUa0Hh69iiPNJd8B5cOwCxPUizaMwV6wcxapu5bmZnVM6IUUvvFbfwUkSD4tbi2IDwPVAHGgtWwSH2wYEMGALqu5gi-FGDvVlxcxtnsisiAgjjntICzDgimT8pmgoVUz6-GMBTQgW2pmc--SXSFbG4yINmIQftuz0ckL3Q6FCXmbQ4yndNEQknOHupZaKEdCqVPOZAwidqoQrNU2mBrnzI22kge0EpMAUEqjWEYEHKZ4YVyjXihQ2dbfaqc9bkQI06hv3_ow4p6Dyg7rtdgjLDP1rD4h0bpct0T5SHDQm8b7ZXZ7gvHX1LQpSohfEU6uQ9Tad_GxYq-beCJswSdELsR0AO9vzwzxzP7Pk4peLKqqq1ClhGRv6u6RPvUiwtOZV_E3j52zvyGzzk2G-HWBKB6gWmPYBbeoUSs8HfuWXLb25Yn_gLV4iXFdF18gLPITwa2cGrnm9Zv8C6Hp0cZjeRlYqMbBYVBts6Mo506aaAwxhUz63JvyaRseRfQYAQGvgSu873BzbqUqeKGx1Mq76vGKjglyizGTx16nplC8LuxRX1OmEo1uKq5ooHwpC7VMh4B96ZeCftaMiEHGVXuRMha0fYVyzYPJ_M4TMQRFGXBK2YeTCeq260KTg144hLpCqHpCMo6SuCD_EdIgy-8s5Aw-8ko9sD9KBvri1jZb_z610AiaBf_fX6Jkm3W6zGscy7ky6Y7qk3iWEcxoWF_IjT-3D97RlxsOU1zoGzU1ufjF3K6m5KoaHhRfbYjgtsBRzKJB2U23nNnVbu82g1GBpUgnvc3vVzQEXdD0kFWJrjxEfj-7mhY60xhfq_R4nnc89Bawgl-FoOEyEaHan-Sot_zBK25CLZf2MSLxCdHVE9X7xriHXqh7Z9SvvrGu8JARfShvWoSpeCtRlIq_Ea24g8Q-EoaQG9u0m97Bynp8mGMApBHNOKrPwug5sx4M5_mOzEeoB4-JFoCyJBBJJDmwj0NuO6GNPFk6j0Delv0PBtWfIxmWCc4TZOL8LYuRvAcd5yQH5NR0d5o_3Qz8iXkzg2PoInSVEyIzjfi2elylaY4Gv3BjSelokEvPxE5Oh5VbqUZoOE-ZSkaHOAoHTKdsUENHeh-NgbNwgI6uOMxEOArhWaFeQzxGyTEnttyLuSOQ_yoLnW9HwKDC-iRI7h-tJ-03u1rgjavyA9F2uIaOuIOZMxOXw2yegxfBx3IEUD9d1QMfhE_-JezshLucP9ZdGqKw3uGObzoq-shvpygAtkRyjANLa-ZRP0QneCz-8jqSrtdBG3d6Temuu8HwuLjkWstt670eAH5JC6N6VF09ax6_FvvfRPShVOycKueygsFqSveByHhmkjHawFE-i7qWQwwADAtmzdxtnyuaHgxWdSMYoV1u57mZgDErS5bBQa5nwIR0AhfC_3yL6ychYP8mOvVxS2hqh2CwwqvHC6OLMzCKRavIJgMwovYVKJHJsy1DmlRnCeteXeiPyLEVK_W5EdwiY4lq1rwt_7uAXH8Z8Iy_8ekeYjG4MVNP-a-RHW_OJB7-9xO1R7kqwpLzifhXF_bbbrE0bpg9vqBCwc0l5Y6civv6orD5qJbsQg7DWKwvxpEOe-t7hFiznY5yryYvkxdclAGyi6wIccIqBBkq0y4c-4l_hTNBIShOHXJz-D6Po_qvxNyc-onQC21uECB0eruvXUCyDsa-D-EkbaUqMTUhUgQcRiQZGAQQkzyLrhvgnec0oijvRhNPxaJvLQEbMTcFod9z-VwSbj9dFsbTCY2fLOzGQjanVQpG9OLFYEkgZhVtwsn9-OUueLpN0Pn1xiw31KbKJSYC_M4E34kfimMrjkL3RtEEfpOt_UjVr7JXq7NjsFX_2YCMfrbt7qBN3AgVpBIZufQ2aeQvNrpLxc7AthcKbnTfXgutniKKHD6l_PFueJnmd8hIL6dEYlHnnOWIbyFCJK2FWXp01w_T66icGiMuBKbn5nLnU3opA2nPRsI_N_GA-QH9MZ-UHBGo7BkjuA87ALofKkWDLTyJQGBLyTqAIFRsDCEv2U13NYPrh4DNdEjOMtPcivUDedKdHqMfa6TI70uev921bdoA76zwscNSV7_f7toRyp2StN67CUPVlpmGXI7sILcNw85PbR8MAG9npSK7-OYX-4bpcBXor8mbnb9Ju3VQgM3BYJ0-d9SHnOn4_jEt8hku5HCkHGA2NuLPXzhXmwLWKKtq1AGWU8_6KHC51kp-aza3APdrnhd6xfZ3RlTxxBzLCvOyCwEN3jiftqiaszz6EI0rmOqrj-f-3AV1FEmQNnpAoKT8JSwXpO71Rplyxvgdx3-_hAoSvudSOHSHfyjBKWiidQkaARixrLg-k-6omI6UVcbMDSYkAPISm_qMTmlN0Eb6DO738XXPBCl-SF-1Bbxs_SjnBw9YzF6cZfKrMtikUVfqy1hFOAj9ipChkN8UKiDnLc70Ka3GyIAW48fSZ2y8njZcazMZr1prPO8c9NsvL6poV9PAdqMfcRETHUzBfHyi_tS4gOINbMiYa895MC4G_mZXuA5o7zzZ2ADB0f_u9VkRElne2es1pbs6CTx30A90DpRu3IMaJIBxzoJcUQ8TPcWSaUqOruv-YxT3X5qTFSM2aRADTFomZh0md2jne38bkipMku5T8PI9LYiJ_pUijopUtGOar07POO_154yzNe8nyOXeU7VLzX4dnb6LPHLJQe9tYlYe0wsN6Xh-QqFtiOc2ppFPMmDo76GhWKN71ZRcQyhkJA3UqDJucRlPZKzSGJgTCKHNO3igAiZt9DYRsIgvqrhHxUOqqayhtsqOP-6I94TEFRcQ3dwqq7OViOlzAz_0GXVsPgjOE1mguFpSk79D33cPGwuHyIZNo-vZ4Fw8ckqzqX2y7KLbW1NjGhm_Ew5NSkInBPDhADIs3orvc7oSN2yL_Wi24Jji88FDFbrNYJhTEn5nLfdYAUZlPKnmZfVA3YH4knqJ5FMDudaG3XuNUY-rkmGzwJEq0tXPX5n9Xlc6SKNMy-eaSL3Lwz2SGvyx4XUH_QUoaxioP8bwpg9TBO7QE7W9x5skeayhVivXusYgXKgqkASXbLXX4a64OdelFqNWtzVpY9GJ0z6EX1TBsqzX9iommqNTGlkU-iY0nkn5UUb2jSl0rXUfSuMv7mTNiawYKk3VoExe-bPAoqLz7bi21AvCr7qAvwinL3PotzV2SsnaTopOTVc0F_xpYw8nX2tya_X_WTRKpBQxqVccX856HhLGcdOzwsRppMtxI876PNAaFJbWV0Jv4iGUMdXW4u-4wTarpPyMRcIeIn5IdZ1pCzg8qtVvd7oz8sVlSfHZJzuDTPNOMGqQCunXcV8F6K7zO7_DA2zPCCpTpUydGfiIBQVRTWiMSa3PEQSCA7VdUBM-7GCyO0zxxba8hGOIhvwAfKXFWdCTa-54ErX0r_eu7uc66f99_okGWY-MIX-9lKdYHO0UoxBCGWNnWe1kH1m7xFeVlC6CW9wxK0ylDgP35zu5ZzV5q-xTRC0aqdRLW7eUmC1odYB5UVKRwUncj_JwXDMga8ioJixGalzc71v7TnRXSlN5_48z7pK3p9AvahGsGVboYrUm9opB6WGlbPUEqMMxeYUnf-QfbSAbPizXrPZ5kfZGocPNLGPB4HxN7HNZuRsBSYUvKdiMr-U3mfgcOetBrtSOln-4ZyVyFRv86naJbSwJcFvldoFqrbS2loJeikbgxojwvygdQKS-HZ0rSe5ET7yExNFHHV6UvpsF_c7kH2UqfBXvLV0XO7mVlLRnxAZ664mntWATD6oA-0bw-WnVk1rzk8ObYGiluK2N9jY3Ee8GYmIor1yrxC-Gr-iNAFbufux58WV8wH4TRiIkPdMhbX9-azflZBARmHu1jyp7eeoLAXp90xnQHBbFvLmQpfEFiB3ZsYMFnk3EcauuPRYbRD-B1yUVlOyiOwUzihKlHRBjLNuoRlXZ9PSGQb3of_pXLqm1zhn6uH2Lg9YiPEOsbVT4QIuWXzomhUCSDahHmHtrgUXedKLOMteEQ2u50vxGp4OMEK3k_-TZpRObyjD44ZU0iVapN2JrYRfocvpmTCbSXUnpI_thb_Vw2NiCh80AX7ELOPLXrMraFoHTM_03vnLG_KQ7XHB5oqDc95QmO5moFUT26E9TyKmB-k3Th5ybPbBvh4H_9UKJEOTusc_pWERLkwWVCLEnxA1vtTt6v049RhnwpjeQlxOjbypkNS_Gr6jGgXqYqCp-5J_O777VQhxIPAI7JMoaXg-3vgeU1eFq0gotmz6IS3Wg1uLVpTQ1XAFQCQs3c_OIBzDkDPWmdXIjWMZ5zg-mWP19kkNKBXa8ZHMZTJfRlIvoK__6-bhnpcpS80Rh_pKZURcYYGxuxGZ5VNJB1uSpj-7gP_xMga7N-t4u_ialWyB_Rvm3cnZ3xdk780Nj41yKJCz4SF-0m1Rve_fkAp4QTp6lioxHedZ43ZU0t_Eq5hw0KWXJqFNEFCFHzZiuXLQCnOSlbWvcbZWcd1AbVV1dd3HzarOeY5vdywyS45gvTJZMio5GF8zKXcM52dZH2ero-D3JrVDtgzI8Ue6BDJ5qZBT_YoeD5Lcu_Krc9QNgAVXrYGpj0QGOQdznl9IxoRNNVCaQdHljGm1rUWAfXeIXNbAUUc8qtUAgpPUhzNKswDXqb9KisCuMiGe-xSvFqf7SkJJmoK7c-2YerxoL3yTS1wjLep2C8iiYzzP3hydeDcixizmZvt9qu710gM8CXgcv7oXqPzdrrAaX4X3nNT-p3XAvQsPq67SEMv5cb3ky6wdmle4DEG1A4yJkXzLcm47OwpsxLtU6Dy53R_hmTMICrVZlmNP8VelTDLQilsZxvlAm5LGKK1Wsheboxhp54XLiRPQo9y-4XqVxhop-Ap4ctjwUv354yGUE_RhWpWHpqa9KKjY20aeq8N2yXvOR81xbdkyQYyN8PWvrwIIWqSRmRMHGQcgUCM5DeQ8kp82FjuelqQoWpgkIt3nvYDmkcvH24ZcGBnV6lztXsH7WdhacnHVHfR6d_IQRfbuBmWdl-TQCHqwgjKbBWNs7tym1IW1yvvsNc1ep6kscSbUblLrARJnFF2tGAkvpqtouFU1vE3wtT959Rv4BUSMJ24ITcLIqC8VXYqwnRa_u72mWAV9OB2Q5n_emA7tdCvU9LrtwEArQGuxr5jsIBjMbs5nh_XLxHOL3QMImUknTVo3WOHo78N4YRNyPVdsIdVy6ce-rwpw3bmB4c7GtWvSQ1JMkIK3aX_cNjt8YF7b4lAk9mMrtswMPjZjUCiIfwBIiygrogrucCRW9r5uYOrdDOjhchvjvZlxDoz106TA_zniNmkpj4fE1qEG516uLHtnn_-_58bRo61Prk-EiPjEml3gASeDU27qRV2lU5cQVLnBsFk_a3STS7rjyO03uyax5_-6_8wkycPiPJOkWyiPtYE0RYR9d3YgAEcMTzD_95I9LJk36LHyYrF-PYtclN7owRb5yROV0oirWNrg423j5prntGDww_OT2j9_vbPSxEfZQ4F4kiH9nI0hSyWL2vas9hlCZpa0mQKAQyxmeyU1rs2Tzk1YuSfLKxk733TRJX373h9SYNb0XuJ5tX3ulvXHFOQLZsbfUMkYue4vhLn7CsgHYzfK5i8TcqW4WX_6fFmLh8GE6rQYML-MxJd7zXhd9Q5C7mtagVp1Sb8DQwDoYGAVrm041NWmjKnjsirlbzBAVdFPaCVEyiqXPNTBButD2It5JwphXGa0ErtqJ1fcWEfX2tULEjT7HXZGmWc4fOHTDGdSpGV-nU2ltxWHa4VQwSjxW-q8orAicUNoXEXEcOXe9vIiCREyvwIYcGindP-Y22rB1ZnP6m6N6AbrhJmLxo30tRLPp_2s6MiiwdT4dX6i4rnD2H0BBqvow1kAga8iMH93Nn7GxPP9A3t8EuWYC9OSXvZsVrZP4PIwi0PpcjczPMUhZ1ML773oyfXA6vS2C-egCJ5Roa7DIO5U8GOKoJ4Mjk0m6elMdLjf-xlofHb2ztRXgKPzZVm--iO7iHov-japwWouj9G-1ShkFNtqxZmgZYMegJ6iBe0T-O1Zv30hTvRsqg3hNo2qLKEdsa1E8Oyyg96Ngms3jchFvuvV9aZuH-a14e61-vuNWz9Qg1VHWzeRjcGu2IBvIlaH3qU2UAMVg-cds4X78Q288Di7ZKS8nYQPq25yMbGMcUWPRMoezEknjgCg8wWTCniNLIwGK1CgnTY6NixoUNRJdnQcSxH0smHHcj8_5IupGIwrcKh6uORBUHQopA0rkoRCpQ-exjzM5XzrapJyKvKx6E-4MglfoOpWu-hwsysJqO3w5lY72cIOwhR2vB4tTQ71D-5iqH1RmHsqO9eXIjCFzCKn60eJLLbgQdh06n_dNpmPoCiulVqWqGywErUJ5KUMHQlKU1lINarliwGAk0libpFtr635BY3Kggw9WNJkdVO6SYI9CVIweIChxyu6UE3e2TD80kxawfLLle5K9tPuzMjS7GsUfkNnsEoieZF1B4TVwUicsjHcC5UxoLu84WOvJviBCQ8_TkWwGQDLHS0YGZl78Rle-kuAI4-aBRzwE5w5jcPY40oyBaPdL101YiqyNwp3sdbUf9bjSJr8yc4pdFcZhTjXMMZfVpPqL7pNNhUG9Jwq4ZHB7NSs4f3In2jkTsryPAVNvtf9Ic_dL4ibxD4hmNSbdZHBT_KEJlJRXuWovj6pFrF-9UVtVzDPLNiWtNBd-Gg0WfUAp8Nl7Ok3qijuheMKl2JjTUip093c2bP7mEIQsDqy3aZr7kyhZo6rdkvNCikYcQQsABAVO_nDYq7s2ZXXmkkmnSmbvG0Q4o7--gfcBg8M8qtCy_bgPjv17CDuIc1gnQ4jJmY_rNVnm-pABlpB50.lT3p40nsdr7-tUyAyEnf9w'
+--data-urlencode 'state=AxpAg7T9omQzmlTFg44-1H5FhRUuZ4y9X3W6CazsobXzPrmoTA5e4w_L7z5VNf5umApZ1Rh7vHe9QB0Z-PoRpA' \
+--data-urlencode 'response=eyJhbGciOiJFQ0RILUVTK0EyNTZLVyIsImVuYyI6IkEyNTZHQ00iLCJraWQiOiJhNGE1MmNjNS0yYjZkLTRkODAtODQ5Mi1mMTVjNjliOGJiMzYiLCJlcGsiOnsieCI6IkdwX2VPZVNLZ2hyaEJ4Vnd2bE4zeHA2ZTVQa2Facng5bDJpX1VXM3N0emciLCJjcnYiOiJQLTI1NiIsImt0eSI6IkVDIiwieSI6IjNRQTlpS2ZkNGZSWXNJem42YzJwamMyR2NZRU9PaWVkUlF5NXRuSDE1alkifX0.TP6C3vFtl_MIt1sFoObTCjDs87n4HCRIUywUqXgB7lLCuOUIhrWaTg.UJ5Sq-VbnpuDNdeG.JlLiUDxUcrBeYv5doO8gXGyEcehgVthIwRaOJMOOk1xT4jjBnOHz-JHF5QE3EDAfFy1CeqfxAKbwVV5KEeh8WngmnwwLoU6tvkOB5IocZqkVccaww8RD0w2U957iXbnIOxh8Kbl_FWWvBpCv34sy8Ja6E6A5U7v9UkVHLNBzPgvAG-NHJEUbgC6kqWOc69nVXMulURTYVo_Y0L7Zh6xq9WnQ4_iNtQ_MKWlnpTZBKLLbU3iHbElLArMKEOYfbEdSiQo9MlW7bKpS5k27v-kJQnFai8g3bu-w4-bps-GzRnUabPBe1432SQRRs4piJCreZrTTTNdied75_EK2WBTf5wLN7guLgT3YYYkyZdWilV6-0jSGa-Mo-m7skkZVsZR9NUYXjYN_m19F9Bcz99NDiTXNdboemcHkdgGBGtQN1OQurRJEGKmeTTLoC0HYpA5AVKDiI89z3b1CXusBGxGLTGvGuV1nlEc9BEwjyPVpIrlP0yJS4EAaKc5rPhY4mqLeS2ps0WMEMDU2xiMBSU6KuKInc7zagT2CuO_cxQeiVZdHKv_RzcFbD2E5x_4rAY_-8Lsf5lk0uyZUBXUEDqBhLP8Wn90fbmlDLC02UT1MFlmSE6K7-hUnKzLq3QS-wsG8vvd2E-Q5dOSPYpFBY9lO2ncDj3mx6DDRXXTHqAWA7YwaY_63kqJq7kCnVsNGC2jXDaNFE3z9TmNQ5jP_uzG6fep0-21tIfddpkaI0BKBJHhEL7VW8ba-PFRl6aNwPHwqlJbCBmZY-ypP9_suxeRoWHNytBRjw2gsnJiXXcZ_LNVjNtVjIBxQFGAFXHtviHkEDA-eesc1yF8GPIRHayXi42K8mC1nGqNsJZX-hCcdi8vx8QCD5uVwEYnDH-UnGnBJa6mdTqv6Naz2-W3hgZoDGZR59W1C0WT0yxQTGZNdZqanlf-xCEFN4Esxutrf21gLhTIL-vQ8j6oAhyGtnhbnqJtbaAyH1mEMQvv4e57gDNChCjlNHC1FnHGtPCB02gmYtaZrmTsSqT0u4PVweBDiZJ3mpyu0qA2tbVZW_NlOQ_GNy8Z7hJbkMFbm3PlhIQm_kXjgWL2IRyKje5bcyptJ4aCNuGQQvMdOYDaA-6oxd_emwCmUIWV_jLOO-hyVXFqDnTJBef9gooXYm03dCHx9A5KPhglg5EiGRf8FZ_WGf1bRbC5G1zdSbx5L0uM4FZEz-gpyQbWGz5Mf83iVYsLC22UAgWdkJWliLbgD3qbmClpBxxepj3OML4jJtFc5jl3FwSLtMWZ2HKuNJjPtLh2fsxW2BE0-ZJtva6C7G5xLRps1B3fX6auCN0oc_Lc6GGBPqw3hRMLRjF5-MlLyzWmcG4sqyPA0-n-OLibalv0ZqLFxS_dBUyNJe66j3vbZal0lXmmp8pp-y1-JYew0c8XK7qZuVmBA0j-P340njM_j5iR55yGio7CQWT1s2rhxfVnIHlra8rF692cgTO3riSnK8GSCvBVwJZnKePumiF3VztjLT5sz7ozOAhcypmTTlCqLwZxPaCXWF2v0oXMNUbleeLC3NIMXb99qaElvbNKmKjgxHE_FJDViTbUSpV3sPlJw_8iCKlDEbCt1MV1jXNuUqPHetYBC0qCRrY25rNnM03TM0IS0RXqsDqGs3oyjwJBSktAXVwPWyozQxqyMFimx0sisPFa_RdzTeHhXbHsH_QvifR-oVP0VkEUnrx9SHV8oqD_Y7HOHSHtMPhWqQmBVfU24Yl62N_Fhjd3KOQg_IW06Qo9amIzCnIBWRMs-EnSfQ-RMlDx_wnDaD-V0JTAZCi5JUEcSqV533_yTo7PnsblhHg2FnXv5hu-IFbdB5cUrFj7JHMPtjIBJuj-g9Pvgsb6GtTotpn1HxdbwCoCeJvdbYkbwBUIWVw8QOf86_nzyIqjliht12ojy5ob1He4XZJV0ZBYiBNnHRFWkBEZCLG5t8YAVpBWKX_o_r6LNSihadvztIhbcYNk0ILUQPxh01KGNe2PVjMewkIjNu3PeshKTXpbl4I9z55fijiHW-WtuZQlQZ-v22q6bSs3nzbT2tnGzRjnVZhRWZfyS9Jxm8Az77yvsDhY99UhTythjWNfgVVHSQix04CLdMuTQ_bSRdKjvsFsO0G0GcGugFKNIcuYmYbVyCccJTZKohxApnNDTQW-5w40cHFdqjzMIVQKNuBysYTJZnATtthTOCHqdCMWzhOgt4v_F9-lj39Q20zoBxdztrzIoN35aySgdgFAN2OxAg5X3rdIaCX-vk_QLP9WTS8o91RexGbuhal2u6h0BkrlTlG0y2rB6DhDO-jmhDeb9qh-f_9lvAkhXaZwbt1U0o0nnwG6hGMFyiTP_y1gCqAKWuVxRSaaQ05IJA_tNEfnFSGgDlv4mSxQC_Ts7fHmC_ri_lTJ0TGtX0I7zJBhoGyx-81NuuevO9OosBO6iBeRhZXLnWfulN3I68Q4aJLNezEOJSDisZML6HlexbIaoZOb_umnH0hYnSDhoxV30JKom1kFDC5e_L7pX1ygwL_72BxkqMq1N4CNGeRaSB8jjuBEQ5dSc_6jCeaXT5WXP4KREFGYRLDXqQJ3Fpp7J7H3LprbKXYv5O3S2prpFfDR-rEUYczzLU7ZJWF9RH0ACSCtLMTfqRCsue7vBtCJKRcgqdM9cXyau5d0wVkea_xk1Uk7cXC56FW7o-ue8UjeX92PvdEcP_li8FqYhMsfFnYpcah0ilVT6m2KI5QWyz4ErZc_kYHUf3B0ztme9ah4Z36gEzwjCEqHnHcy_wlGDNcS29r7C5PAAjcNQGw-kQJ2jhBNgXj5NsLxZABKFTDH2rVwWZ-oMFwjWG8nlnRao4d5fVFOoHv0h3j7b-txL6WPSzg0NNvvZp0KqpHKe8JAZTxfmPY_vSqPafXLM-QXOqRbgcG8URuujk_5_ZXbwau2Gpko.yBN0creJ4k1sD9q6ZnPr7g'
 ```
 
 ## サンプルレスポンス

@@ -36,7 +36,7 @@ https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/wallet/request.jw
 | ---------------------------------------------------- | -------- | ---- | --------------------------------------------------------------------------------------------------------------------------- |
 | iss                                                  | string   | Yes  | クライアント ID を示す発行者識別子                                                                                          |
 | aud                                                  | string[] | Yes  | 想定される受信者（Audience）の配列                                                                                          |
-| response_type                                        | string   | Yes  | OAuth レスポンスタイプ（スペース区切りの文字列）                                                                            |
+| response_type                                        | string   | Yes  | `id_token` または `vp_token`                                                                                                |
 | response_mode                                        | string   | Yes  | レスポンスの返却方式。 `direct_post`、`direct_post.jwt`のどちらか                                                           |
 | client_id                                            | string   | Yes  | クライアントの識別子                                                                                                        |
 | scope                                                | string   | Yes  | 要求するスコープ（スペース区切りの文字列）                                                                                  |
