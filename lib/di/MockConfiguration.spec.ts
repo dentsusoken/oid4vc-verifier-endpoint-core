@@ -269,4 +269,12 @@ describe('MockConfiguration', () => {
       expect(result).toBe(configuration.verifierConfig());
     });
   });
+
+  describe('frontendCorsOrigin', () => {
+    it('returns frontend cors origin as default"', () => {
+      const result = configuration.frontendCorsOrigin();
+
+      expect(result).toBe('http://localhost:3000');
+    });
+  });
 });

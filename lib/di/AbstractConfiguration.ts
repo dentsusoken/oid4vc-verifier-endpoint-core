@@ -106,6 +106,13 @@ export abstract class AbstractConfiguration implements Configuration {
   abstract maxAge(): Duration;
 
   /**
+   * Abstract method to get the frontend cors origin
+   * @abstract
+   * @returns {string} Frontend cors origin
+   */
+  abstract frontendCorsOrigin(): string | string[];
+
+  /**
    * Function to get the byte length of the transaction ID
    * @type {() => number}
    */

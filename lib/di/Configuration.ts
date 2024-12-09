@@ -264,4 +264,8 @@ export interface Configuration {
    * post wallet response path for Wallet
    */
   walletResponsePath(): string;
+  /**
+   * frontend cors origin
+   */
+  frontendCorsOrigin(): string | string[];
 }
