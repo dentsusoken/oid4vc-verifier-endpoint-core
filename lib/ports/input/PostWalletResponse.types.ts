@@ -13,27 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Expose } from 'class-transformer';
+import { z } from 'zod';
 
-/**
- * Represents the accepted response from a wallet.
- * This class is used to encapsulate the redirect URI provided in the wallet's response.
- */
-export class WalletResponseAcceptedTO {
-  /**
-   * The URI to which the user should be redirected after the wallet operation.
-   * This property is serialized/deserialized as 'redirect_uri' in JSON.
-   */
-  @Expose({ name: 'redirect_uri' })
-  redirectUri?: string;
+const walletResponseAcceptedSchema = z.object({
+  redirectUri: z.string().optional()
+}).transform((data) => ({
+  redirect_uri: data.redirectUri
+}));
 
-  /**
-   * Creates a new instance of WalletResponseAcceptedTO.
-   * @param redirectUri - The URI to which the user should be redirected. Optional.
-   */
-  constructor();
-  constructor(redirectUri: string);
-  constructor(redirectUri?: string) {
-    this.redirectUri = redirectUri;
-  }
-}
+export type WalletResponseAcceptedTO = z.infer<typeof walletResponseAcceptedSchema>;
