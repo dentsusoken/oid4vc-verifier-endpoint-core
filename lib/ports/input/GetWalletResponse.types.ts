@@ -58,15 +58,22 @@ export class WalletResponseTO {
   toJSON(): WalletResponseJSON {
     return {
       id_token: this.idToken,
+      vp_token: this.vpToken,
       presentation_submission: this.presentationSubmission?.toJSON(),
+      error: this.error,
+      error_description: this.errorDescription,
     };
   }
 
   static fromJSON: FromJSON<WalletResponseJSON, WalletResponseTO> = (json) => {
     return new WalletResponseTO({
+      idToken: json.id_token,
+      vpToken: json.vp_token,
       presentationSubmission: PresentationSubmission.fromJSON(
         json.presentation_submission
       ),
+      error: json.error,
+      errorDescription: json.error_description,
     });
   };
 }
