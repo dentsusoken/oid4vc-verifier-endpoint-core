@@ -16,7 +16,7 @@
 import { z } from 'zod';
 import { FromJSON } from '../../common/json/FromJSON';
 
-const walletResponseAcceptedSchema = z.object({
+export const walletResponseAcceptedSchema = z.object({
   redirect_uri: z.string().optional()
 });
 
