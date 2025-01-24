@@ -14,11 +14,32 @@
  * limitations under the License.
  */
 import { z } from 'zod';
+import { FromJSON } from '../../common/json/FromJSON';
 
 const walletResponseAcceptedSchema = z.object({
-  redirectUri: z.string().optional()
-}).transform((data) => ({
-  redirect_uri: data.redirectUri
-}));
+  redirect_uri: z.string().optional()
+});
 
-export type WalletResponseAcceptedTO = z.infer<typeof walletResponseAcceptedSchema>;
+export type WalletResponseAcceptedJSON = z.infer<
+  typeof walletResponseAcceptedSchema
+>;
+
+export class WalletResponseAcceptedTO {
+  redirectUri?: string;
+
+  constructor(redirectUri?: string) {
+    this.redirectUri = redirectUri;
+  }
+
+  toJSON(): WalletResponseAcceptedJSON {
+    return {
+      redirect_uri: this.redirectUri
+    };
+  }
+
+  static fromJSON: FromJSON<WalletResponseAcceptedJSON, WalletResponseAcceptedTO> = (json) => {
+    return new WalletResponseAcceptedTO(
+      json.redirect_uri
+    );
+  }
+}
