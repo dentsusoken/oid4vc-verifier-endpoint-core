@@ -100,7 +100,7 @@ export class InitTransactionTO {
     this.redirectUriTemplate = redirectUriTemplate;
   }
 
-  toJSON?(): InitTransactionJSON {
+  toJSON(): InitTransactionJSON {
     return {
       type: this.type,
       id_token_type: this.idTokenType,
