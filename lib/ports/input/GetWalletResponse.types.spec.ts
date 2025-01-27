@@ -1,8 +1,7 @@
-import 'reflect-metadata';
 import { describe, expect, it } from 'vitest';
-import { plainToInstance, instanceToPlain } from 'class-transformer';
 import { PresentationSubmission, Id } from 'oid4vc-prex';
-import { WalletResponseTO } from './GetWalletResponse.types';
+import { walletResponseSchema, WalletResponseTO } from './GetWalletResponse.types';
+import { ZodError } from 'zod';
 
 describe('WalletResponseTO', () => {
   describe('plainToInstance', () => {
@@ -23,7 +22,7 @@ describe('WalletResponseTO', () => {
         },
       };
 
-      const instance = plainToInstance(WalletResponseTO, plainObject);
+      const instance = WalletResponseTO.fromJSON(plainObject);
 
       expect(instance).toBeInstanceOf(WalletResponseTO);
       expect(instance.idToken).toBe(plainObject.id_token);
@@ -38,16 +37,7 @@ describe('WalletResponseTO', () => {
     });
 
     it('should handle missing properties', () => {
-      const plainObject = {};
-
-      const instance = plainToInstance(WalletResponseTO, plainObject);
-
-      expect(instance).toBeInstanceOf(WalletResponseTO);
-      expect(instance.idToken).toBeUndefined();
-      expect(instance.vpToken).toBeUndefined();
-      expect(instance.presentationSubmission).toBeUndefined();
-      expect(instance.error).toBeUndefined();
-      expect(instance.errorDescription).toBeUndefined();
+      expect(() => WalletResponseTO.fromJSON({})).toThrowError();
     });
   });
 
@@ -65,11 +55,7 @@ describe('WalletResponseTO', () => {
         errorDescription: undefined,
       });
 
-      const plainObject = instanceToPlain(instance, {
-        // excludeExtraneousValues: true,
-        // exposeDefaultValues: true,
-        // exposeUnsetFields: false,
-      });
+      const plainObject = instance.toJSON();
 
       expect(plainObject.id_token).toBe(instance.idToken);
       expect(plainObject.vp_token).toBe(instance.vpToken);
@@ -85,7 +71,7 @@ describe('WalletResponseTO', () => {
     it('should handle undefined properties', () => {
       const instance = new WalletResponseTO({});
 
-      const plainObject = instanceToPlain(instance);
+      const plainObject = instance.toJSON();
 
       expect(plainObject.id_token).toBeUndefined();
       expect(plainObject.vp_token).toBeUndefined();
@@ -127,5 +113,44 @@ describe('WalletResponseTO', () => {
       expect(instance.error).toBeUndefined();
       expect(instance.errorDescription).toBeUndefined();
     });
+  });
+});
+
+describe('walletResponseSchema', () => {
+  it('should create shema with provided value', () => {
+    const args = {
+      id_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+      vp_token: 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9...',
+      presentation_submission: {
+        id: 'submission1',
+        definition_id: 'def1',
+        descriptor_map: [
+          {
+            id: 'desc1',
+            format: 'jwt_vp',
+            path: '$.vp_token',
+          },
+        ],
+      },
+      error: 'error_code',
+      error_description: 'Error description',
+    };
+    const schema = walletResponseSchema.parse({
+      id_token: args.id_token,
+      vp_token: args.vp_token,
+      presentation_submission: args.presentation_submission,
+      error: args.error,
+      error_description: args.error_description
+    });
+
+    expect(schema.id_token).toBe(args.id_token);
+    expect(schema.vp_token).toBe(args.vp_token);
+    expect(schema.presentation_submission).toEqual(args.presentation_submission);
+    expect(schema.error).toBe(args.error);
+    expect(schema.error_description).toBe(args.error_description);
+  });
+
+  it('should create shema with undefined provided value', () => {
+    expect(() => walletResponseSchema.parse(undefined)).toThrowError();
   });
 });
