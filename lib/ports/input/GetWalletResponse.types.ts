@@ -17,7 +17,7 @@ import { z } from 'zod';
 import { PresentationSubmission, presentationSubmissionSchema } from 'oid4vc-prex';
 import { FromJSON } from '../../common/json/FromJSON';
 
-export const walletResponseScheme = z
+export const walletResponseSchema = z
   .object({
     id_token: z.string().optional(),
     vp_token: z.string().optional(),
@@ -27,7 +27,7 @@ export const walletResponseScheme = z
   });
 
 export type WalletResponseJSON = z.infer<
-  typeof walletResponseScheme
+  typeof walletResponseSchema
 >;
 
 export class WalletResponseTO {
