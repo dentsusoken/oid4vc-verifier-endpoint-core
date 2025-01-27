@@ -54,7 +54,7 @@ export enum EmbedModeTO {
   ByReference = 'by_reference',
 }
 
-export const initTransactionScheme = z
+export const initTransactionSchema = z
   .object({
     type: z.enum([PresentationTypeTO.IdTokenRequest, PresentationTypeTO.VpTokenRequest, PresentationTypeTO.IdAndVpTokenRequest]).default(PresentationTypeTO.IdAndVpTokenRequest),
     id_token_type: z.enum([IdTokenTypeTO.SubjectSigned, IdTokenTypeTO.AttesterSigned]).optional(),
@@ -67,7 +67,7 @@ export const initTransactionScheme = z
   });
 
 export type InitTransactionJSON = z.infer<
-  typeof initTransactionScheme
+  typeof initTransactionSchema
 >;
 
 export class InitTransactionTO {
@@ -129,7 +129,7 @@ export class InitTransactionTO {
   };
 }
 
-export const jwtSecuredAuthorizationRequestScheme = z
+export const jwtSecuredAuthorizationRequestSchema = z
   .object({
     presentation_id: z.string().optional(),
     client_id: z.string().optional(),
@@ -138,7 +138,7 @@ export const jwtSecuredAuthorizationRequestScheme = z
   });
 
 export type JwtSecuredAuthorizationRequestJSON = z.infer<
-  typeof jwtSecuredAuthorizationRequestScheme
+  typeof jwtSecuredAuthorizationRequestSchema
 >;
 
 export class JwtSecuredAuthorizationRequestTO {
