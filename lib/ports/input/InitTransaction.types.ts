@@ -117,6 +117,7 @@ export class InitTransactionTO {
     return new InitTransactionTO(
       json.type,
       json.id_token_type,
+      json.presentation_definition &&
       PresentationDefinition.fromJSON(
         json.presentation_definition
       ),
