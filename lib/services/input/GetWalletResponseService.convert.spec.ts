@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { WalletResponse } from '../../domain';
 import { WalletResponseTO } from '../../ports/input';
