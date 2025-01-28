@@ -36,7 +36,14 @@ describe('WalletResponseTO', () => {
     });
 
     it('should handle missing properties', () => {
-      expect(() => WalletResponseTO.fromJSON({})).toThrowError();
+      const plainObject = {};
+      const instance = WalletResponseTO.fromJSON(plainObject);
+
+      expect(instance.idToken).toBeUndefined();
+      expect(instance.vpToken).toBeUndefined();
+      expect(instance.presentationSubmission).toBeUndefined();
+      expect(instance.error).toBeUndefined();
+      expect(instance.errorDescription).toBeUndefined();
     });
   });
 
