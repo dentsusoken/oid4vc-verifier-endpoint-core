@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { generateKeyPair, exportJWK, importJWK, CompactEncrypt } from 'jose';
 import { decryptJarmJwt } from './VerifyJarmJwtJose.decrypt';
