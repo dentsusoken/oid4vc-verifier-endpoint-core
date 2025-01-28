@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PresentationSubmission, Id } from 'oid4vc-prex';
 import { walletResponseSchema, WalletResponseTO } from './GetWalletResponse.types';
-import { ZodError } from 'zod';
 
 describe('WalletResponseTO', () => {
   describe('plainToInstance', () => {
