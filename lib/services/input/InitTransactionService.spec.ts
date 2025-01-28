@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { TransactionId } from '../../domain';
 import { Id, PresentationDefinition } from 'oid4vc-prex';
@@ -50,7 +49,7 @@ describe('createInitTransactionServiceInvoker', async () => {
       presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
-    };
+    } as InitTransactionTO;
 
     const result = await initTransaction(initTransactionTO);
 
@@ -86,7 +85,7 @@ describe('createInitTransactionServiceInvoker', async () => {
       presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
-    };
+    } as InitTransactionTO;
 
     const result = await initTransaction(initTransactionTO);
 
