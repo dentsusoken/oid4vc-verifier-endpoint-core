@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { JWTDecryptResult } from 'jose';
 import { PresentationSubmission } from 'oid4vc-prex';
