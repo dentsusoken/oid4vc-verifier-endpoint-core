@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 export * from './adapters/out/cfg';
 export * from './adapters/out/jose';
 export * from './adapters/out/persistence';
