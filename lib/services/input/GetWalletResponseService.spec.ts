@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import {
   TransactionId,
@@ -49,7 +48,7 @@ describe('createGetWalletResponseServiceInvoker', async () => {
       presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
-    };
+    } as InitTransactionTO;
 
     const initTransactionResult = await initTransaction(initTransactionTO);
 
@@ -163,9 +162,9 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const createParams: GetWalletResponseCreateParams = {
       loadPresentationById: (async () =>
-        ({
-          __type: 'Requested',
-        } as Presentation.Requested)) as LoadPresentationById,
+      ({
+        __type: 'Requested',
+      } as Presentation.Requested)) as LoadPresentationById,
       now: configuration.now(),
       maxAge: configuration.maxAge(),
     };
@@ -188,9 +187,9 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const createParams: GetWalletResponseCreateParams = {
       loadPresentationById: (async () =>
-        ({
-          __type: 'Submitted',
-        } as Presentation.Submitted)) as LoadPresentationById,
+      ({
+        __type: 'Submitted',
+      } as Presentation.Submitted)) as LoadPresentationById,
       now: configuration.now(),
       maxAge: configuration.maxAge(),
     };
@@ -216,14 +215,14 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const createParams: GetWalletResponseCreateParams = {
       loadPresentationById: (async () =>
-        ({
-          __type: 'Submitted',
-          initiatedAt: new Date(
-            configuration.now()().getTime() -
-              configuration.maxAge().toMillis() -
-              10000
-          ),
-        } as Presentation.Submitted)) as LoadPresentationById,
+      ({
+        __type: 'Submitted',
+        initiatedAt: new Date(
+          configuration.now()().getTime() -
+          configuration.maxAge().toMillis() -
+          10000
+        ),
+      } as Presentation.Submitted)) as LoadPresentationById,
       now: configuration.now(),
       maxAge: configuration.maxAge(),
     };
