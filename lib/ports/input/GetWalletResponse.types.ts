@@ -69,9 +69,10 @@ export class WalletResponseTO {
     return new WalletResponseTO({
       idToken: json.id_token,
       vpToken: json.vp_token,
-      presentationSubmission: PresentationSubmission.fromJSON(
-        json.presentation_submission
-      ),
+      presentationSubmission: json.presentation_submission &&
+        PresentationSubmission.fromJSON(
+          json.presentation_submission
+        ),
       error: json.error,
       errorDescription: json.error_description,
     });
