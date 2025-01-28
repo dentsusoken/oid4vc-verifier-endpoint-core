@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { createGenerateTransactionIdJoseInvoker } from './GenerateTransactionIdJose';
 import { TransactionId } from '../../../domain';
