@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { parseJarmOption } from './ParseJarmOptionJose';
 import { JarmOption } from '../../../domain';

@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import {
   DescriptorMap,
@@ -188,7 +187,7 @@ describe('WalletResponse', () => {
       ).toBe(json.vp_token);
       expect(
         walletResponse.__type === 'VpToken' &&
-          walletResponse.presentationSubmission
+        walletResponse.presentationSubmission
       ).toBeInstanceOf(PresentationSubmission);
     });
 
@@ -222,7 +221,7 @@ describe('WalletResponse', () => {
       ).toBe(json.vp_token);
       expect(
         walletResponse.__type === 'IdAndVpToken' &&
-          walletResponse.presentationSubmission
+        walletResponse.presentationSubmission
       ).toBeInstanceOf(PresentationSubmission);
     });
 
@@ -240,7 +239,7 @@ describe('WalletResponse', () => {
       ).toBe(json.value);
       expect(
         walletResponse.__type === 'WalletResponseError' &&
-          walletResponse.description
+        walletResponse.description
       ).toBe(json.description);
     });
   });

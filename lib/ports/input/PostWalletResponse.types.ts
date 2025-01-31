@@ -13,27 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Expose } from 'class-transformer';
+import { z } from 'zod';
+import { FromJSON } from '../../common/json/FromJSON';
 
-/**
- * Represents the accepted response from a wallet.
- * This class is used to encapsulate the redirect URI provided in the wallet's response.
- */
+export const walletResponseAcceptedSchema = z.object({
+  redirect_uri: z.string().optional()
+});
+
+export type WalletResponseAcceptedJSON = z.infer<
+  typeof walletResponseAcceptedSchema
+>;
+
 export class WalletResponseAcceptedTO {
-  /**
-   * The URI to which the user should be redirected after the wallet operation.
-   * This property is serialized/deserialized as 'redirect_uri' in JSON.
-   */
-  @Expose({ name: 'redirect_uri' })
   redirectUri?: string;
 
-  /**
-   * Creates a new instance of WalletResponseAcceptedTO.
-   * @param redirectUri - The URI to which the user should be redirected. Optional.
-   */
-  constructor();
-  constructor(redirectUri: string);
   constructor(redirectUri?: string) {
     this.redirectUri = redirectUri;
+  }
+
+  toJSON(): WalletResponseAcceptedJSON {
+    return {
+      redirect_uri: this.redirectUri
+    };
+  }
+
+  static fromJSON: FromJSON<WalletResponseAcceptedJSON, WalletResponseAcceptedTO> = (json) => {
+    return new WalletResponseAcceptedTO(
+      json.redirect_uri
+    );
   }
 }

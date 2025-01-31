@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { PresentationDefinition } from 'oid4vc-prex';
 import { Result } from 'oid4vc-core/utils';
