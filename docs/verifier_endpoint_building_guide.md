@@ -67,10 +67,10 @@ sh ./shell/deploy_verifier_endpoint.sh
 
 `Variables and Secrets`の`Add`をクリックしてシークレットを追加する。
 
-| Type     | Variable name             | Value                                                                                 |
-| -------- | ------------------------- | ------------------------------------------------------------------------------------- |
-| `Secret` | `PUBLIC_URL`              | Verifier Endpoint のデプロイ先の URL（例：https://verifier-endpoint.example.com）     |
-| `Secret` | `JAR_SIGNING_PRIVATE_JWK` | X509 の秘密鍵（JWK 形式）                                                             |
-| `Secret` | `CLIENT_ID`               | `JAR_SIGNING_PRIVATE_JWK`作成時に設定したクライアント ID                              |
-| `Secret` | `CLIENT_ID_SCHEME`        | `x509_san_dns`                                                                        |
-| `Secret` | `CORS_ORIGIN`             | Verifier Frontend のデプロイ先のオリジン（例：https://verifier-frontend.example.com） |
+| Type     | Variable name             | Value                                                                                                          |
+| -------- | ------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `Secret` | `PUBLIC_URL`              | Verifier Endpoint のデプロイ先の URL（例：https://verifier-endpoint.example.com）                              |
+| `Secret` | `JAR_SIGNING_PRIVATE_JWK` | X509 の秘密鍵（JWK 形式）作成手順は[こちら](./jwk_generate/how_to_generate_JWK_with_x509_certificate.md)を参照 |
+| `Secret` | `CLIENT_ID`               | `JAR_SIGNING_PRIVATE_JWK`作成時に設定したクライアント ID                                                       |
+| `Secret` | `CLIENT_ID_SCHEME`        | `x509_san_dns`                                                                                                 |
+| `Secret` | `CORS_ORIGIN`             | Verifier Frontend のデプロイ先のオリジン（例：https://verifier-frontend.example.com）                          |
