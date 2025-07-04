@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { TransactionId } from '../../domain';
 import { Id, PresentationDefinition } from 'oid4vc-prex';
@@ -50,11 +49,11 @@ describe('createInitTransactionServiceInvoker', async () => {
       presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
-    };
+    } as InitTransactionTO;
 
     const result = await initTransaction(initTransactionTO);
 
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const requestTO = result.getOrThrow();
     //console.log(requestTO);
     expect(requestTO).toBeInstanceOf(JwtSecuredAuthorizationRequestTO);
@@ -86,11 +85,11 @@ describe('createInitTransactionServiceInvoker', async () => {
       presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
-    };
+    } as InitTransactionTO;
 
     const result = await initTransaction(initTransactionTO);
 
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const requestTO = result.getOrThrow();
     //console.log(requestTO);
     expect(requestTO).toBeInstanceOf(JwtSecuredAuthorizationRequestTO);

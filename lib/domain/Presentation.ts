@@ -36,7 +36,7 @@ import { WalletResponse, walletResponseSchema } from './WalletResponse';
 import { ResponseCode, responseCodeSchema } from './ResponseCode';
 import { iso8601Schema } from './iso8601Schema';
 import { FromJSON } from '../common/json/FromJSON';
-import { Result, runCatching } from '../kotlin';
+import { Result, runCatching } from 'oid4vc-core/utils';
 
 /**
  * Represents a presentation.

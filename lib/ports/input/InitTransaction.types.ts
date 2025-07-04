@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'reflect-metadata';
-import { PresentationDefinition } from 'oid4vc-prex';
-import {
-  Expose,
-  instanceToPlain,
-  plainToInstance,
-  Transform,
-  Type,
-} from 'class-transformer';
+import { PresentationDefinition, presentationDefinitionSchema } from 'oid4vc-prex';
+import { z } from 'zod';
+import { FromJSON } from '../../common/json/FromJSON';
 
 /**
  * Enumeration of presentation types for the transaction.
@@ -60,89 +54,32 @@ export enum EmbedModeTO {
   ByReference = 'by_reference',
 }
 
-/**
- * Represents the initialization transaction transfer object.
- */
+export const initTransactionSchema = z
+  .object({
+    type: z.enum([PresentationTypeTO.IdTokenRequest, PresentationTypeTO.VpTokenRequest, PresentationTypeTO.IdAndVpTokenRequest]).default(PresentationTypeTO.IdAndVpTokenRequest),
+    id_token_type: z.enum([IdTokenTypeTO.SubjectSigned, IdTokenTypeTO.AttesterSigned]).optional(),
+    presentation_definition: presentationDefinitionSchema.optional(),
+    nonce: z.string().optional(),
+    response_mode: z.enum([ResponseModeTO.DirectPost, ResponseModeTO.DirectPostJwt]).optional(),
+    jar_mode: z.enum([EmbedModeTO.ByValue, EmbedModeTO.ByReference]).optional(),
+    presentation_definition_mode: z.enum([EmbedModeTO.ByValue, EmbedModeTO.ByReference]).optional(),
+    wallet_response_redirect_uri_template: z.string().optional()
+  });
+
+export type InitTransactionJSON = z.infer<
+  typeof initTransactionSchema
+>;
+
 export class InitTransactionTO {
-  /**
-   * The presentation type.
-   * @type {PresentationTypeTO}
-   * @default PresentationTypeTO.IdAndVpTokenRequest
-   */
-  @Expose({ name: 'type' })
   type: PresentationTypeTO = PresentationTypeTO.IdAndVpTokenRequest;
-
-  /**
-   * The ID token type.
-   * @type {IdTokenTypeTO}
-   * @optional
-   */
-  @Expose({ name: 'id_token_type' })
   idTokenType?: IdTokenTypeTO;
-
-  /**
-   * The presentation definition.
-   * @type {PresentationDefinition}
-   * @optional
-   */
-  @Expose({ name: 'presentation_definition' })
-  @Type(() => PresentationDefinition)
-  @Transform(({ value }) => value && PresentationDefinition.fromJSON(value), {
-    toClassOnly: true,
-  })
   presentationDefinition?: PresentationDefinition;
-
-  /**
-   * The nonce value.
-   * @type {string}
-   * @optional
-   */
-  @Expose({ name: 'nonce' })
   nonce?: string;
-
-  /**
-   * The response mode.
-   * @type {ResponseModeTO}
-   * @optional
-   */
-  @Expose({ name: 'response_mode' })
   responseMode?: ResponseModeTO;
-
-  /**
-   * The JAR (JWT Authz Request) embed mode.
-   * @type {EmbedModeTO}
-   * @optional
-   */
-  @Expose({ name: 'jar_mode' })
   jarMode?: EmbedModeTO;
-
-  /**
-   * The presentation definition embed mode.
-   * @type {EmbedModeTO}
-   * @optional
-   */
-  @Expose({ name: 'presentation_definition_mode' })
   presentationDefinitionMode?: EmbedModeTO;
-
-  /**
-   * The redirect URI template.
-   * @type {string}
-   * @optional
-   */
-  @Expose({ name: 'wallet_response_redirect_uri_template' })
   redirectUriTemplate?: string;
 
-  /**
-   * Creates an instance of InitTransactionTO.
-   * @param {PresentationTypeTO} [type=PresentationTypeTO.IdAndVpTokenRequest] The presentation type.
-   * @param {IdTokenTypeTO} [idTokenType] The ID token type.
-   * @param {PresentationDefinition} [presentationDefinition] The presentation definition.
-   * @param {string} [nonce] The nonce value.
-   * @param {ResponseModeTO} [responseMode] The response mode.
-   * @param {EmbedModeTO} [jarMode] The JAR (JWT Authz Request) embed mode.
-   * @param {EmbedModeTO} [presentationDefinitionMode] The presentation definition embed mode.
-   * @param {string} [redirectUriTemplate] The redirect URI template.
-   */
   constructor(
     type: PresentationTypeTO = PresentationTypeTO.IdAndVpTokenRequest,
     idTokenType?: IdTokenTypeTO,
@@ -163,47 +100,54 @@ export class InitTransactionTO {
     this.redirectUriTemplate = redirectUriTemplate;
   }
 
-  static deserialize(json: unknown): InitTransactionTO {
-    return plainToInstance(this, json);
+  toJSON(): InitTransactionJSON {
+    return {
+      type: this.type,
+      id_token_type: this.idTokenType,
+      presentation_definition: this.presentationDefinition?.toJSON(),
+      nonce: this.nonce,
+      response_mode: this.responseMode,
+      jar_mode: this.jarMode,
+      presentation_definition_mode: this.presentationDefinitionMode,
+      wallet_response_redirect_uri_template: this.redirectUriTemplate
+    };
   }
+
+  static fromJSON: FromJSON<InitTransactionJSON, InitTransactionTO> = (json) => {
+    return new InitTransactionTO(
+      json.type,
+      json.id_token_type,
+      json.presentation_definition &&
+      PresentationDefinition.fromJSON(
+        json.presentation_definition
+      ),
+      json.nonce,
+      json.response_mode,
+      json.jar_mode,
+      json.presentation_definition_mode,
+      json.wallet_response_redirect_uri_template
+    );
+  };
 }
 
-/**
- * Represents a JWT secured authorization request transfer object.
- */
+export const jwtSecuredAuthorizationRequestSchema = z
+  .object({
+    presentation_id: z.string().optional(),
+    client_id: z.string().optional(),
+    request: z.string().optional(),
+    request_uri: z.string().optional()
+  });
+
+export type JwtSecuredAuthorizationRequestJSON = z.infer<
+  typeof jwtSecuredAuthorizationRequestSchema
+>;
+
 export class JwtSecuredAuthorizationRequestTO {
-  /**
-   * The transaction ID.
-   */
-  @Expose({ name: 'presentation_id' })
   transactionId?: string;
-
-  /**
-   * The client ID.
-   */
-  @Expose({ name: 'client_id' })
   clientId?: string;
-
-  /**
-   * The request.
-   */
-  @Expose()
   request?: string;
-
-  /**
-   * The request URI.
-   * @type {string}
-   */
-  @Expose({ name: 'request_uri' })
   requestUri?: string;
 
-  /**
-   * Creates an instance of JwtSecuredAuthorizationRequestTO.
-   * @param {string} transactionId - The transaction ID.
-   * @param {string} clientId - The client ID.
-   * @param {string} [request] - The request.
-   * @param {string} requestUri - The request URI.
-   */
   constructor();
   constructor(
     transactionId: string,
@@ -223,7 +167,21 @@ export class JwtSecuredAuthorizationRequestTO {
     this.requestUri = requestUri;
   }
 
-  serialize() {
-    return instanceToPlain(this);
+  toJSON(): JwtSecuredAuthorizationRequestJSON {
+    return {
+      presentation_id: this.transactionId,
+      client_id: this.clientId,
+      request: this.request,
+      request_uri: this.requestUri
+    };
+  }
+
+  static fromJSON: FromJSON<JwtSecuredAuthorizationRequestJSON, JwtSecuredAuthorizationRequestTO> = (json) => {
+    return new JwtSecuredAuthorizationRequestTO(
+      json.presentation_id || "",
+      json.client_id || "",
+      json.request,
+      json.request_uri
+    );
   }
 }

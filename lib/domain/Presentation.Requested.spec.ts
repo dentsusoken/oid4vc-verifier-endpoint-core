@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import {
   TransactionId,
@@ -69,7 +68,7 @@ describe('Requested', () => {
     const retrievedAt = new Date('2023-06-08T10:30:00Z');
     const result = requested.retrieveRequestObject(retrievedAt);
 
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const requestObjectRetrieved = result.getOrThrow();
     expect(requestObjectRetrieved.constructor).toBe(
       Presentation.RequestObjectRetrieved

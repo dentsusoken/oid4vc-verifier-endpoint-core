@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { MockConfiguration } from './MockConfiguration';
 import { ClientIdSchemeName } from './Configuration';
@@ -267,6 +266,14 @@ describe('MockConfiguration', () => {
       const result = configuration.verifierConfig();
 
       expect(result).toBe(configuration.verifierConfig());
+    });
+  });
+
+  describe('frontendCorsOrigin', () => {
+    it('returns frontend cors origin as default"', () => {
+      const result = configuration.frontendCorsOrigin();
+
+      expect(result).toBe('http://localhost:3000');
     });
   });
 });

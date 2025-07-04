@@ -1,7 +1,6 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { RequestId, Presentation } from '../../domain';
-import { Result } from '../../kotlin';
+import { Result } from 'oid4vc-core/utils';
 import { Id, PresentationDefinition } from 'oid4vc-prex';
 import {
   EmbedModeTO,
@@ -40,11 +39,11 @@ describe('createGetRequestObjectServiceInvoker', async () => {
       presentationDefinition: new PresentationDefinition(new Id('id')),
       presentationDefinitionMode: EmbedModeTO.ByValue,
       redirectUriTemplate: 'https://example.com/redirect/{RESPONSE_CODE}',
-    };
+    } as InitTransactionTO;
 
     const initTransactionResult = await initTransaction(initTransactionTO);
 
-    expect(initTransactionResult.isSuccess).toBe(true);
+    expect(initTransactionResult.isSuccess()).toBe(true);
     const requestUri = initTransactionResult.getOrThrow().requestUri!;
     //console.log(requestUri);
     const index = requestUri.lastIndexOf('/');
@@ -56,7 +55,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     expect(getRequestObjectResponse.__type === 'Found').toBe(true);
     expect(
       getRequestObjectResponse.__type === 'Found' &&
-        getRequestObjectResponse.value.startsWith('eyJ')
+      getRequestObjectResponse.value.startsWith('eyJ')
     ).toBe(true);
 
     const presentation = await loadPresentationByRequestId(requestId);
@@ -90,9 +89,9 @@ describe('createGetRequestObjectServiceInvoker', async () => {
 
     const createParams: GetRequestObjectServiceCreateParams = {
       loadPresentationByRequestId: (async () =>
-        ({
-          __type: 'Submitted',
-        } as Presentation.Submitted)) as LoadPresentationByRequestId,
+      ({
+        __type: 'Submitted',
+      } as Presentation.Submitted)) as LoadPresentationByRequestId,
       storePresentation: (async () => undefined) as StorePresentation,
       signRequestObject: (async () => Result.success('')) as SignRequestObject,
       now: () => new Date(),
@@ -116,9 +115,9 @@ describe('createGetRequestObjectServiceInvoker', async () => {
 
     const createParams: GetRequestObjectServiceCreateParams = {
       loadPresentationByRequestId: (async () =>
-        ({
-          __type: 'Submitted',
-        } as Presentation.Submitted)) as LoadPresentationByRequestId,
+      ({
+        __type: 'Submitted',
+      } as Presentation.Submitted)) as LoadPresentationByRequestId,
       storePresentation: (async () => undefined) as StorePresentation,
       signRequestObject: (async () => Result.success('')) as SignRequestObject,
       now: () => new Date(),
@@ -142,9 +141,9 @@ describe('createGetRequestObjectServiceInvoker', async () => {
 
     const createParams: GetRequestObjectServiceCreateParams = {
       loadPresentationByRequestId: (async () =>
-        ({
-          __type: 'Requested',
-        } as Presentation.Requested)) as LoadPresentationByRequestId,
+      ({
+        __type: 'Requested',
+      } as Presentation.Requested)) as LoadPresentationByRequestId,
       storePresentation: (async () => undefined) as StorePresentation,
       signRequestObject: (async () =>
         Result.failure(new Error('failure'))) as SignRequestObject,

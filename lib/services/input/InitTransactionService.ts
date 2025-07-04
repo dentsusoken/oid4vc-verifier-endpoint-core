@@ -30,7 +30,7 @@ import {
   InitTransactionTO,
   JwtSecuredAuthorizationRequestTO,
 } from '../../ports/input/InitTransaction.types';
-import { Result, runAsyncCatching } from '../../kotlin';
+import { Result, runAsyncCatching } from 'oid4vc-core/utils';
 import {
   toEmbedOption,
   toGetWalletResponseMethod,

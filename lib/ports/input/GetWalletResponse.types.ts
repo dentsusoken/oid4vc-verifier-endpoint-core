@@ -13,64 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Expose, Type, Transform, instanceToPlain } from 'class-transformer';
-import { PresentationSubmission } from 'oid4vc-prex';
+import { z } from 'zod';
+import { PresentationSubmission, presentationSubmissionSchema } from 'oid4vc-prex';
+import { FromJSON } from '../../common/json/FromJSON';
 
-/**
- * Represents a Wallet Response Transfer Object.
- * This class encapsulates the response data from a wallet, including tokens, presentation submission, and error information.
- */
+export const walletResponseSchema = z
+  .object({
+    id_token: z.string().optional(),
+    vp_token: z.string().optional(),
+    presentation_submission: presentationSubmissionSchema.optional(),
+    error: z.string().optional(),
+    error_description: z.string().optional()
+  });
+
+export type WalletResponseJSON = z.infer<
+  typeof walletResponseSchema
+>;
+
 export class WalletResponseTO {
-  /**
-   * The ID token returned by the wallet.
-   * @type {string|undefined}
-   */
-  @Expose({ name: 'id_token' })
   idToken?: string;
-
-  /**
-   * The Verifiable Presentation token returned by the wallet.
-   * @type {string|undefined}
-   */
-  @Expose({ name: 'vp_token' })
   vpToken?: string;
-
-  /**
-   * The Presentation Submission object associated with the response.
-   * @type {PresentationSubmission|undefined}
-   */
-  @Expose({ name: 'presentation_submission' })
-  @Type(() => PresentationSubmission)
-  @Transform(({ value }) => value && PresentationSubmission.fromJSON(value), {
-    toClassOnly: true,
-  })
-  @Transform(({ value }) => value && value.toJSON(), { toPlainOnly: true })
   presentationSubmission?: PresentationSubmission;
-
-  /**
-   * Error code, if an error occurred during the wallet operation.
-   * @type {string|undefined}
-   */
-  @Expose({ name: 'error' })
   error?: string;
-
-  /**
-   * Detailed description of the error, if an error occurred.
-   * @type {string|undefined}
-   */
-  @Expose({ name: 'error_description' })
   errorDescription?: string;
 
-  /**
-   * Creates an instance of WalletResponseTO.
-   * @constructor
-   * @param {Object} [args] - The initialization arguments.
-   * @param {string} [args.idToken] - The ID token.
-   * @param {string} [args.vpToken] - The Verifiable Presentation token.
-   * @param {PresentationSubmission} [args.presentationSubmission] - The Presentation Submission object.
-   * @param {string} [args.error] - The error code.
-   * @param {string} [args.errorDescription] - The error description.
-   */
   constructor(args?: {
     idToken?: string;
     vpToken?: string;
@@ -89,7 +55,26 @@ export class WalletResponseTO {
     this.errorDescription = args.errorDescription;
   }
 
-  serialize(): Record<string, unknown> {
-    return instanceToPlain(this);
+  toJSON(): WalletResponseJSON {
+    return {
+      id_token: this.idToken,
+      vp_token: this.vpToken,
+      presentation_submission: this.presentationSubmission?.toJSON(),
+      error: this.error,
+      error_description: this.errorDescription,
+    };
   }
+
+  static fromJSON: FromJSON<WalletResponseJSON, WalletResponseTO> = (json) => {
+    return new WalletResponseTO({
+      idToken: json.id_token,
+      vpToken: json.vp_token,
+      presentationSubmission: json.presentation_submission &&
+        PresentationSubmission.fromJSON(
+          json.presentation_submission
+        ),
+      error: json.error,
+      errorDescription: json.error_description,
+    });
+  };
 }

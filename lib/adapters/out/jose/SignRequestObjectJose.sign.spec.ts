@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { sign } from './SignRequestObjectJose.sign';
 import { SigningConfig } from '../../../domain';
@@ -48,7 +47,7 @@ describe('sign', () => {
     const result = await sign(signingConfig, requestObject, clientMetaDataTO);
 
     // Verify the result
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const jwt = result.getOrThrow();
     expect(jwt).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
     const header = decodeProtectedHeader(jwt);
@@ -96,7 +95,7 @@ describe('sign', () => {
     const result = await sign(signingConfig, requestObject, clientMetaDataTO);
 
     // Verify the result
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const jwt = result.getOrThrow();
     expect(jwt).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
     const header = decodeProtectedHeader(jwt);
@@ -144,7 +143,7 @@ describe('sign', () => {
     const result = await sign(signingConfig, requestObject, clientMetaDataTO);
 
     // Verify the result
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const jwt = result.getOrThrow();
     expect(jwt).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
     const header = decodeProtectedHeader(jwt);

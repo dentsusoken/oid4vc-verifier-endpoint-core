@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Result } from '../../../kotlin';
+import { Result } from 'oid4vc-core/utils';
 import { Jwt } from '../../../domain';
 import { SignRequestObject } from '../../../ports/out/jose';
 import { requestObjectFromDomain } from './RequestObject';

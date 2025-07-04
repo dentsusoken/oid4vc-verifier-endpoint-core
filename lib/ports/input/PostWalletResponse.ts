@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Result } from '../../kotlin';
+import { Result } from 'oid4vc-core/utils';
 import { AuthorizationResponse } from '../../domain';
 import { WalletResponseAcceptedTO } from './PostWalletResponse.types';
 

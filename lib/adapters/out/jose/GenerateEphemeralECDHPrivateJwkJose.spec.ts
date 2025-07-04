@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { createGenerateEphemeralECDHPrivateJwkJoseInvoker } from './GenerateEphemeralECDHPrivateJwkJose';
 import { JWK } from 'jose';
@@ -10,7 +9,7 @@ describe('GenerateEphemeralEncryptionKeyPairJose', () => {
 
     const result = await generateEphemeralECDHPrivateJwk();
 
-    expect(result.isSuccess).toBeTruthy;
+    expect(result.isSuccess()).toBeTruthy;
     const privateJwk = result.getOrThrow();
 
     const parsedJWK = JSON.parse(privateJwk.value) as JWK;
@@ -32,7 +31,7 @@ describe('GenerateEphemeralEncryptionKeyPairJose', () => {
     const result1 = await generateEphemeralECDHPrivateJwk();
     const result2 = await generateEphemeralECDHPrivateJwk();
 
-    expect(result1.isSuccess && result2.isSuccess).toBeTruthy;
+    expect(result1.isSuccess() && result2.isSuccess()).toBeTruthy;
 
     const jwk1 = JSON.parse(result1.getOrThrow().value) as JWK;
     const jwk2 = JSON.parse(result2.getOrThrow().value) as JWK;

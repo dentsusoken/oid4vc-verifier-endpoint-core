@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { UrlBuilder, UrlBuilderJSON } from './UrlBuilder';
 import { RequestId } from '.';

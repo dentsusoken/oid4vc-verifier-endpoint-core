@@ -144,4 +144,10 @@ export class MockConfiguration extends AbstractConfiguration {
    */
   maxAge = (): Duration =>
     this.customizableConfig.maxAge || DurationLuxon.Factory.ofMinutes(5);
+
+  /**
+   * Function to get the frontend cors origin
+   * @type {() => string | string[]}
+   */
+  frontendCorsOrigin = (): string | string[] => 'http://localhost:3000';
 }

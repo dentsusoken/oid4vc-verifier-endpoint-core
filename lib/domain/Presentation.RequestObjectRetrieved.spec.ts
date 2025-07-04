@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import {
   TransactionId,
@@ -100,7 +99,7 @@ describe('RequestObjectRetrieved', () => {
       responseCode
     );
 
-    expect(result.isSuccess).toBe(true);
+    expect(result.isSuccess()).toBe(true);
     const submitted = result.getOrThrow();
     expect(submitted.constructor).toBe(Presentation.Submitted);
     expect(submitted.id).toBe(id);
