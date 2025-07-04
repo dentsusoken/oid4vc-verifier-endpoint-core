@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { JarmOption } from './JarmOption';
+import { JarmOption } from '../JarmOption';
 
 describe('JarmOption', () => {
   describe('Signed', () => {

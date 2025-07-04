@@ -10,7 +10,7 @@ import {
   ResponseModeOption,
   Presentation,
   PresentationType,
-} from '.';
+} from '..';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('Requested', () => {

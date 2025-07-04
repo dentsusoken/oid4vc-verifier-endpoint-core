@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   EphemeralECDHPrivateJwk,
   ephemeralECDHPrivateJwkSchema,
-} from './EphemeralECDHPrivateJwk';
+} from '../EphemeralECDHPrivateJwk';
 import { ZodError } from 'zod';
 
 describe('EphemeralECDHPrivateJwk', () => {

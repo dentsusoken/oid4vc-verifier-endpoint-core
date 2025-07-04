@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Nonce, nonceSchema } from './Nonce';
+import { Nonce, nonceSchema } from '../Nonce';
 import { ZodError } from 'zod';
 
 describe('Nonce', () => {

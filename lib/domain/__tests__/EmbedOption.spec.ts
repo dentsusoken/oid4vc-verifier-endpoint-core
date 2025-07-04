@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { UrlBuilder } from './UrlBuilder';
-import { EmbedOption, EmbedOptionJSON } from './EmbedOption';
+import { UrlBuilder } from '../UrlBuilder';
+import { EmbedOption, EmbedOptionJSON } from '../EmbedOption';
 
 describe('EmbedOption', () => {
   describe('ByValue', () => {

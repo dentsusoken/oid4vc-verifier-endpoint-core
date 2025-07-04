@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { UrlBuilder, UrlBuilderJSON } from './UrlBuilder';
-import { RequestId } from '.';
+import { UrlBuilder, UrlBuilderJSON } from '../UrlBuilder';
+import { RequestId } from '..';
 
 describe('UrlBuilder', () => {
   describe('WithRequestId', () => {

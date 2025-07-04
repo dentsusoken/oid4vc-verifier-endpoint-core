@@ -11,7 +11,7 @@ import {
   EmbedOption,
   GetWalletResponseMethod,
   ResponseCode,
-} from '.';
+} from '..';
 
 describe('Presentation.fromJSON', () => {
   it('should create a Requested instance from JSON', () => {

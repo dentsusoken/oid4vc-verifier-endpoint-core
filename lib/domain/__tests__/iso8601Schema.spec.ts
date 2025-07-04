@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { iso8601Schema } from './iso8601Schema';
+import { iso8601Schema } from '../iso8601Schema';
 import { ZodError } from 'zod';
 
 describe('iso8601Schema', () => {

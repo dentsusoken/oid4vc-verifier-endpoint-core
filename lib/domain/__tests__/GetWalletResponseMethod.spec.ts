@@ -3,7 +3,7 @@ import {
   GetWalletResponseMethod,
   getWalletResponseMethodSchema,
   GetWalletResponseMethodJSON,
-} from './GetWalletResponseMethod';
+} from '../GetWalletResponseMethod';
 import { ZodError } from 'zod';
 
 describe('GetWalletResponseMethod', () => {

@@ -5,7 +5,7 @@ import {
   JsonPath,
   PresentationSubmission,
 } from '@vecrea/oid4vc-prex';
-import { WalletResponse, WalletResponseJSON } from '.';
+import { WalletResponse, WalletResponseJSON } from '..';
 
 describe('WalletResponse', () => {
   describe('IdToken', () => {

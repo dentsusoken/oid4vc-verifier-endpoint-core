@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { RequestId, requestIdScheme } from './RequestId';
+import { RequestId, requestIdScheme } from '../RequestId';
 import { ZodError } from 'zod';
 
 describe('RequestId', () => {

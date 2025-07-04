@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { IdTokenType, idTokenTypeSchema } from './IdTokenType';
+import { IdTokenType, idTokenTypeSchema } from '../IdTokenType';
 import { ZodError } from 'zod';
 
 describe('IdTokenType', () => {

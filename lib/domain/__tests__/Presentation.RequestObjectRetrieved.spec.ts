@@ -11,7 +11,7 @@ import {
   PresentationType,
   ResponseCode,
   WalletResponse,
-} from '.';
+} from '..';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('RequestObjectRetrieved', () => {

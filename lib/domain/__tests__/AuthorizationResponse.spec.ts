@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   AuthorizationResponse,
   AuthorizationResponseData,
-} from './AuthorizationResponse';
+} from '../AuthorizationResponse';
 import { PresentationSubmission } from '@vecrea/oid4vc-prex';
 
 describe('AuthorizationResponse', () => {

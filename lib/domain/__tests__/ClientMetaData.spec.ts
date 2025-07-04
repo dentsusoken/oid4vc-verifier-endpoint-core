@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { ClientMetaData } from './ClientMetaData';
-import { EmbedOption } from './EmbedOption';
-import { JarmOption } from './JarmOption';
+import { ClientMetaData } from '../ClientMetaData';
+import { EmbedOption } from '../EmbedOption';
+import { JarmOption } from '../JarmOption';
 
 describe('ClientMetaData', () => {
   it('should create an instance of ClientMetaData with valid parameters', () => {

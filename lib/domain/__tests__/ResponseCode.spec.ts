@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ResponseCode, responseCodeSchema } from './ResponseCode';
+import { ResponseCode, responseCodeSchema } from '../ResponseCode';
 import { ZodError } from 'zod';
 
 describe('ResponseCode', () => {

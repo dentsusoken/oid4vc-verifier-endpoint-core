@@ -8,7 +8,7 @@ import {
   Presentation,
   WalletResponse,
   IdTokenType,
-} from '.';
+} from '..';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('Submitted', () => {

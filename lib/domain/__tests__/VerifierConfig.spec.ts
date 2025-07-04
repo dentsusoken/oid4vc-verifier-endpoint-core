@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { VerifierConfig } from './VerifierConfig';
+import { VerifierConfig } from '../VerifierConfig';
 import {
   ClientIdScheme,
   EmbedOption,
@@ -7,8 +7,8 @@ import {
   ClientMetaData,
   SigningConfig,
   UrlBuilder,
-} from '.';
-import { DurationLuxon } from '../adapters/out/cfg';
+} from '..';
+import { DurationLuxon } from '../../adapters/out/cfg';
 
 describe('VerifierConfig', () => {
   const mockClientIdScheme: ClientIdScheme = {

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   ResponseModeOption,
   responseModeOptionSchema,
-} from './ResponseModeOption';
+} from '../ResponseModeOption';
 import { ZodError } from 'zod';
 
 describe('ResponseModeOption', () => {

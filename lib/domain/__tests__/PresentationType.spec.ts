@@ -4,8 +4,8 @@ import {
   PresentationType,
   presentationTypeSchema,
   PresentationTypeJSON,
-} from './PresentationType';
-import { IdTokenType } from '.';
+} from '../PresentationType';
+import { IdTokenType } from '..';
 import { ZodError } from 'zod';
 
 describe('PresentationType', () => {

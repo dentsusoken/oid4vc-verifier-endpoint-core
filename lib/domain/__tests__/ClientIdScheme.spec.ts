@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ClientIdScheme, SigningConfig } from '.';
+import { ClientIdScheme, SigningConfig } from '..';
 
 describe('ClientIdScheme', () => {
   describe('PreRegistered', () => {
