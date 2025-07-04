@@ -17,7 +17,7 @@
 import { VerifyJarmJwt } from '../../../ports/out/jose';
 import { decryptJarmJwt } from './VerifyJarmJwtJose.decrypt';
 import { toAuthorizationResponseData } from './VerifyJarmJwtJose.convert';
-import { runAsyncCatching } from 'oid4vc-core/utils';
+import { runAsyncCatching } from '@vecrea/oid4vc-core/utils';
 
 export const createVerifyJarmJwtJoseInvoker = (): VerifyJarmJwt => invoke;
 

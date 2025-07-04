@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { Result } from 'oid4vc-core/utils';
+import { Result } from '@vecrea/oid4vc-core/utils';
 import {
   EphemeralECDHPrivateJwk,
   IdTokenType,

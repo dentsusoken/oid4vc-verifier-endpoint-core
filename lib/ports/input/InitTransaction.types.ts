@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PresentationDefinition, presentationDefinitionSchema } from 'oid4vc-prex';
+import {
+  PresentationDefinition,
+  presentationDefinitionSchema,
+} from '@vecrea/oid4vc-prex';
 import { z } from 'zod';
 import { FromJSON } from '../../common/json/FromJSON';
 
@@ -54,21 +57,30 @@ export enum EmbedModeTO {
   ByReference = 'by_reference',
 }
 
-export const initTransactionSchema = z
-  .object({
-    type: z.enum([PresentationTypeTO.IdTokenRequest, PresentationTypeTO.VpTokenRequest, PresentationTypeTO.IdAndVpTokenRequest]).default(PresentationTypeTO.IdAndVpTokenRequest),
-    id_token_type: z.enum([IdTokenTypeTO.SubjectSigned, IdTokenTypeTO.AttesterSigned]).optional(),
-    presentation_definition: presentationDefinitionSchema.optional(),
-    nonce: z.string().optional(),
-    response_mode: z.enum([ResponseModeTO.DirectPost, ResponseModeTO.DirectPostJwt]).optional(),
-    jar_mode: z.enum([EmbedModeTO.ByValue, EmbedModeTO.ByReference]).optional(),
-    presentation_definition_mode: z.enum([EmbedModeTO.ByValue, EmbedModeTO.ByReference]).optional(),
-    wallet_response_redirect_uri_template: z.string().optional()
-  });
+export const initTransactionSchema = z.object({
+  type: z
+    .enum([
+      PresentationTypeTO.IdTokenRequest,
+      PresentationTypeTO.VpTokenRequest,
+      PresentationTypeTO.IdAndVpTokenRequest,
+    ])
+    .default(PresentationTypeTO.IdAndVpTokenRequest),
+  id_token_type: z
+    .enum([IdTokenTypeTO.SubjectSigned, IdTokenTypeTO.AttesterSigned])
+    .optional(),
+  presentation_definition: presentationDefinitionSchema.optional(),
+  nonce: z.string().optional(),
+  response_mode: z
+    .enum([ResponseModeTO.DirectPost, ResponseModeTO.DirectPostJwt])
+    .optional(),
+  jar_mode: z.enum([EmbedModeTO.ByValue, EmbedModeTO.ByReference]).optional(),
+  presentation_definition_mode: z
+    .enum([EmbedModeTO.ByValue, EmbedModeTO.ByReference])
+    .optional(),
+  wallet_response_redirect_uri_template: z.string().optional(),
+});
 
-export type InitTransactionJSON = z.infer<
-  typeof initTransactionSchema
->;
+export type InitTransactionJSON = z.infer<typeof initTransactionSchema>;
 
 export class InitTransactionTO {
   type: PresentationTypeTO = PresentationTypeTO.IdAndVpTokenRequest;
@@ -109,18 +121,18 @@ export class InitTransactionTO {
       response_mode: this.responseMode,
       jar_mode: this.jarMode,
       presentation_definition_mode: this.presentationDefinitionMode,
-      wallet_response_redirect_uri_template: this.redirectUriTemplate
+      wallet_response_redirect_uri_template: this.redirectUriTemplate,
     };
   }
 
-  static fromJSON: FromJSON<InitTransactionJSON, InitTransactionTO> = (json) => {
+  static fromJSON: FromJSON<InitTransactionJSON, InitTransactionTO> = (
+    json
+  ) => {
     return new InitTransactionTO(
       json.type,
       json.id_token_type,
       json.presentation_definition &&
-      PresentationDefinition.fromJSON(
-        json.presentation_definition
-      ),
+        PresentationDefinition.fromJSON(json.presentation_definition),
       json.nonce,
       json.response_mode,
       json.jar_mode,
@@ -130,13 +142,12 @@ export class InitTransactionTO {
   };
 }
 
-export const jwtSecuredAuthorizationRequestSchema = z
-  .object({
-    presentation_id: z.string().optional(),
-    client_id: z.string().optional(),
-    request: z.string().optional(),
-    request_uri: z.string().optional()
-  });
+export const jwtSecuredAuthorizationRequestSchema = z.object({
+  presentation_id: z.string().optional(),
+  client_id: z.string().optional(),
+  request: z.string().optional(),
+  request_uri: z.string().optional(),
+});
 
 export type JwtSecuredAuthorizationRequestJSON = z.infer<
   typeof jwtSecuredAuthorizationRequestSchema
@@ -172,16 +183,19 @@ export class JwtSecuredAuthorizationRequestTO {
       presentation_id: this.transactionId,
       client_id: this.clientId,
       request: this.request,
-      request_uri: this.requestUri
+      request_uri: this.requestUri,
     };
   }
 
-  static fromJSON: FromJSON<JwtSecuredAuthorizationRequestJSON, JwtSecuredAuthorizationRequestTO> = (json) => {
+  static fromJSON: FromJSON<
+    JwtSecuredAuthorizationRequestJSON,
+    JwtSecuredAuthorizationRequestTO
+  > = (json) => {
     return new JwtSecuredAuthorizationRequestTO(
-      json.presentation_id || "",
-      json.client_id || "",
+      json.presentation_id || '',
+      json.client_id || '',
       json.request,
       json.request_uri
     );
-  }
+  };
 }

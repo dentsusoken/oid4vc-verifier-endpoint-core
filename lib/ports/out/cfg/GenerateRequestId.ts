@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Result } from 'oid4vc-core/utils';
+import { Result } from '@vecrea/oid4vc-core/utils';
 import { RequestId } from '../../../domain';
 
 /**

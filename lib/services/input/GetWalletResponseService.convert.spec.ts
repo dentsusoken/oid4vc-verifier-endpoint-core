@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { WalletResponse } from '../../domain';
 import { WalletResponseTO } from '../../ports/input';
 import { toWalletResponseTO } from './GetWalletResponseService.convert';
-import { PresentationSubmission } from 'oid4vc-prex';
+import { PresentationSubmission } from '@vecrea/oid4vc-prex';
 
 describe('GetWalletResponseService.convert', () => {
   describe('toWalletResponseTO', () => {

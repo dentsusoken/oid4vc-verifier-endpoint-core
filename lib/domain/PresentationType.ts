@@ -18,7 +18,7 @@ import {
   PresentationDefinition,
   PresentationDefinitionJSON,
   presentationDefinitionSchema,
-} from 'oid4vc-prex';
+} from '@vecrea/oid4vc-prex';
 import { IdTokenType, idTokenTypeSchema } from './IdTokenType';
 import { FromJSON } from '../common/json/FromJSON';
 import { z } from 'zod';

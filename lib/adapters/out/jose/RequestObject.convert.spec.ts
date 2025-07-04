@@ -19,7 +19,7 @@ import {
   SigningConfig,
   UrlBuilder,
 } from '../../../domain';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('Presentation Type Utilities', () => {
   const mockPresentationDefinition = {} as PresentationDefinition;

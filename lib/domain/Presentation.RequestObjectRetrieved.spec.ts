@@ -12,7 +12,7 @@ import {
   ResponseCode,
   WalletResponse,
 } from '.';
-import { Id, PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('RequestObjectRetrieved', () => {
   const id = new TransactionId('transaction-id');

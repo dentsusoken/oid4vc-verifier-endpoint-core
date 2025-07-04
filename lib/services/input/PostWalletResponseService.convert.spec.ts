@@ -17,7 +17,10 @@ import {
 } from './PostWalletResponseService.convert';
 import { generateKeyPair, exportJWK, CompactEncrypt } from 'jose';
 import { createVerifyJarmJwtJoseInvoker } from '../../adapters/out/jose';
-import { PresentationDefinition, PresentationSubmission } from 'oid4vc-prex';
+import {
+  PresentationDefinition,
+  PresentationSubmission,
+} from '@vecrea/oid4vc-prex';
 
 describe('PostWalletResponse.convert', () => {
   describe('getRequestId', () => {

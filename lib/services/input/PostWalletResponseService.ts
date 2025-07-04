@@ -26,7 +26,7 @@ import {
 } from '../../ports/out/persistence';
 import { PostWalletResponse } from '../../ports/input/PostWalletResponse';
 import { WalletResponseAcceptedTO } from '../../ports/input/PostWalletResponse.types';
-import { runAsyncCatching, Result } from 'oid4vc-core/utils';
+import { runAsyncCatching, Result } from '@vecrea/oid4vc-core/utils';
 import {
   getRequestId,
   getReponseModeOption,

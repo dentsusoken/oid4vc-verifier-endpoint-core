@@ -8,7 +8,7 @@ import {
   AuthorizationResponse,
   ResponseModeOption,
 } from '../../domain';
-import { Id, PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 import {
   EmbedModeTO,
   IdTokenTypeTO,
@@ -23,7 +23,7 @@ import {
 } from '../../ports/out/persistence';
 import { createPostWalletResponseServiceInvoker } from './PostWalletResponseService';
 import { VerifyJarmJwt } from '../../ports/out/jose';
-import { Result } from 'oid4vc-core/utils';
+import { Result } from '@vecrea/oid4vc-core/utils';
 import {
   CreateQueryWalletResponseRedirectUri,
   GenerateResponseCode,
@@ -156,9 +156,9 @@ describe('createGetRequestObjectServiceInvoker', async () => {
   it('should throw error when presentation type is not RequestObjectRetrieved', async () => {
     const createParams = {
       loadPresentationByRequestId: (async () =>
-      ({
-        __type: 'Requested',
-      } as Presentation)) as LoadPresentationByRequestId,
+        ({
+          __type: 'Requested',
+        } as Presentation)) as LoadPresentationByRequestId,
       storePresentation: (async () => undefined) as StorePresentation,
       verifyJarmJwt: (async () =>
         Result.success({} as AuthorizationResponseData)) as VerifyJarmJwt,
@@ -186,10 +186,10 @@ describe('createGetRequestObjectServiceInvoker', async () => {
   it('should throw error when the response mode of the presentation does not match the response mode of the authorization response', async () => {
     const createParams = {
       loadPresentationByRequestId: (async () =>
-      ({
-        __type: 'RequestObjectRetrieved',
-        responseMode: ResponseModeOption.DirectPost,
-      } as Presentation)) as LoadPresentationByRequestId,
+        ({
+          __type: 'RequestObjectRetrieved',
+          responseMode: ResponseModeOption.DirectPost,
+        } as Presentation)) as LoadPresentationByRequestId,
       storePresentation: (async () => undefined) as StorePresentation,
       verifyJarmJwt: (async () =>
         Result.success({} as AuthorizationResponseData)) as VerifyJarmJwt,

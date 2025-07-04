@@ -9,7 +9,7 @@ import {
 } from 'jose';
 import { createVerifyJarmJwtJoseInvoker } from './VerifyJarmJwtJose';
 import { EphemeralECDHPrivateJwk, JarmOption } from '../../../domain';
-import { Id, PresentationSubmission } from 'oid4vc-prex';
+import { Id, PresentationSubmission } from '@vecrea/oid4vc-prex';
 
 describe('VerifyJarmJwtJose', () => {
   describe('JWE', () => {

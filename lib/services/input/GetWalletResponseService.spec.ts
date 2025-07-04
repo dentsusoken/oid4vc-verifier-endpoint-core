@@ -10,7 +10,7 @@ import {
   Id,
   PresentationDefinition,
   PresentationSubmission,
-} from 'oid4vc-prex';
+} from '@vecrea/oid4vc-prex';
 import {
   EmbedModeTO,
   IdTokenTypeTO,
@@ -162,9 +162,9 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const createParams: GetWalletResponseCreateParams = {
       loadPresentationById: (async () =>
-      ({
-        __type: 'Requested',
-      } as Presentation.Requested)) as LoadPresentationById,
+        ({
+          __type: 'Requested',
+        } as Presentation.Requested)) as LoadPresentationById,
       now: configuration.now(),
       maxAge: configuration.maxAge(),
     };
@@ -187,9 +187,9 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const createParams: GetWalletResponseCreateParams = {
       loadPresentationById: (async () =>
-      ({
-        __type: 'Submitted',
-      } as Presentation.Submitted)) as LoadPresentationById,
+        ({
+          __type: 'Submitted',
+        } as Presentation.Submitted)) as LoadPresentationById,
       now: configuration.now(),
       maxAge: configuration.maxAge(),
     };
@@ -215,14 +215,14 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const createParams: GetWalletResponseCreateParams = {
       loadPresentationById: (async () =>
-      ({
-        __type: 'Submitted',
-        initiatedAt: new Date(
-          configuration.now()().getTime() -
-          configuration.maxAge().toMillis() -
-          10000
-        ),
-      } as Presentation.Submitted)) as LoadPresentationById,
+        ({
+          __type: 'Submitted',
+          initiatedAt: new Date(
+            configuration.now()().getTime() -
+              configuration.maxAge().toMillis() -
+              10000
+          ),
+        } as Presentation.Submitted)) as LoadPresentationById,
       now: configuration.now(),
       maxAge: configuration.maxAge(),
     };

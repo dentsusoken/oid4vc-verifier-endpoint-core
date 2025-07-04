@@ -15,7 +15,7 @@
  */
 
 import { CreateQueryWalletResponseRedirectUri } from '../../../ports/out/cfg';
-import { runCatching, assert } from 'oid4vc-core/utils';
+import { runCatching } from '@vecrea/oid4vc-core/utils';
 
 /**
  * The placeholder string used for the response code
@@ -39,10 +39,12 @@ export const createCreateQueryWalletResponseRedirectUriInvoker =
  */
 const invoke: CreateQueryWalletResponseRedirectUri = (template, responseCode) =>
   runCatching(() => {
-    assert(
-      template.includes(RESPONSE_CODE_PLACE_HOLDER),
-      'Expected response_code place holder not found in template'
-    );
+    if (!template.includes(RESPONSE_CODE_PLACE_HOLDER)) {
+      throw new Error(
+        'Expected response_code place holder not found in template'
+      );
+    }
+
     const url = template.replace(
       RESPONSE_CODE_PLACE_HOLDER,
       responseCode.value

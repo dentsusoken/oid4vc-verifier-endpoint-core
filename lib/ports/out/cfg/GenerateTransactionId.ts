@@ -15,7 +15,7 @@
  */
 
 import { TransactionId } from '../../../domain';
-import { Result } from 'oid4vc-core/utils';
+import { Result } from '@vecrea/oid4vc-core/utils';
 
 /**
  * A port for generating [TransactionId]

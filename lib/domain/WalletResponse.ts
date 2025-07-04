@@ -19,7 +19,7 @@ import { type FromJSON } from '../common/json/FromJSON';
 import {
   PresentationSubmission,
   presentationSubmissionSchema,
-} from 'oid4vc-prex';
+} from '@vecrea/oid4vc-prex';
 import { Jwt } from './types';
 
 /**

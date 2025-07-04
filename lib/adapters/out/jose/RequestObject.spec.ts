@@ -16,7 +16,7 @@ import {
   StaticSigningPrivateJwk,
   UrlBuilder,
 } from '../../../domain';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('requestObjectFromDomain', () => {
   const issuedAt = new Date('2023-01-01T00:00:00Z');

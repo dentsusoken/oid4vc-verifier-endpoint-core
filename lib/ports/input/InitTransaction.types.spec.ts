@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Id, PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 import {
   PresentationTypeTO,
   IdTokenTypeTO,
@@ -151,17 +151,24 @@ describe('InitTransationSchema', () => {
       response_mode: plainObject.response_mode,
       jar_mode: plainObject.jar_mode,
       presentation_definition_mode: plainObject.presentation_definition_mode,
-      wallet_response_redirect_uri_template: plainObject.wallet_response_redirect_uri_template
+      wallet_response_redirect_uri_template:
+        plainObject.wallet_response_redirect_uri_template,
     });
 
     expect(schema.type).toBe(plainObject.type);
     expect(schema.id_token_type).toBe(plainObject.id_token_type);
-    expect(schema.presentation_definition).toEqual(plainObject.presentation_definition);
+    expect(schema.presentation_definition).toEqual(
+      plainObject.presentation_definition
+    );
     expect(schema.nonce).toBe(plainObject.nonce);
     expect(schema.response_mode).toBe(plainObject.response_mode);
     expect(schema.jar_mode).toBe(plainObject.jar_mode);
-    expect(schema.presentation_definition_mode).toBe(plainObject.presentation_definition_mode);
-    expect(schema.wallet_response_redirect_uri_template).toBe(plainObject.wallet_response_redirect_uri_template);
+    expect(schema.presentation_definition_mode).toBe(
+      plainObject.presentation_definition_mode
+    );
+    expect(schema.wallet_response_redirect_uri_template).toBe(
+      plainObject.wallet_response_redirect_uri_template
+    );
   });
 
   it('should create schema with undefined provided value', () => {
@@ -182,8 +189,8 @@ describe('JwtSecuredAuthorizationRequestSchema', () => {
       presentation_id: plainObject.presentation_id,
       client_id: plainObject.client_id,
       request: plainObject.request,
-      request_uri: plainObject.request_uri
-    })
+      request_uri: plainObject.request_uri,
+    });
 
     expect(schema.presentation_id).toBe(plainObject.presentation_id);
     expect(schema.client_id).toBe(plainObject.client_id);
@@ -192,6 +199,8 @@ describe('JwtSecuredAuthorizationRequestSchema', () => {
   });
 
   it('should create schema with undefined value', () => {
-    expect(() => jwtSecuredAuthorizationRequestSchema.parse(undefined)).toThrowError();
-  })
-})
+    expect(() =>
+      jwtSecuredAuthorizationRequestSchema.parse(undefined)
+    ).toThrowError();
+  });
+});

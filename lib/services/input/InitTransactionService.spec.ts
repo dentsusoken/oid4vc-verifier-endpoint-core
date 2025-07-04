@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TransactionId } from '../../domain';
-import { Id, PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 import {
   EmbedModeTO,
   IdTokenTypeTO,

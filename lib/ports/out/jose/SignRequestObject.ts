@@ -15,7 +15,7 @@
  */
 
 import { Jwt, Presentation, VerifierConfig } from '../../../domain';
-import { Result } from 'oid4vc-core/utils';
+import { Result } from '@vecrea/oid4vc-core/utils';
 
 /**
  * Interface for signing a request object.

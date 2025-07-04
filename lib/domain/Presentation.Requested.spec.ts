@@ -11,7 +11,7 @@ import {
   Presentation,
   PresentationType,
 } from '.';
-import { Id, PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('Requested', () => {
   const id = new TransactionId('transaction-id');

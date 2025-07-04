@@ -15,7 +15,7 @@ import {
   UrlBuilder,
 } from '../../../domain';
 import { RequestObject } from './RequestObject';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('JWKS and Payload Utilities', () => {
   describe('getJwks', () => {

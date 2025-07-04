@@ -20,7 +20,7 @@ import {
   Jwt,
   AuthorizationResponseData,
 } from '../../../domain';
-import { Result } from 'oid4vc-core/utils';
+import { Result } from '@vecrea/oid4vc-core/utils';
 
 /**
  * Verifies a JARM (JWT Authorization Response Mode) JWT and returns the decoded AuthorizationResponseTO.

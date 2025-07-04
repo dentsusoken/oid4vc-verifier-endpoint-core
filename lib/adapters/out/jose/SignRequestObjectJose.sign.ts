@@ -15,7 +15,7 @@
  */
 
 import { SignJWT, JWTHeaderParameters, importJWK } from 'jose';
-import { Result, runAsyncCatching } from 'oid4vc-core/utils';
+import { Result, runAsyncCatching } from '@vecrea/oid4vc-core/utils';
 import { Jwt, SigningConfig } from '../../../domain';
 import { RequestObject } from './RequestObject';
 import { toPayload, ClientMetaDataTO } from './SignRequestObjectJose.convert';

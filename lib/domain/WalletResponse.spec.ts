@@ -4,7 +4,7 @@ import {
   Id,
   JsonPath,
   PresentationSubmission,
-} from 'oid4vc-prex';
+} from '@vecrea/oid4vc-prex';
 import { WalletResponse, WalletResponseJSON } from '.';
 
 describe('WalletResponse', () => {
@@ -187,7 +187,7 @@ describe('WalletResponse', () => {
       ).toBe(json.vp_token);
       expect(
         walletResponse.__type === 'VpToken' &&
-        walletResponse.presentationSubmission
+          walletResponse.presentationSubmission
       ).toBeInstanceOf(PresentationSubmission);
     });
 
@@ -221,7 +221,7 @@ describe('WalletResponse', () => {
       ).toBe(json.vp_token);
       expect(
         walletResponse.__type === 'IdAndVpToken' &&
-        walletResponse.presentationSubmission
+          walletResponse.presentationSubmission
       ).toBeInstanceOf(PresentationSubmission);
     });
 
@@ -239,7 +239,7 @@ describe('WalletResponse', () => {
       ).toBe(json.value);
       expect(
         walletResponse.__type === 'WalletResponseError' &&
-        walletResponse.description
+          walletResponse.description
       ).toBe(json.description);
     });
   });

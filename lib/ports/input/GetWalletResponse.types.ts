@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 import { z } from 'zod';
-import { PresentationSubmission, presentationSubmissionSchema } from 'oid4vc-prex';
+import {
+  PresentationSubmission,
+  presentationSubmissionSchema,
+} from '@vecrea/oid4vc-prex';
 import { FromJSON } from '../../common/json/FromJSON';
 
-export const walletResponseSchema = z
-  .object({
-    id_token: z.string().optional(),
-    vp_token: z.string().optional(),
-    presentation_submission: presentationSubmissionSchema.optional(),
-    error: z.string().optional(),
-    error_description: z.string().optional()
-  });
+export const walletResponseSchema = z.object({
+  id_token: z.string().optional(),
+  vp_token: z.string().optional(),
+  presentation_submission: presentationSubmissionSchema.optional(),
+  error: z.string().optional(),
+  error_description: z.string().optional(),
+});
 
-export type WalletResponseJSON = z.infer<
-  typeof walletResponseSchema
->;
+export type WalletResponseJSON = z.infer<typeof walletResponseSchema>;
 
 export class WalletResponseTO {
   idToken?: string;
@@ -69,10 +69,9 @@ export class WalletResponseTO {
     return new WalletResponseTO({
       idToken: json.id_token,
       vpToken: json.vp_token,
-      presentationSubmission: json.presentation_submission &&
-        PresentationSubmission.fromJSON(
-          json.presentation_submission
-        ),
+      presentationSubmission:
+        json.presentation_submission &&
+        PresentationSubmission.fromJSON(json.presentation_submission),
       error: json.error,
       errorDescription: json.error_description,
     });

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PresentationDefinition } from 'oid4vc-prex';
+import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 import { RequestId } from '../../domain';
 import { QueryResponse } from './QueryResponse';
 

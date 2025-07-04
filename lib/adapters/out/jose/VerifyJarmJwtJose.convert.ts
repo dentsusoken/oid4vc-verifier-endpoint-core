@@ -15,7 +15,7 @@
  */
 
 import { JWTDecryptResult } from 'jose';
-import { PresentationSubmission } from 'oid4vc-prex';
+import { PresentationSubmission } from '@vecrea/oid4vc-prex';
 import { AuthorizationResponseData } from '../../../domain';
 
 /**

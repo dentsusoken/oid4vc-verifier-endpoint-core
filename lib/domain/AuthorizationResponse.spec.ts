@@ -3,7 +3,7 @@ import {
   AuthorizationResponse,
   AuthorizationResponseData,
 } from './AuthorizationResponse';
-import { PresentationSubmission } from 'oid4vc-prex';
+import { PresentationSubmission } from '@vecrea/oid4vc-prex';
 
 describe('AuthorizationResponse', () => {
   describe('DirectPost', () => {

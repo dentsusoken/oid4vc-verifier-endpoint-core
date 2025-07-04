@@ -21,19 +21,19 @@
     }
   },
   "scripts": {
-    "build": "vite build && tsc",
-    "test": "vitest",
-    "lint": "eslint ./lib --ext .ts"
+    "build": "npm run typecheck && vite build",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm test && npm run build"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.17.0",
-    "eslint": "^8.57.0",
     "typedoc": "^0.26.4",
     "typedoc-plugin-markdown": "^4.2.1",
     "typescript": "^5.4.5",
     "vite": "^5.2.10",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^1.4.0"
   },
   "dependencies": {
@@ -41,5 +41,9 @@
     "luxon": "^3.4.4",
     "uuid": "^10.0.0",
     "zod": "^3.23.8"
+  },
+  "peerDependencies": {
+    "@vecrea/oid4vc-core": "^0.1.0",
+    "@vecrea/oid4vc-prex": "^0.1.0"
   }
 }

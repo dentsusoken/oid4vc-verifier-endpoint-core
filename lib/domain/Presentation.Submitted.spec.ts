@@ -9,7 +9,7 @@ import {
   WalletResponse,
   IdTokenType,
 } from '.';
-import { Id, PresentationDefinition } from 'oid4vc-prex';
+import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('Submitted', () => {
   const id = new TransactionId('transaction-id');

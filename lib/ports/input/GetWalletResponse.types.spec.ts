@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { PresentationSubmission, Id } from 'oid4vc-prex';
-import { walletResponseSchema, WalletResponseTO } from './GetWalletResponse.types';
+import { PresentationSubmission, Id } from '@vecrea/oid4vc-prex';
+import {
+  walletResponseSchema,
+  WalletResponseTO,
+} from './GetWalletResponse.types';
 
 describe('WalletResponseTO', () => {
   describe('plainToInstance', () => {
@@ -146,12 +149,14 @@ describe('walletResponseSchema', () => {
       vp_token: args.vp_token,
       presentation_submission: args.presentation_submission,
       error: args.error,
-      error_description: args.error_description
+      error_description: args.error_description,
     });
 
     expect(schema.id_token).toBe(args.id_token);
     expect(schema.vp_token).toBe(args.vp_token);
-    expect(schema.presentation_submission).toEqual(args.presentation_submission);
+    expect(schema.presentation_submission).toEqual(
+      args.presentation_submission
+    );
     expect(schema.error).toBe(args.error);
     expect(schema.error_description).toBe(args.error_description);
   });

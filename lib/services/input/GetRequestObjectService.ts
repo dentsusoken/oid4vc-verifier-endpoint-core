@@ -21,7 +21,7 @@ import {
   StorePresentation,
 } from '../../ports/out/persistence';
 import { GetRequestObject, QueryResponse } from '../../ports/input';
-import { runAsyncCatching } from 'oid4vc-core/utils';
+import { runAsyncCatching } from '@vecrea/oid4vc-core/utils';
 
 export type GetRequestObjectServiceCreateParams = {
   loadPresentationByRequestId: LoadPresentationByRequestId;

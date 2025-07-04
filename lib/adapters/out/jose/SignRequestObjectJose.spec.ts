@@ -18,7 +18,7 @@ import {
   UrlBuilder,
 } from '../../../domain';
 import { exportJWK, generateKeyPair } from 'jose';
-import { PresentationDefinition } from 'oid4vc-prex';
+import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('SignRequestObjectJose', async () => {
   const signRequestObject = createSignRequestObjectJoseInvoker();
