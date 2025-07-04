@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   createCreateQueryWalletResponseRedirectUriInvoker,
   RESPONSE_CODE_PLACE_HOLDER,
-} from './CreateQueryWalletResponseRedirectUriImpl';
-import { ResponseCode } from '../../../domain';
+} from '../CreateQueryWalletResponseRedirectUriImpl';
+import { ResponseCode } from '../../../../domain';
 
 describe('createCreateQueryWalletResponseRedirectUri', () => {
   const createQueryWalletResponseRedirectUri =

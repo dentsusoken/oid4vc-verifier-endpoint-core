@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DurationLuxon } from './DurationLuxon';
+import { DurationLuxon } from '../DurationLuxon';
 import { Duration as LuxonDuration } from 'luxon';
 
 describe('DurationLuxon', () => {

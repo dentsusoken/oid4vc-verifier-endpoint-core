@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createGenerateResponseCodeInvoker } from './GenerateResponseCodeImpl';
-import { ResponseCode } from '../../../domain';
+import { createGenerateResponseCodeInvoker } from '../GenerateResponseCodeImpl';
+import { ResponseCode } from '../../../../domain';
 import * as uuid from 'uuid';
 
 vi.mock('uuid', () => ({

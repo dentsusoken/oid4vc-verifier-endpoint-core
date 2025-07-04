@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { createGenerateTransactionIdJoseInvoker } from './GenerateTransactionIdJose';
-import { TransactionId } from '../../../domain';
+import { createGenerateTransactionIdJoseInvoker } from '../GenerateTransactionIdJose';
+import { TransactionId } from '../../../../domain';
 
 describe('GenerateTransactionIdJose', () => {
   it('should generate a transaction ID with the default byte length', async () => {

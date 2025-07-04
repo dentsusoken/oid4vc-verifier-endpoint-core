@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { createDurationFactoryLuxon } from './DurationFactoryLuxon';
-import { DurationLuxon } from './DurationLuxon';
-import { Duration } from '../../../domain';
+import { createDurationFactoryLuxon } from '../DurationFactoryLuxon';
+import { DurationLuxon } from '../DurationLuxon';
+import { Duration } from '../../../../domain';
 
 describe('createDurationFactoryLuxon', () => {
   const durationFactory = createDurationFactoryLuxon();
