@@ -1,27 +1,27 @@
 # oid4vc-verifier-endpoint-core
 
-## はじめに
-EUDIWのプロジェクトが公開している[verifier-endpoint]をベースに、Verifierとして実装する内容を整理したものとなります。
- 
-## 概要
+## Introduction
 
-* "Verifier"として行うVP要求や検証といった機能を実装するために必要な情報をまとめております。
-* "Wallet"と"Verifier"が同じデバイス上で利用される場合は[Same device]をご参照ください。（"Verifier"がWebアプリの場合も同様）  
-　異なるデバイスで利用される場合は[Cross device]をご参照ください。
-* [Sequence]では処理全体のシーケンス、[Request / Response parameters]では  
-　「"Verifier"と"Verifier Endpoint"間」または「"Wallet"と"Verifier Endpoint"間」のリクエスト/レスポンスの内容を記載しております。
-* "Verifier Endpoint"を弊社にて作成しており、別途ご提供いたします。
-* [Request / Response parameters]に記載している"Verifier Endpoint"のURLは、EUDIWのプロジェクトが公開している[verifier-endpoint]のURLとなります。  
-　また、各パラメータ値はサンプルのものとなります。  
-　このため、提供する"Verifier Endpoint"の稼働環境にあわせて変更いただく必要があります。
-* [Verifier Endpoint]は、汎用性を意識してフレームワークとしてHonoベースで稼働するものとなります。  
-　AWSであれば Lambda等でHonoを稼働し、そのうえで[Verifier Endpoint]を展開いただくことが可能です。  
-　Lambdaで稼働する場合の設定用ドキュメントについて、別途手配を予定しております。
- 
- 
-## ドキュメント
+This project is based on the [verifier-endpoint](https://github.com/eu-digital-identity-wallet/eudi-srv-web-verifier-endpoint-23220-4-kt) published by the EUDIW project and organizes the implementation content as a Verifier.
 
-### シーケンス図
+## Overview
+
+- This repository contains the necessary information to implement VP (Verifiable Presentation) requests and verification functions as a "Verifier".
+- For cases where "Wallet" and "Verifier" are used on the same device, please refer to [Same device]. (This also applies when "Verifier" is a web application)
+  For cases where they are used on different devices, please refer to [Cross device].
+- [Sequence] documents the overall processing sequence, while [Request / Response parameters] documents
+  the request/response content between "Verifier and Verifier Endpoint" or "Wallet and Verifier Endpoint".
+- We have created a "Verifier Endpoint" which will be provided separately.
+- The "Verifier Endpoint" URLs documented in [Request / Response parameters] are from the [verifier-endpoint](https://github.com/eu-digital-identity-wallet/eudi-srv-web-verifier-endpoint-23220-4-kt) published by the EUDIW project.
+  Also, each parameter value is a sample.
+  Therefore, you will need to modify them according to the operating environment of the provided "Verifier Endpoint".
+- The [Verifier Endpoint] is designed as a framework with versatility in mind, operating on Hono.
+  For AWS, you can run Hono on Lambda and deploy the [Verifier Endpoint] on top of it.
+  Documentation for Lambda deployment configuration is planned to be provided separately.
+
+## Documentation
+
+### Sequence Diagrams
 
 #### Same device
 
@@ -33,16 +33,17 @@ EUDIWのプロジェクトが公開している[verifier-endpoint]をベース�
 - [Markdown](docs/sequence/cross_device.md)
 - [PDF](docs/sequence/cross_device.pdf)
 
-### APIドキュメント
+### API Documentation
 
-#### フロントエンド
+#### Frontend
 
 - [Initiate Transaction](docs/api/frontend/InitiateTransaction.md)
 - [Get Wallet Response](docs/api/frontend/GetWalletResponse.md)
 
-## 補足
+## Additional Information
 
-ご提示の内容は、以下をベースに作成を行っております。  
-①[OpenID for Verifiable Presentations - draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)  
-②[EUDIのVerifier Endpointのリファレンス実装のREADME](https://github.com/eu-digital-identity-wallet/eudi-srv-web-verifier-endpoint-23220-4-kt)  
-①をベースに②が実装されているものとなりますので、不明点がございましたらこちらも合わせてご参照ください。
+The content provided is based on the following:
+
+1. [OpenID for Verifiable Presentations - draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)
+2. [EUDI Verifier Endpoint Reference Implementation README](https://github.com/eu-digital-identity-wallet/eudi-srv-web-verifier-endpoint-23220-4-kt)
+   2 is implemented based on 1, so please refer to both if you have any questions.
