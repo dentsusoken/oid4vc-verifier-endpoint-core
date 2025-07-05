@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { randomBase64URL, randomUint8Array } from './randomUtils';
+import { randomBase64URL, randomUint8Array } from '../randomUtils';
 
 describe('randomUtils', () => {
   it('randomUint8Array', async () => {

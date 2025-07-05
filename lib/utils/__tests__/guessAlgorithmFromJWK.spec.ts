@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { guessAlgorithmFromJWK } from './guessAlgorithmFromJWK';
+import { guessAlgorithmFromJWK } from '../guessAlgorithmFromJWK';
 
 describe('guessAlgorithmFromJWK', () => {
   it('should return the algorithm when alg property is present', () => {
