@@ -5,7 +5,7 @@ import {
   toClientMetaDataTO,
   toPayload,
   ClientMetaDataTO,
-} from './SignRequestObjectJose.convert';
+} from '../SignRequestObjectJose.convert';
 import {
   EmbedOption,
   RequestId,
@@ -13,8 +13,8 @@ import {
   EphemeralECDHPrivateJwk,
   JarmOption,
   UrlBuilder,
-} from '../../../domain';
-import { RequestObject } from './RequestObject';
+} from '../../../../domain';
+import { RequestObject } from '../RequestObject';
 import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('JWKS and Payload Utilities', () => {

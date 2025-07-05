@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { JWTDecryptResult } from 'jose';
 import { PresentationSubmission } from '@vecrea/oid4vc-prex';
-import { toAuthorizationResponseData } from './VerifyJarmJwtJose.convert';
+import { toAuthorizationResponseData } from '../VerifyJarmJwtJose.convert';
 
 describe('toAuthorizationResponseTO', () => {
   it('should successfully convert JWT payload to AuthorisationResponseTO', async () => {

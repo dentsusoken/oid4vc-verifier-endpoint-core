@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createSignRequestObjectJoseInvoker } from './SignRequestObjectJose';
+import { createSignRequestObjectJoseInvoker } from '../SignRequestObjectJose';
 import {
   Presentation,
   RequestId,
@@ -16,7 +16,7 @@ import {
   ClientIdScheme,
   SigningConfig,
   UrlBuilder,
-} from '../../../domain';
+} from '../../../../domain';
 import { exportJWK, generateKeyPair } from 'jose';
 import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 

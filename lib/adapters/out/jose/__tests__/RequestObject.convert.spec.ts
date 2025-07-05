@@ -8,7 +8,7 @@ import {
   getPresentationDefinition,
   getPresentationDefinitionUri,
   getResponseMode,
-} from './RequestObject.convert';
+} from '../RequestObject.convert';
 import {
   PresentationType,
   IdTokenType,
@@ -18,7 +18,7 @@ import {
   ClientIdScheme,
   SigningConfig,
   UrlBuilder,
-} from '../../../domain';
+} from '../../../../domain';
 import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('Presentation Type Utilities', () => {

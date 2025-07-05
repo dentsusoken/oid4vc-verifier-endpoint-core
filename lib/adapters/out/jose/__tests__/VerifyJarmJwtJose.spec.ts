@@ -7,8 +7,8 @@ import {
   exportJWK,
   importJWK,
 } from 'jose';
-import { createVerifyJarmJwtJoseInvoker } from './VerifyJarmJwtJose';
-import { EphemeralECDHPrivateJwk, JarmOption } from '../../../domain';
+import { createVerifyJarmJwtJoseInvoker } from '../VerifyJarmJwtJose';
+import { EphemeralECDHPrivateJwk, JarmOption } from '../../../../domain';
 import { Id, PresentationSubmission } from '@vecrea/oid4vc-prex';
 
 describe('VerifyJarmJwtJose', () => {

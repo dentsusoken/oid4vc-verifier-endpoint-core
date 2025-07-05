@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { parseJarmOption } from './ParseJarmOptionJose';
-import { JarmOption } from '../../../domain';
+import { parseJarmOption } from '../ParseJarmOptionJose';
+import { JarmOption } from '../../../../domain';
 
 describe('createParseJarmOptionJoseInvoker', () => {
   it('should create a function', () => {

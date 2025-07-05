@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { requestObjectFromDomain } from './RequestObject';
+import { requestObjectFromDomain } from '../RequestObject';
 import {
   ClientIdScheme,
   VerifierConfig,
@@ -15,7 +15,7 @@ import {
   GetWalletResponseMethod,
   StaticSigningPrivateJwk,
   UrlBuilder,
-} from '../../../domain';
+} from '../../../../domain';
 import { PresentationDefinition } from '@vecrea/oid4vc-prex';
 
 describe('requestObjectFromDomain', () => {

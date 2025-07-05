@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { generateKeyPair, exportJWK, importJWK, CompactEncrypt } from 'jose';
-import { decryptJarmJwt } from './VerifyJarmJwtJose.decrypt';
-import { JarmOption, EphemeralECDHPrivateJwk } from '../../../domain';
+import { decryptJarmJwt } from '../VerifyJarmJwtJose.decrypt';
+import { JarmOption, EphemeralECDHPrivateJwk } from '../../../../domain';
 
 describe('decryptJarmJwt', () => {
   it('should decrypt an encrypted JWT correctly', async () => {

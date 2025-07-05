@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { sign } from './SignRequestObjectJose.sign';
-import { SigningConfig } from '../../../domain';
+import { sign } from '../SignRequestObjectJose.sign';
+import { SigningConfig } from '../../../../domain';
 import { PresentationDefinition } from '@vecrea/oid4vc-prex';
-import { RequestObject } from './RequestObject';
-import { ClientMetaDataTO } from './SignRequestObjectJose.convert';
+import { RequestObject } from '../RequestObject';
+import { ClientMetaDataTO } from '../SignRequestObjectJose.convert';
 import { generateKeyPair, exportJWK, decodeProtectedHeader } from 'jose';
 
 describe('sign', () => {
