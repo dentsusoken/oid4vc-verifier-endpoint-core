@@ -1,24 +1,24 @@
 import { describe, it, expect } from 'vitest';
-import { PortsOutImpl } from './PortsOutImpl';
+import { PortsOutImpl } from '../PortsOutImpl';
 import {
   CreateQueryWalletResponseRedirectUri,
   DurationFactory,
   GenerateRequestId,
   GenerateResponseCode,
   GenerateTransactionId,
-} from '../ports/out/cfg';
+} from '../../ports/out/cfg';
 import {
   GenerateEphemeralECDHPrivateJwk,
   SignRequestObject,
   VerifyJarmJwt,
-} from '../ports/out/jose';
+} from '../../ports/out/jose';
 import {
   LoadPresentationById,
   LoadPresentationByRequestId,
   StorePresentation,
-} from '../ports/out/persistence';
-import { PortsOut } from './PortsOut';
-import { MockConfiguration } from './MockConfiguration';
+} from '../../ports/out/persistence';
+import { PortsOut } from '../PortsOut';
+import { MockConfiguration } from '../MockConfiguration';
 
 describe('PortsOutImpl', () => {
   const portsOut: PortsOut = new PortsOutImpl(new MockConfiguration());

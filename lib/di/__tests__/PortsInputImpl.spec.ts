@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { PortsOutImpl } from './PortsOutImpl';
-import { PortsInputImpl } from './PortsInputImpl';
+import { PortsOutImpl } from '../PortsOutImpl';
+import { PortsInputImpl } from '../PortsInputImpl';
 
-import { MockConfiguration } from './MockConfiguration';
+import { MockConfiguration } from '../MockConfiguration';
 
 describe('PortsInputImpl', () => {
   const configuration = new MockConfiguration();

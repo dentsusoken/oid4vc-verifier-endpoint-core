@@ -9,7 +9,7 @@ import {
   JwtSecuredAuthorizationRequestTO,
   initTransactionSchema,
   jwtSecuredAuthorizationRequestSchema,
-} from './InitTransaction.types';
+} from '../InitTransaction.types';
 
 describe('InitTransactionTO', () => {
   it('should convert plain object to class instance', () => {

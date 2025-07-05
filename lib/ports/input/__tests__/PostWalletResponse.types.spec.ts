@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { walletResponseAcceptedSchema, WalletResponseAcceptedTO } from './PostWalletResponse.types';
+import {
+  walletResponseAcceptedSchema,
+  WalletResponseAcceptedTO,
+} from '../PostWalletResponse.types';
 import { ZodError } from 'zod';
 
 describe('WalletResponseAcceptedTO', () => {
@@ -58,13 +61,15 @@ describe('WalletResponseAcceptedTO', () => {
   describe('schema', () => {
     it('should create schema with provided redirectUri', () => {
       const schema = walletResponseAcceptedSchema.parse({
-        redirect_uri: 'https://example.com/callback'
+        redirect_uri: 'https://example.com/callback',
       });
       expect(schema.redirect_uri).toBe('https://example.com/callback');
     });
 
     it('should create schema with undefined redirectUri when not provided', () => {
-      expect(() => walletResponseAcceptedSchema.parse(undefined)).toThrow(ZodError);
+      expect(() => walletResponseAcceptedSchema.parse(undefined)).toThrow(
+        ZodError
+      );
     });
   });
 });

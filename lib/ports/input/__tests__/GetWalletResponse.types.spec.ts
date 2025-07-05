@@ -3,7 +3,7 @@ import { PresentationSubmission, Id } from '@vecrea/oid4vc-prex';
 import {
   walletResponseSchema,
   WalletResponseTO,
-} from './GetWalletResponse.types';
+} from '../GetWalletResponse.types';
 
 describe('WalletResponseTO', () => {
   describe('plainToInstance', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { MockConfiguration } from './MockConfiguration';
-import { ClientIdSchemeName } from './Configuration';
+import { MockConfiguration } from '../MockConfiguration';
+import { ClientIdSchemeName } from '../Configuration';
 import {
   ClientMetaData,
   EmbedOption,
@@ -8,8 +8,8 @@ import {
   ResponseModeOption,
   VerifierConfig,
   UrlBuilder,
-} from '../domain';
-import { DurationLuxon } from '../adapters/out/cfg';
+} from '../../domain';
+import { DurationLuxon } from '../../adapters/out/cfg';
 
 describe('MockConfiguration', () => {
   const configuration = new MockConfiguration();
