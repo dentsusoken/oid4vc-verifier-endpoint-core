@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { PresentationInMemoryStore } from './PresentationInMemoryStore';
-import { Presentation, RequestId, TransactionId } from '../../../domain';
+import { PresentationInMemoryStore } from '../PresentationInMemoryStore';
+import { Presentation, RequestId, TransactionId } from '../../../../domain';
 
 describe('PresentationInMemoryStore', () => {
   let store: PresentationInMemoryStore;
