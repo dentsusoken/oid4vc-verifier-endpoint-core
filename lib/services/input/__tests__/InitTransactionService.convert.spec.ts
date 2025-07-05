@@ -8,7 +8,7 @@ import {
   toEmbedOption,
   toResponseModeOption,
   toGetWalletResponseMethod,
-} from './InitTransactionService.convert';
+} from '../InitTransactionService.convert';
 import {
   IdTokenType,
   Nonce,
@@ -17,14 +17,14 @@ import {
   ResponseModeOption,
   GetWalletResponseMethod,
   UrlBuilder,
-} from '../../domain';
+} from '../../../domain';
 import {
   IdTokenTypeTO,
   PresentationTypeTO,
   EmbedModeTO,
   ResponseModeTO,
-} from '../../ports/input/InitTransaction.types';
-import { CreateQueryWalletResponseRedirectUri } from '../../ports/out/cfg';
+} from '../../../ports/input/InitTransaction.types';
+import { CreateQueryWalletResponseRedirectUri } from '../../../ports/out/cfg';
 
 describe('InitTransactionService.convert', () => {
   describe('toIdTokenTypes', () => {

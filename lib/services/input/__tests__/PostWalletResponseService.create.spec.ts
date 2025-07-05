@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { GetWalletResponseMethod, ResponseCode } from '../../domain';
+import { GetWalletResponseMethod, ResponseCode } from '../../../domain';
 import {
   createResponseCode,
   createWalletResponseAcceptedTO,
-} from './PostWalletResponseService.create';
+} from '../PostWalletResponseService.create';
 import {
   createCreateQueryWalletResponseRedirectUriInvoker,
   createGenerateResponseCodeInvoker,
-} from '../../adapters/out/cfg';
-import { WalletResponseAcceptedTO } from '../../ports/input';
+} from '../../../adapters/out/cfg';
+import { WalletResponseAcceptedTO } from '../../../ports/input';
 
 describe('PostWalletResponse.create', () => {
   describe('createResponseCode', () => {

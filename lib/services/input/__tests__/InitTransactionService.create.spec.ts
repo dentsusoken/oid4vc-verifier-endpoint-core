@@ -19,15 +19,15 @@ import {
   ClientIdScheme,
   SigningConfig,
   UrlBuilder,
-} from '../../domain';
-import { GenerateEphemeralECDHPrivateJwk } from '../../ports/out/jose';
+} from '../../../domain';
+import { GenerateEphemeralECDHPrivateJwk } from '../../../ports/out/jose';
 import {
   createEphemeralECDHPrivateJwk,
   createJwtSecuredAuthorizationRequestTO,
-} from './InitTransactionService.create';
-import { createSignRequestObjectJoseInvoker } from '../../adapters/out/jose';
+} from '../InitTransactionService.create';
+import { createSignRequestObjectJoseInvoker } from '../../../adapters/out/jose';
 import { generateKeyPair, exportJWK } from 'jose';
-import { JwtSecuredAuthorizationRequestTO } from '../../ports/input/InitTransaction.types';
+import { JwtSecuredAuthorizationRequestTO } from '../../../ports/input/InitTransaction.types';
 
 describe('InitTransactionService.create', () => {
   describe('createEphemeralECDHPrivateJwk', () => {

@@ -5,7 +5,7 @@ import {
   RequestId,
   Presentation,
   ResponseCode,
-} from '../../domain';
+} from '../../../domain';
 import {
   Id,
   PresentationDefinition,
@@ -17,16 +17,16 @@ import {
   InitTransactionTO,
   PresentationTypeTO,
   ResponseModeTO,
-} from '../../ports/input/InitTransaction.types';
+} from '../../../ports/input/InitTransaction.types';
 import { CompactEncrypt, importJWK } from 'jose';
-import { MockConfiguration } from '../../di/MockConfiguration';
-import { PortsInputImpl, PortsOutImpl } from '../../di';
-import { WalletResponseTO } from '../../ports/input';
+import { MockConfiguration } from '../../../di/MockConfiguration';
+import { PortsInputImpl, PortsOutImpl } from '../../../di';
+import { WalletResponseTO } from '../../../ports/input';
 import {
   GetWalletResponseCreateParams,
   createGetWalletResponseServiceInvoker,
-} from './GetWalletResponseService';
-import { LoadPresentationById } from '../../ports/out/persistence';
+} from '../GetWalletResponseService';
+import { LoadPresentationById } from '../../../ports/out/persistence';
 
 describe('createGetWalletResponseServiceInvoker', async () => {
   it('should return WalletResponseAcceptedTO when GetWalletResponseMethod.Redirect', async () => {

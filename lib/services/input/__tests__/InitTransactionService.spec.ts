@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TransactionId } from '../../domain';
+import { TransactionId } from '../../../domain';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 import {
   EmbedModeTO,
@@ -8,11 +8,11 @@ import {
   JwtSecuredAuthorizationRequestTO,
   PresentationTypeTO,
   ResponseModeTO,
-} from '../../ports/input/InitTransaction.types';
-import { createInitTransactionServiceInvoker } from './InitTransactionService';
-import { MockConfiguration } from '../../di/MockConfiguration';
-import { PortsOutImpl, PortsInputImpl } from '../../di';
-import { PresentationInMemoryStore } from '../../adapters/out/persistence';
+} from '../../../ports/input/InitTransaction.types';
+import { createInitTransactionServiceInvoker } from '../InitTransactionService';
+import { MockConfiguration } from '../../../di/MockConfiguration';
+import { PortsOutImpl, PortsInputImpl } from '../../../di';
+import { PresentationInMemoryStore } from '../../../adapters/out/persistence';
 
 describe('createInitTransactionServiceInvoker', async () => {
   const configuration = new MockConfiguration();

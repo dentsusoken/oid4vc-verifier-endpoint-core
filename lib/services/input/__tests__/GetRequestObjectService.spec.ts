@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { RequestId, Presentation } from '../../domain';
+import { RequestId, Presentation } from '../../../domain';
 import { Result } from '@vecrea/oid4vc-core/utils';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 import {
@@ -8,18 +8,18 @@ import {
   InitTransactionTO,
   PresentationTypeTO,
   ResponseModeTO,
-} from '../../ports/input/InitTransaction.types';
-import { MockConfiguration } from '../../di/MockConfiguration';
-import { PortsInputImpl, PortsOutImpl } from '../../di';
+} from '../../../ports/input/InitTransaction.types';
+import { MockConfiguration } from '../../../di/MockConfiguration';
+import { PortsInputImpl, PortsOutImpl } from '../../../di';
 import {
   LoadPresentationByRequestId,
   StorePresentation,
-} from '../../ports/out/persistence';
-import { SignRequestObject } from '../../ports/out/jose';
+} from '../../../ports/out/persistence';
+import { SignRequestObject } from '../../../ports/out/jose';
 import {
   createGetRequestObjectServiceInvoker,
   GetRequestObjectServiceCreateParams,
-} from './GetRequestObjectService';
+} from '../GetRequestObjectService';
 
 describe('createGetRequestObjectServiceInvoker', async () => {
   it('should return Jwt on success', async () => {

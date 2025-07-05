@@ -7,7 +7,7 @@ import {
   ResponseCode,
   AuthorizationResponse,
   ResponseModeOption,
-} from '../../domain';
+} from '../../../domain';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 import {
   EmbedModeTO,
@@ -15,21 +15,21 @@ import {
   InitTransactionTO,
   PresentationTypeTO,
   ResponseModeTO,
-} from '../../ports/input/InitTransaction.types';
+} from '../../../ports/input/InitTransaction.types';
 import { CompactEncrypt, importJWK } from 'jose';
 import {
   LoadPresentationByRequestId,
   StorePresentation,
-} from '../../ports/out/persistence';
-import { createPostWalletResponseServiceInvoker } from './PostWalletResponseService';
-import { VerifyJarmJwt } from '../../ports/out/jose';
+} from '../../../ports/out/persistence';
+import { createPostWalletResponseServiceInvoker } from '../PostWalletResponseService';
+import { VerifyJarmJwt } from '../../../ports/out/jose';
 import { Result } from '@vecrea/oid4vc-core/utils';
 import {
   CreateQueryWalletResponseRedirectUri,
   GenerateResponseCode,
-} from '../../ports/out/cfg';
-import { MockConfiguration } from '../../di/MockConfiguration';
-import { PortsInputImpl, PortsOutImpl } from '../../di';
+} from '../../../ports/out/cfg';
+import { MockConfiguration } from '../../../di/MockConfiguration';
+import { PortsInputImpl, PortsOutImpl } from '../../../di';
 
 describe('createGetRequestObjectServiceInvoker', async () => {
   it('should return WalletResponseAcceptedTO when GetWalletResponseMethod.Redirect', async () => {

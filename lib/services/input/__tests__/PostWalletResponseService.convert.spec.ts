@@ -8,15 +8,15 @@ import {
   PresentationType,
   WalletResponse,
   ResponseModeOption,
-} from '../../domain';
+} from '../../../domain';
 import {
   getRequestId,
   toAuthorizationResponseData,
   toWalletResponse,
   getReponseModeOption,
-} from './PostWalletResponseService.convert';
+} from '../PostWalletResponseService.convert';
 import { generateKeyPair, exportJWK, CompactEncrypt } from 'jose';
-import { createVerifyJarmJwtJoseInvoker } from '../../adapters/out/jose';
+import { createVerifyJarmJwtJoseInvoker } from '../../../adapters/out/jose';
 import {
   PresentationDefinition,
   PresentationSubmission,
