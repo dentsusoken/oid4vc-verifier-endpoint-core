@@ -9,7 +9,7 @@ import {
 import {
   Id,
   PresentationDefinition,
-  PresentationSubmission,
+  // PresentationSubmission,
 } from '@vecrea/oid4vc-prex';
 import {
   EmbedModeTO,
@@ -21,7 +21,7 @@ import {
 import { CompactEncrypt, importJWK } from 'jose';
 import { MockConfiguration } from '../../../di/MockConfiguration';
 import { PortsInputImpl, PortsOutImpl } from '../../../di';
-import { WalletResponseTO } from '../../../ports/input';
+// import { WalletResponseTO } from '../../../ports/input';
 import {
   GetWalletResponseCreateParams,
   createGetWalletResponseServiceInvoker,
@@ -89,7 +89,7 @@ describe('createGetWalletResponseServiceInvoker', async () => {
     ).setProtectedHeader({ alg: 'ECDH-ES+A256KW', enc: 'A256GCM' });
 
     const verifierPrivateJwk = JSON.parse(
-      presentation.ephemeralECDHPrivateJwk!.value
+      presentation.ephemeralECDHPublicJwk!.value
     );
     delete verifierPrivateJwk.d;
     const publicKey = await importJWK(verifierPrivateJwk);
@@ -129,11 +129,11 @@ describe('createGetWalletResponseServiceInvoker', async () => {
         ? getWalletResponseResponse.value
         : undefined
     )!;
-    expect(walletResponseTO).toBeInstanceOf(WalletResponseTO);
-    expect(walletResponseTO.vpToken).toBe('vpToken');
-    expect(walletResponseTO.presentationSubmission).toBeInstanceOf(
-      PresentationSubmission
+    expect(walletResponseTO).toBeInstanceOf(
+      AuthorizationResponse.DirectPostJwt
     );
+    expect(walletResponseTO.state).toBe('state');
+    expect(walletResponseTO.response).toBe('response');
     //console.log(getWalletResponseResponse);
   });
 

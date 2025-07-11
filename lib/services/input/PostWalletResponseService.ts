@@ -30,8 +30,8 @@ import { runAsyncCatching, Result } from '@vecrea/oid4vc-core/utils';
 import {
   getRequestId,
   getReponseModeOption,
-  toAuthorizationResponseData,
-  toWalletResponse,
+  // toAuthorizationResponseData,
+  // toWalletResponse,
 } from './PostWalletResponseService.convert';
 import {
   createResponseCode,
@@ -52,9 +52,9 @@ export const createPostWalletResponseServiceInvoker =
   ({
     loadPresentationByRequestId,
     storePresentation,
-    verifyJarmJwt,
+    // verifyJarmJwt,
     now,
-    verifierConfig,
+    // verifierConfig,
     generateResponseCode,
     createQueryWalletResponseRedirectUri,
   }: CreateParams): PostWalletResponse =>
@@ -80,22 +80,26 @@ export const createPostWalletResponseServiceInvoker =
         throw new Error('Unexpected response mode');
       }
 
-      const authorizationResponseData = await toAuthorizationResponseData(
-        authorizationResponse,
-        verifyJarmJwt,
-        verifierConfig.clientMetaData.jarmOption,
-        presentation.ephemeralECDHPrivateJwk
-      );
-      const walletResponse = await toWalletResponse(
-        authorizationResponseData,
-        presentation.type
-      );
+      // const authorizationResponseData = await toAuthorizationResponseData(
+      //   authorizationResponse,
+      //   verifyJarmJwt,
+      //   verifierConfig.clientMetaData.jarmOption,
+      //   presentation.ephemeralECDHPublicJwk
+      // );
+      // const walletResponse = await toWalletResponse(
+      //   authorizationResponseData,
+      //   presentation.type
+      // );
       const responseCode = await createResponseCode(
         presentation.getWalletResponseMethod,
         generateResponseCode
       );
       const submitted = presentation
-        .submit(now(), walletResponse, responseCode)
+        .submit(
+          now(),
+          authorizationResponse as AuthorizationResponse.DirectPostJwt,
+          responseCode
+        )
         .getOrThrow();
       await storePresentation(submitted);
 

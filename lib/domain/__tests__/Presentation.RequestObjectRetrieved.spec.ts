@@ -4,13 +4,15 @@ import {
   RequestId,
   Nonce,
   IdTokenType,
-  EphemeralECDHPrivateJwk,
+  // EphemeralECDHPrivateJwk,
   GetWalletResponseMethod,
   ResponseModeOption,
   Presentation,
   PresentationType,
   ResponseCode,
-  WalletResponse,
+  // WalletResponse,
+  EphemeralECDHPublicJwk,
+  AuthorizationResponse,
 } from '..';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
@@ -21,7 +23,7 @@ describe('RequestObjectRetrieved', () => {
   const requestId = new RequestId('request-id');
   const requestObjectRetrievedAt = new Date('2023-06-08T10:30:00Z');
   const nonce = new Nonce('nonce');
-  const ephemeralECDHPrivateJwk = new EphemeralECDHPrivateJwk('hoge');
+  const ephemeralECDHPublicJwk = new EphemeralECDHPublicJwk('hoge');
   const responseMode = ResponseModeOption.DirectPostJwt;
   const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
     'http://example.com/{requestId}'
@@ -35,7 +37,7 @@ describe('RequestObjectRetrieved', () => {
       requestId,
       requestObjectRetrievedAt,
       nonce,
-      ephemeralECDHPrivateJwk,
+      ephemeralECDHPublicJwk,
       responseMode,
       getWalletResponseMethod
     );
@@ -48,8 +50,8 @@ describe('RequestObjectRetrieved', () => {
       requestObjectRetrievedAt
     );
     expect(requestObjectRetrieved.nonce).toBe(nonce);
-    expect(requestObjectRetrieved.ephemeralECDHPrivateJwk).toBe(
-      ephemeralECDHPrivateJwk
+    expect(requestObjectRetrieved.ephemeralECDHPublicJwk).toBe(
+      ephemeralECDHPublicJwk
     );
     expect(requestObjectRetrieved.responseMode).toBe(responseMode);
     expect(requestObjectRetrieved.getWalletResponseMethod).toBe(
@@ -67,7 +69,7 @@ describe('RequestObjectRetrieved', () => {
         requestId,
         requestObjectRetrievedAt,
         nonce,
-        ephemeralECDHPrivateJwk,
+        ephemeralECDHPublicJwk,
         responseMode,
         getWalletResponseMethod
       );
@@ -84,13 +86,16 @@ describe('RequestObjectRetrieved', () => {
       requestId,
       requestObjectRetrievedAt,
       nonce,
-      ephemeralECDHPrivateJwk,
+      ephemeralECDHPublicJwk,
       responseMode,
       getWalletResponseMethod
     );
 
     const submittedAt = new Date('2023-06-08T11:00:00Z');
-    const walletResponse = new WalletResponse.IdToken('token');
+    const walletResponse = new AuthorizationResponse.DirectPostJwt(
+      'state',
+      'response'
+    );
     const responseCode = new ResponseCode('success');
 
     const result = requestObjectRetrieved.submit(
@@ -122,7 +127,7 @@ describe('RequestObjectRetrieved', () => {
         requestId,
         requestObjectRetrievedAt,
         nonce,
-        ephemeralECDHPrivateJwk,
+        ephemeralECDHPublicJwk,
         responseMode,
         getWalletResponseMethod
       );
@@ -136,8 +141,8 @@ describe('RequestObjectRetrieved', () => {
           requestObjectRetrievedAt
         );
         expect(presentation.nonce).toBe(nonce);
-        expect(presentation.ephemeralECDHPrivateJwk).toBe(
-          ephemeralECDHPrivateJwk
+        expect(presentation.ephemeralECDHPublicJwk).toBe(
+          ephemeralECDHPublicJwk
         );
         expect(presentation.responseMode).toBe(responseMode);
         expect(presentation.getWalletResponseMethod).toBe(
@@ -158,7 +163,7 @@ describe('RequestObjectRetrieved', () => {
         requestId,
         requestObjectRetrievedAt,
         nonce,
-        ephemeralECDHPrivateJwk,
+        ephemeralECDHPublicJwk,
         responseMode,
         getWalletResponseMethod
       );
@@ -173,8 +178,8 @@ describe('RequestObjectRetrieved', () => {
             requestObjectRetrievedAt
           );
           expect(presentation.nonce).toBe(nonce);
-          expect(presentation.ephemeralECDHPrivateJwk).toBe(
-            ephemeralECDHPrivateJwk
+          expect(presentation.ephemeralECDHPublicJwk).toBe(
+            ephemeralECDHPublicJwk
           );
           expect(presentation.responseMode).toBe(responseMode);
           expect(presentation.getWalletResponseMethod).toBe(
@@ -199,7 +204,7 @@ describe('RequestObjectRetrieved', () => {
       const requestId = new RequestId('def456');
       const requestObjectRetrievedAt = new Date(0);
       const nonce = new Nonce('ghi789');
-      const ephemeralECDHPrivateJwk = new EphemeralECDHPrivateJwk('hoge');
+      const ephemeralECDHPublicJwk = new EphemeralECDHPublicJwk('hoge');
       const responseMode = ResponseModeOption.DirectPost;
       const getWalletResponseMethod = GetWalletResponseMethod.Poll.INSTANCE;
 
@@ -210,7 +215,7 @@ describe('RequestObjectRetrieved', () => {
         requestId,
         requestObjectRetrievedAt,
         nonce,
-        ephemeralECDHPrivateJwk,
+        ephemeralECDHPublicJwk,
         responseMode,
         getWalletResponseMethod
       );
@@ -235,7 +240,7 @@ describe('RequestObjectRetrieved', () => {
         request_id: 'def456',
         request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
         nonce: 'ghi789',
-        ephemeral_ecdh_private_jwk: 'hoge',
+        ephemeral_ecdh_public_jwk: 'hoge',
         response_mode: 'direct_post',
         get_wallet_response_method: {
           __type: 'Poll',
@@ -264,7 +269,7 @@ describe('RequestObjectRetrieved', () => {
         request_id: 'def456',
         request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
         nonce: 'ghi789',
-        ephemeral_ecdh_private_jwk: 'hoge',
+        ephemeral_ecdh_public_jwk: 'hoge',
         response_mode: 'direct_post',
         get_wallet_response_method: {
           __type: 'Poll',
@@ -291,8 +296,8 @@ describe('RequestObjectRetrieved', () => {
         new Date('1970-01-01T00:00:00.000Z')
       );
       expect(requestObjectRetrieved.nonce).toEqual(new Nonce('ghi789'));
-      expect(requestObjectRetrieved.ephemeralECDHPrivateJwk).toEqual(
-        new EphemeralECDHPrivateJwk('hoge')
+      expect(requestObjectRetrieved.ephemeralECDHPublicJwk).toEqual(
+        new EphemeralECDHPublicJwk('hoge')
       );
       expect(requestObjectRetrieved.responseMode).toEqual(
         ResponseModeOption.DirectPost
@@ -328,7 +333,7 @@ describe('RequestObjectRetrieved', () => {
       expect(requestObjectRetrieved).toBeInstanceOf(
         Presentation.RequestObjectRetrieved
       );
-      expect(requestObjectRetrieved.ephemeralECDHPrivateJwk).toBeUndefined();
+      expect(requestObjectRetrieved.ephemeralECDHPublicJwk).toBeUndefined();
     });
   });
 });

@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-import { PresentationSubmission } from '@vecrea/oid4vc-prex';
+import {
+  PresentationSubmission,
+  presentationSubmissionSchema,
+} from '@vecrea/oid4vc-prex';
 import { Jwt } from './types';
+import { z } from 'zod';
 
 /**
  * Represents the data structure for an authorization response.
@@ -34,6 +38,72 @@ export interface AuthorizationResponseData {
   /** Detailed description of the error, if an error occurred. */
   errorDescription?: string;
 }
+
+/**
+ * Schema for the DirectPost data.
+ * @typedef {Object} DirectPostSchema
+ * @property {Object} response - The response object.
+ *
+ * TODO - confirm this schema is correct
+ */
+export const directPostSchema = z.object({
+  response: z.object({
+    state: z.string(),
+    id_token: z.string().optional(),
+    vp_token: z.string().optional(),
+    presentation_submission: presentationSubmissionSchema,
+    error: z.string().optional(),
+    error_description: z.string().optional(),
+  }),
+});
+
+/**
+ * Schema for the DirectPostJwt data.
+ * @typedef {Object} DirectPostJwtSchema
+ * @property {string} state - The state parameter.
+ * @property {string} response - The response parameter.
+ */
+export const directPostJwtSchema = z.object({
+  state: z.string(),
+  response: z.string(),
+});
+
+/**
+ * Schema for the AuthorizationResponse data.
+ * @typedef {Object} AuthorizationResponseSchema
+ * @property {string} state - The state parameter.
+ * @property {string} response - The response parameter.
+ *
+ */
+export const authorizationResponseSchema = directPostJwtSchema;
+// z.union([
+//   directPostSchema,
+//   directPostJwtSchema,
+// ]);
+
+/**
+ * JSON representation of the DirectPost data.
+ * @typedef {Object} DirectPostJSON
+ * @property {Object} response - The response object.
+ */
+export type DirectPostJSON = z.infer<typeof directPostSchema>;
+
+/**
+ * JSON representation of the DirectPostJwt data.
+ * @typedef {Object} DirectPostJwtJSON
+ * @property {string} state - The state parameter.
+ * @property {string} response - The response parameter.
+ */
+export type DirectPostJwtJSON = z.infer<typeof directPostJwtSchema>;
+
+/**
+ * JSON representation of the AuthorizationResponse data.
+ * @typedef {Object} AuthorizationResponseJSON
+ * @property {Object} response - The response object.
+ */
+export type AuthorizationResponseJSON = z.infer<
+  typeof authorizationResponseSchema
+>;
 
 /**
  * Represents either a DirectPost or DirectPostJwt authorization response.
@@ -83,5 +153,16 @@ export namespace AuthorizationResponse {
      * @param jarm - The JWT Authorization Response Mode (JARM) token.
      */
     constructor(public readonly state: string, public readonly jarm: Jwt) {}
+
+    toJSON(): DirectPostJwtJSON {
+      return {
+        state: this.state,
+        response: this.jarm,
+      };
+    }
+
+    static fromJSON(json: DirectPostJwtJSON): DirectPostJwt {
+      return new DirectPostJwt(json.state, json.response);
+    }
   }
 }

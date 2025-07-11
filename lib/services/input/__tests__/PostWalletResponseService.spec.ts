@@ -94,7 +94,7 @@ describe('createGetRequestObjectServiceInvoker', async () => {
     ).setProtectedHeader({ alg: 'ECDH-ES+A256KW', enc: 'A256GCM' });
 
     const verifierPrivateJwk = JSON.parse(
-      presentation.ephemeralECDHPrivateJwk!.value
+      presentation.ephemeralECDHPublicJwk!.value
     );
     delete verifierPrivateJwk.d;
     const publicKey = await importJWK(verifierPrivateJwk);
