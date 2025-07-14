@@ -20,6 +20,7 @@ import {
 } from '@vecrea/oid4vc-prex';
 import { Jwt } from './types';
 import { z } from 'zod';
+import { FromJSON } from '../common/json/FromJSON';
 
 /**
  * Represents the data structure for an authorization response.
@@ -48,10 +49,10 @@ export interface AuthorizationResponseData {
  */
 export const directPostSchema = z.object({
   response: z.object({
-    state: z.string(),
+    state: z.string().optional(),
     id_token: z.string().optional(),
     vp_token: z.string().optional(),
-    presentation_submission: presentationSubmissionSchema,
+    presentation_submission: presentationSubmissionSchema.optional(),
     error: z.string().optional(),
     error_description: z.string().optional(),
   }),
@@ -75,11 +76,10 @@ export const directPostJwtSchema = z.object({
  * @property {string} response - The response parameter.
  *
  */
-export const authorizationResponseSchema = directPostJwtSchema;
-// z.union([
-//   directPostSchema,
-//   directPostJwtSchema,
-// ]);
+export const authorizationResponseSchema = z.union([
+  directPostSchema,
+  directPostJwtSchema,
+]);
 
 /**
  * JSON representation of the DirectPost data.
@@ -123,13 +123,28 @@ export namespace AuthorizationResponse {
    * - 'DirectPost': Indicates that the response is a direct POST response.
    * - 'DirectPostJwt': Indicates that the response is a direct POST response with a JWT (JSON Web Token).
    */
-  interface AuthorizationResponse {
+  interface AuthorizationResponseBase {
     __type: 'DirectPost' | 'DirectPostJwt';
   }
+
+  /**
+   * Converts a JSON object to an AuthorizationResponse instance.
+   * @param json - The JSON object to convert.
+   * @returns The AuthorizationResponse instance.
+   */
+  export const fromJSON: FromJSON<
+    AuthorizationResponseJSON,
+    AuthorizationResponse
+  > = (json) => {
+    if ('state' in json) {
+      return new DirectPostJwt(json.state, json.response);
+    }
+    return new DirectPost(json.response);
+  };
   /**
    * Represents a direct post authorization response.
    */
-  export class DirectPost implements AuthorizationResponse {
+  export class DirectPost implements AuthorizationResponseBase {
     /** Discriminator for the DirectPost type. */
     readonly __type = 'DirectPost' as const;
 
@@ -138,12 +153,31 @@ export namespace AuthorizationResponse {
      * @param response - The authorization response data.
      */
     constructor(public readonly response: AuthorizationResponseData) {}
+
+    /**
+     * Converts the DirectPost instance to a JSON object.
+     * @returns The JSON representation of the DirectPost instance.
+     */
+    toJSON(): DirectPostJSON {
+      return {
+        response: this.response,
+      };
+    }
+
+    /**
+     * Creates a new DirectPost instance from a JSON object.
+     * @param json - The JSON object to create the DirectPost instance from.
+     * @returns The DirectPost instance.
+     */
+    static fromJSON(json: DirectPostJSON): DirectPost {
+      return new DirectPost(json.response);
+    }
   }
 
   /**
    * Represents a direct post JWT authorization response.
    */
-  export class DirectPostJwt implements AuthorizationResponse {
+  export class DirectPostJwt implements AuthorizationResponseBase {
     /** Discriminator for the DirectPostJwt type. */
     readonly __type = 'DirectPostJwt' as const;
 
@@ -154,6 +188,10 @@ export namespace AuthorizationResponse {
      */
     constructor(public readonly state: string, public readonly jarm: Jwt) {}
 
+    /**
+     * Converts the DirectPostJwt instance to a JSON object.
+     * @returns The JSON representation of the DirectPostJwt instance.
+     */
     toJSON(): DirectPostJwtJSON {
       return {
         state: this.state,
@@ -161,6 +199,11 @@ export namespace AuthorizationResponse {
       };
     }
 
+    /**
+     * Creates a new DirectPostJwt instance from a JSON object.
+     * @param json - The JSON object to create the DirectPostJwt instance from.
+     * @returns The DirectPostJwt instance.
+     */
     static fromJSON(json: DirectPostJwtJSON): DirectPostJwt {
       return new DirectPostJwt(json.state, json.response);
     }

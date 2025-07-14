@@ -515,8 +515,7 @@ export namespace Presentation {
      */
     submit(
       at: Date,
-      // TODO: support DirectPost
-      walletResponse: AuthorizationResponse.DirectPostJwt,
+      walletResponse: AuthorizationResponse,
       responseCode: ResponseCode | undefined
     ): Result<Presentation.Submitted> {
       return runCatching(
@@ -612,8 +611,7 @@ export namespace Presentation {
         new RequestId(json.request_id),
         new Date(json.request_object_retrieved_at),
         new Date(json.submitted_at),
-        // TODO: support DirectPost
-        AuthorizationResponse.DirectPostJwt.fromJSON(json.wallet_response),
+        AuthorizationResponse.fromJSON(json.wallet_response),
         new Nonce(json.nonce),
         json.response_code ? new ResponseCode(json.response_code) : undefined
       );
@@ -637,8 +635,7 @@ export namespace Presentation {
       public requestId: RequestId,
       public requestObjectRetrievedAt: Date,
       public submittedAt: Date,
-      // TODO: support DirectPost
-      public walletResponse: AuthorizationResponse.DirectPostJwt,
+      public walletResponse: AuthorizationResponse,
       public nonce: Nonce,
       public responseCode: ResponseCode | undefined
     ) {

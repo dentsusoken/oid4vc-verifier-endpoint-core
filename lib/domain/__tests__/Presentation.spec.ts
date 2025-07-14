@@ -142,7 +142,7 @@ describe('Presentation.fromJSON', () => {
     expect(presentation.submittedAt).toEqual(new Date('2023-06-08T10:10:00Z'));
     expect(presentation.walletResponse).toMatchObject({
       state: 'state',
-      response: 'response',
+      jarm: 'response',
     });
     expect(presentation.nonce).toEqual(new Nonce('nonce-value'));
     expect(presentation.responseCode).toEqual(

@@ -236,7 +236,7 @@ describe('Submitted', () => {
       expect(submitted.walletResponse).toMatchObject({
         __type: expectedWalletResponse.__type,
         state: expectedWalletResponse.state,
-        response: expectedWalletResponse.jarm,
+        jarm: expectedWalletResponse.jarm,
       });
       expect(submitted.nonce).toEqual(new Nonce('ghi789'));
       expect(submitted.responseCode).toEqual(new ResponseCode('efg'));

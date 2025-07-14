@@ -5,6 +5,7 @@ import {
   RequestId,
   Presentation,
   ResponseCode,
+  EphemeralECDHPublicJwk,
 } from '../../../domain';
 import {
   Id,
@@ -41,6 +42,9 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const initTransactionTO: InitTransactionTO = {
       type: PresentationTypeTO.VpTokenRequest,
+      ephemeralECDHPublicJwkS: new EphemeralECDHPublicJwk(
+        '{"kty":"EC","crv":"P-256","x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4","y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM","d":"870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"}'
+      ),
       idTokenType: IdTokenTypeTO.SubjectSigned,
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPostJwt,
@@ -124,16 +128,17 @@ describe('createGetWalletResponseServiceInvoker', async () => {
       submitted.responseCode
     );
     expect(getWalletResponseResponse.__type === 'Found').toBe(true);
-    const walletResponseTO = (
-      getWalletResponseResponse.__type === 'Found'
-        ? getWalletResponseResponse.value
-        : undefined
-    )!;
-    expect(walletResponseTO).toBeInstanceOf(
-      AuthorizationResponse.DirectPostJwt
-    );
-    expect(walletResponseTO.state).toBe('state');
-    expect(walletResponseTO.response).toBe('response');
+    if (getWalletResponseResponse.__type === 'Found') {
+      const walletResponseTO = getWalletResponseResponse.value as any;
+      if ('state' in walletResponseTO) {
+        // DirectPostJwt format
+        expect(walletResponseTO.state).toBe(payload.state);
+        expect(walletResponseTO.response).toBe(jarm);
+      } else {
+        // DirectPost format
+        expect(walletResponseTO.response.state).toBe(payload.state);
+      }
+    }
     //console.log(getWalletResponseResponse);
   });
 

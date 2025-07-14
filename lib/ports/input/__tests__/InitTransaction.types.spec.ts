@@ -53,7 +53,9 @@ describe('InitTransactionTO', () => {
     expect(instance.jarMode).toBe(EmbedModeTO.ByReference);
     expect(instance.presentationDefinitionMode).toBe(EmbedModeTO.ByValue);
     expect(instance.redirectUriTemplate).toBe('https://example.com/callback');
-    expect(instance.ephemeralECDHPublicJwkS).toBe('public-jwk');
+    expect(instance.ephemeralECDHPublicJwkS).toEqual(
+      new EphemeralECDHPublicJwk('public-jwk')
+    );
   });
 
   it('should convert class instance to plain object', () => {
@@ -157,6 +159,8 @@ describe('InitTransationSchema', () => {
       presentation_definition_mode: plainObject.presentation_definition_mode,
       wallet_response_redirect_uri_template:
         plainObject.wallet_response_redirect_uri_template,
+      ephemeral_ecdh_public_jwk:
+        '{"kty":"EC","crv":"P-256","x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4","y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM"}',
     });
 
     expect(schema.type).toBe(plainObject.type);
