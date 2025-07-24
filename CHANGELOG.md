@@ -16,3 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration with @vecrea/oid4vc-core and @vecrea/oid4vc-prex
 - Build configuration with Vite and vite-plugin-dts
 - Comprehensive test suite with Vitest
+
+## [1.1.1] - 2025-07-xx
+
+### Changed
+
+- Receive ECDH-ES public key for wallet response encryption from Frontend instead of generating it at Endpoint
