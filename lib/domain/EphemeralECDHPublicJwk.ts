@@ -55,20 +55,23 @@ const jwkSchema = z.object({
  *
  * @throws {z.ZodError} Throws a ZodError if the input fails validation
  */
-export const ephemeralECDHPublicJwkSchema = z.string().refine(
-  (str) => {
-    try {
-      const parsed = JSON.parse(str);
-      return jwkSchema.safeParse(parsed).success;
-    } catch {
-      return false;
+export const ephemeralECDHPublicJwkSchema = z.union([
+  z.string().refine(
+    (str) => {
+      try {
+        const parsed = JSON.parse(str);
+        return jwkSchema.safeParse(parsed).success;
+      } catch {
+        return false;
+      }
+    },
+    {
+      message:
+        'Must be a valid JSON string representing a JWK with kty, crv, x, and y properties',
     }
-  },
-  {
-    message:
-      'Must be a valid JSON string representing a JWK with kty, crv, x, and y properties',
-  }
-);
+  ),
+  jwkSchema.transform((jwk) => JSON.stringify(jwk)),
+]);
 
 /**
  * Represents an ephemeral ECDH public key in JWK format.
