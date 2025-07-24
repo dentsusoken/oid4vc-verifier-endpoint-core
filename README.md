@@ -40,6 +40,20 @@ This project is based on the [verifier-endpoint](https://github.com/eu-digital-i
 - [Initiate Transaction](docs/api/frontend/InitiateTransaction.md)
 - [Get Wallet Response](docs/api/frontend/GetWalletResponse.md)
 
+#### Wallet
+
+- [Get Authorization Request](docs/api/wallet/GetAuthorizationRequest.md)
+- [Get Public Key](docs/api/wallet/GetPublicKey.md)
+- [Post Wallet Response](docs/api/wallet/PostWalletResponse.md)
+
+### Development Guides
+
+- [Verifier Endpoint Building Guide](docs/verifier_endpoint_building_guide.md)
+
+### JWK Generation
+
+- [How to Generate JWK with X509 Certificate](docs/jwk_generate/how_to_generate_JWK_with_x509_certificate.md)
+
 ## Additional Information
 
 The content provided is based on the following:
