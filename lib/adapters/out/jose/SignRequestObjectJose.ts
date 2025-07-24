@@ -49,7 +49,7 @@ const invoke: SignRequestObject = async (
     presentation.requestId,
     verifierConfig.clientMetaData,
     requestObject.responseMode,
-    presentation.ephemeralECDHPrivateJwk
+    presentation.ephemeralECDHPublicJwk
   );
 
   return sign(

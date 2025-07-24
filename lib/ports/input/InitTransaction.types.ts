@@ -19,6 +19,10 @@ import {
 } from '@vecrea/oid4vc-prex';
 import { z } from 'zod';
 import { FromJSON } from '../../common/json/FromJSON';
+import {
+  EphemeralECDHPublicJwk,
+  ephemeralECDHPublicJwkSchema,
+} from '../../domain';
 
 /**
  * Enumeration of presentation types for the transaction.
@@ -78,6 +82,7 @@ export const initTransactionSchema = z.object({
     .enum([EmbedModeTO.ByValue, EmbedModeTO.ByReference])
     .optional(),
   wallet_response_redirect_uri_template: z.string().optional(),
+  ephemeral_ecdh_public_jwk: ephemeralECDHPublicJwkSchema,
 });
 
 export type InitTransactionJSON = z.infer<typeof initTransactionSchema>;
@@ -91,9 +96,11 @@ export class InitTransactionTO {
   jarMode?: EmbedModeTO;
   presentationDefinitionMode?: EmbedModeTO;
   redirectUriTemplate?: string;
+  ephemeralECDHPublicJwkS: EphemeralECDHPublicJwk;
 
   constructor(
     type: PresentationTypeTO = PresentationTypeTO.IdAndVpTokenRequest,
+    ephemeralECDHPublicJwkS: EphemeralECDHPublicJwk,
     idTokenType?: IdTokenTypeTO,
     presentationDefinition?: PresentationDefinition,
     nonce?: string,
@@ -103,6 +110,7 @@ export class InitTransactionTO {
     redirectUriTemplate?: string
   ) {
     this.type = type;
+    this.ephemeralECDHPublicJwkS = ephemeralECDHPublicJwkS;
     this.idTokenType = idTokenType;
     this.presentationDefinition = presentationDefinition;
     this.nonce = nonce;
@@ -122,6 +130,7 @@ export class InitTransactionTO {
       jar_mode: this.jarMode,
       presentation_definition_mode: this.presentationDefinitionMode,
       wallet_response_redirect_uri_template: this.redirectUriTemplate,
+      ephemeral_ecdh_public_jwk: this.ephemeralECDHPublicJwkS.toJSON(),
     };
   }
 
@@ -130,6 +139,7 @@ export class InitTransactionTO {
   ) => {
     return new InitTransactionTO(
       json.type,
+      new EphemeralECDHPublicJwk(json.ephemeral_ecdh_public_jwk),
       json.id_token_type,
       json.presentation_definition &&
         PresentationDefinition.fromJSON(json.presentation_definition),

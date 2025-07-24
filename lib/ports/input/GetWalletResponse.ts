@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResponseCode, TransactionId } from '../../domain';
+import {
+  AuthorizationResponseJSON,
+  ResponseCode,
+  TransactionId,
+} from '../../domain';
 import { QueryResponse } from './QueryResponse';
-import { WalletResponseTO } from './GetWalletResponse.types';
+// import { WalletResponseTO } from './GetWalletResponse.types';
 
 export { WalletResponseTO } from './GetWalletResponse.types';
 /**
@@ -40,7 +44,7 @@ export { WalletResponseTO } from './GetWalletResponse.types';
  */
 export interface GetWalletResponse {
   (transactionId: TransactionId, responseCode?: ResponseCode): Promise<
-    QueryResponse<WalletResponseTO>
+    QueryResponse<AuthorizationResponseJSON>
   >;
 }
 //@Expose({ name: 'wallet_response' })

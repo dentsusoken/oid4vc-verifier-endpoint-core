@@ -5,11 +5,12 @@ import {
   RequestId,
   Presentation,
   ResponseCode,
+  EphemeralECDHPublicJwk,
 } from '../../../domain';
 import {
   Id,
   PresentationDefinition,
-  PresentationSubmission,
+  // PresentationSubmission,
 } from '@vecrea/oid4vc-prex';
 import {
   EmbedModeTO,
@@ -21,7 +22,7 @@ import {
 import { CompactEncrypt, importJWK } from 'jose';
 import { MockConfiguration } from '../../../di/MockConfiguration';
 import { PortsInputImpl, PortsOutImpl } from '../../../di';
-import { WalletResponseTO } from '../../../ports/input';
+// import { WalletResponseTO } from '../../../ports/input';
 import {
   GetWalletResponseCreateParams,
   createGetWalletResponseServiceInvoker,
@@ -41,6 +42,9 @@ describe('createGetWalletResponseServiceInvoker', async () => {
 
     const initTransactionTO: InitTransactionTO = {
       type: PresentationTypeTO.VpTokenRequest,
+      ephemeralECDHPublicJwkS: new EphemeralECDHPublicJwk(
+        '{"kty":"EC","crv":"P-256","x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4","y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM","d":"870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"}'
+      ),
       idTokenType: IdTokenTypeTO.SubjectSigned,
       nonce: 'nonce',
       responseMode: ResponseModeTO.DirectPostJwt,
@@ -89,7 +93,7 @@ describe('createGetWalletResponseServiceInvoker', async () => {
     ).setProtectedHeader({ alg: 'ECDH-ES+A256KW', enc: 'A256GCM' });
 
     const verifierPrivateJwk = JSON.parse(
-      presentation.ephemeralECDHPrivateJwk!.value
+      presentation.ephemeralECDHPublicJwk!.value
     );
     delete verifierPrivateJwk.d;
     const publicKey = await importJWK(verifierPrivateJwk);
@@ -124,16 +128,17 @@ describe('createGetWalletResponseServiceInvoker', async () => {
       submitted.responseCode
     );
     expect(getWalletResponseResponse.__type === 'Found').toBe(true);
-    const walletResponseTO = (
-      getWalletResponseResponse.__type === 'Found'
-        ? getWalletResponseResponse.value
-        : undefined
-    )!;
-    expect(walletResponseTO).toBeInstanceOf(WalletResponseTO);
-    expect(walletResponseTO.vpToken).toBe('vpToken');
-    expect(walletResponseTO.presentationSubmission).toBeInstanceOf(
-      PresentationSubmission
-    );
+    if (getWalletResponseResponse.__type === 'Found') {
+      const walletResponseTO = getWalletResponseResponse.value as any;
+      if ('state' in walletResponseTO) {
+        // DirectPostJwt format
+        expect(walletResponseTO.state).toBe(payload.state);
+        expect(walletResponseTO.response).toBe(jarm);
+      } else {
+        // DirectPost format
+        expect(walletResponseTO.response.state).toBe(payload.state);
+      }
+    }
     //console.log(getWalletResponseResponse);
   });
 

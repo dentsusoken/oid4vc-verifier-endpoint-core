@@ -6,8 +6,9 @@ import {
   ResponseCode,
   PresentationType,
   Presentation,
-  WalletResponse,
+  // WalletResponse,
   IdTokenType,
+  AuthorizationResponse,
 } from '..';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
@@ -18,7 +19,10 @@ describe('Submitted', () => {
   const requestId = new RequestId('request-id');
   const requestObjectRetrievedAt = new Date('2023-06-01T10:01:00Z');
   const submittedAt = new Date('2023-06-01T10:02:00Z');
-  const walletResponse = new WalletResponse.IdToken('aa');
+  const walletResponse = new AuthorizationResponse.DirectPostJwt(
+    'state',
+    'response'
+  );
   const nonce = new Nonce('nonce');
   const responseCode = new ResponseCode('response_code');
 
@@ -174,8 +178,8 @@ describe('Submitted', () => {
         request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
         submitted_at: '1970-01-01T00:00:00.000Z',
         wallet_response: {
-          __type: 'IdToken',
-          id_token: 'aa',
+          state: 'state',
+          response: 'response',
         },
         nonce: 'ghi789',
         response_code: 'efg',
@@ -199,8 +203,8 @@ describe('Submitted', () => {
         request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
         submitted_at: '1970-01-01T00:00:00.000Z',
         wallet_response: {
-          __type: 'IdToken',
-          id_token: 'aa',
+          state: 'state',
+          response: 'response',
         },
         nonce: 'ghi789',
         response_code: 'efg',
@@ -225,10 +229,14 @@ describe('Submitted', () => {
       expect(submitted.submittedAt).toEqual(
         new Date('1970-01-01T00:00:00.000Z')
       );
-      const expectedWalletResponse = new WalletResponse.IdToken('aa');
+      const expectedWalletResponse = new AuthorizationResponse.DirectPostJwt(
+        'state',
+        'response'
+      );
       expect(submitted.walletResponse).toMatchObject({
         __type: expectedWalletResponse.__type,
-        idToken: expectedWalletResponse.idToken,
+        state: expectedWalletResponse.state,
+        jarm: expectedWalletResponse.jarm,
       });
       expect(submitted.nonce).toEqual(new Nonce('ghi789'));
       expect(submitted.responseCode).toEqual(new ResponseCode('efg'));
@@ -249,8 +257,8 @@ describe('Submitted', () => {
         request_object_retrieved_at: '1970-01-01T00:00:00.000Z',
         submitted_at: '1970-01-01T00:00:00.000Z',
         wallet_response: {
-          __type: 'IdToken',
-          id_token: 'aa',
+          state: 'state',
+          response: 'response',
         },
         nonce: 'ghi789',
       };

@@ -39,10 +39,7 @@ import {
   toPresentationType,
   toResponseModeOption,
 } from './InitTransactionService.convert';
-import {
-  createEphemeralECDHPrivateJwk,
-  createJwtSecuredAuthorizationRequestTO,
-} from './InitTransactionService.create';
+import { createJwtSecuredAuthorizationRequestTO } from './InitTransactionService.create';
 
 type CreateParams = {
   generateTransactionId: GenerateTransactionId;
@@ -80,7 +77,6 @@ export const createInitTransactionServiceInvoker =
     signRequestObject,
     verifierConfig,
     now,
-    generateEphemeralECDHPrivateJwk,
     jarByReference,
     presentationDefinitionByReference,
     createQueryWalletResponseRedirectUri,
@@ -100,11 +96,11 @@ export const createInitTransactionServiceInvoker =
         initTransactionTO.responseMode,
         verifierConfig.responseModeOption
       );
-      const ephemeralECDHPrivateJwk = await createEphemeralECDHPrivateJwk(
-        responseMode,
-        verifierConfig.clientMetaData.jarmOption,
-        generateEphemeralECDHPrivateJwk
-      );
+      // const ephemeralECDHPrivateJwk = await createEphemeralECDHPrivateJwk(
+      //   responseMode,
+      //   verifierConfig.clientMetaData.jarmOption,
+      //   generateEphemeralECDHPrivateJwk
+      // );
       const getWalletResponseMethod = toGetWalletResponseMethod(
         initTransactionTO.redirectUriTemplate,
         createQueryWalletResponseRedirectUri
@@ -130,7 +126,7 @@ export const createInitTransactionServiceInvoker =
         type,
         requestId,
         nonce,
-        ephemeralECDHPrivateJwk,
+        initTransactionTO.ephemeralECDHPublicJwkS,
         responseMode,
         presentationDefinitionMode,
         getWalletResponseMethod

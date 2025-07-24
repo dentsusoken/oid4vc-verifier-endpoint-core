@@ -48,6 +48,7 @@ VP 提示フローの開始をリクエストをするためのエンドポイ�
 | jar_mode                                                                      | -                  | No   | 認可リクエストが Wallet に渡される方法を制御する。`by_value`または`by_reference`を指定する。`by_value`の場合は、認可リクエストが Wallet にインラインで渡され、`by_reference`の場合は、`request_uri`を経由して渡される。                           |
 | presentation_definition_mode                                                  | -                  | No   | Presentation Definition が Wallet に渡される方法を制御する。`by_value`または`by_reference`を指定する。`by_value`の場合は、認可リクエストが Wallet にインラインで渡され、`by_reference`の場合は、`presentation_definition_uri`を経由して渡される。 |
 | wallet_response_redirect_uri_template                                         | -                  | No   | Same device で VP 提示フローを実施した際に、Wallet から Verifier に VP を提示後 Wallet から Verifier Frontend へリダイレクトする際の URI のテンプレートを指定する。                                                                               |
+| ephemeral_ecdh_public_jwk                                                     | -                  | Yes  | Walletでvp_tokenを暗号化する際に使用するECDH-ESの公開鍵                                                                                                                                                                                           |
 
 ## レスポンス
 
@@ -85,11 +86,11 @@ curl --location 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/
           "constraints": {
             "fields": [
               {
-                "path": ["$['\''org.iso.18013.5.1'\'']['\''given_name'\'']"],
+                "path": ["$['org.iso.18013.5.1']['given_name']"],
                 "intent_to_retain": false
               },
               {
-                "path": ["$['\''org.iso.18013.5.1'\'']['\''document_number'\'']"],
+                "path": ["$['org.iso.18013.5.1']['document_number']"],
                 "intent_to_retain": false
               }
             ]
@@ -97,7 +98,16 @@ curl --location 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/
         }
       ]
     },
-    "nonce": "3b75b9b1-2463-4d4a-b921-adc21642c43c"
+    "nonce": "3b75b9b1-2463-4d4a-b921-adc21642c43c",
+    "ephemeral_ecdh_public_jwk" :"{
+      'kty': 'EC',
+      'x': 'ODhL-OY1pZC9m4n4sR8AcBkR6WR9Flf-auV62TfjCpw',
+      'y': 'WViWpkI_U7eGs73bcEnb52LHCwJ9bUu121-ZOBfb6II',
+      'crv': 'P-256',
+      'kid': '48ca2b34-4133-46c9-997a-91a28383e435',
+      'use': 'enc',
+      'alg': 'ECDH-ES'
+    }"
   }'
 ```
 

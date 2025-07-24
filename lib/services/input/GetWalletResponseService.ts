@@ -17,7 +17,7 @@
 import { Duration } from '../../domain';
 import { QueryResponse, GetWalletResponse } from '../../ports/input';
 import { LoadPresentationById } from '../../ports/out/persistence';
-import { toWalletResponseTO } from './GetWalletResponseService.convert';
+// import { toWalletResponseTO } from './GetWalletResponseService.convert';
 
 export type GetWalletResponseCreateParams = {
   loadPresentationById: LoadPresentationById;
@@ -72,6 +72,7 @@ export const createGetWalletResponseServiceInvoker =
     }
 
     return new QueryResponse.Found(
-      toWalletResponseTO(presentation.walletResponse)
+      presentation.walletResponse.toJSON()
+      // toWalletResponseTO(presentation.walletResponse)
     );
   };

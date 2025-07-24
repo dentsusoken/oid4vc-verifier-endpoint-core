@@ -6,11 +6,12 @@ import {
   RequestId,
   PresentationType,
   Nonce,
-  EphemeralECDHPrivateJwk,
+  // EphemeralECDHPrivateJwk,
   ResponseModeOption,
   EmbedOption,
   GetWalletResponseMethod,
   ResponseCode,
+  EphemeralECDHPublicJwk,
 } from '..';
 
 describe('Presentation.fromJSON', () => {
@@ -27,7 +28,7 @@ describe('Presentation.fromJSON', () => {
       },
       request_id: 'request-id',
       nonce: 'nonce-value',
-      ephemeral_ecdh_private_jwk: 'private-jwk',
+      ephemeral_ecdh_public_jwk: 'public-jwk',
       response_mode: 'direct_post',
       presentation_definition_mode: {
         __type: 'ByValue',
@@ -49,8 +50,8 @@ describe('Presentation.fromJSON', () => {
     expect(presentation.type).toBeInstanceOf(PresentationType.VpTokenRequest);
     expect(presentation.requestId).toEqual(new RequestId('request-id'));
     expect(presentation.nonce).toEqual(new Nonce('nonce-value'));
-    expect(presentation.ephemeralECDHPrivateJwk).toEqual(
-      new EphemeralECDHPrivateJwk('private-jwk')
+    expect(presentation.ephemeralECDHPublicJwk).toEqual(
+      new EphemeralECDHPublicJwk('public-jwk')
     );
     expect(presentation.responseMode).toEqual(ResponseModeOption.DirectPost);
     expect(presentation.presentationDefinitionMode).toEqual(
@@ -73,7 +74,7 @@ describe('Presentation.fromJSON', () => {
       request_id: 'request-id',
       request_object_retrieved_at: '2023-06-08T10:05:00Z',
       nonce: 'nonce-value',
-      ephemeral_ecdh_private_jwk: 'private-jwk',
+      ephemeral_ecdh_public_jwk: 'public-jwk',
       response_mode: 'direct_post',
       get_wallet_response_method: {
         __type: 'Poll',
@@ -95,8 +96,8 @@ describe('Presentation.fromJSON', () => {
       new Date('2023-06-08T10:05:00Z')
     );
     expect(presentation.nonce).toEqual(new Nonce('nonce-value'));
-    expect(presentation.ephemeralECDHPrivateJwk).toEqual(
-      new EphemeralECDHPrivateJwk('private-jwk')
+    expect(presentation.ephemeralECDHPublicJwk).toEqual(
+      new EphemeralECDHPublicJwk('public-jwk')
     );
     expect(presentation.responseMode).toEqual(ResponseModeOption.DirectPost);
     expect(presentation.getWalletResponseMethod).toEqual(
@@ -117,8 +118,8 @@ describe('Presentation.fromJSON', () => {
       request_object_retrieved_at: '2023-06-08T10:05:00Z',
       submitted_at: '2023-06-08T10:10:00Z',
       wallet_response: {
-        __type: 'IdToken',
-        id_token: 'id-token-value',
+        state: 'state',
+        response: 'response',
       },
       nonce: 'nonce-value',
       response_code: 'response-code-value',
@@ -140,8 +141,8 @@ describe('Presentation.fromJSON', () => {
     );
     expect(presentation.submittedAt).toEqual(new Date('2023-06-08T10:10:00Z'));
     expect(presentation.walletResponse).toMatchObject({
-      __type: 'IdToken',
-      idToken: 'id-token-value',
+      state: 'state',
+      jarm: 'response',
     });
     expect(presentation.nonce).toEqual(new Nonce('nonce-value'));
     expect(presentation.responseCode).toEqual(

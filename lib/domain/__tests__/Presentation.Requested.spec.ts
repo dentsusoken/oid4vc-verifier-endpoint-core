@@ -3,13 +3,14 @@ import {
   TransactionId,
   RequestId,
   Nonce,
-  EphemeralECDHPrivateJwk,
+  // EphemeralECDHPrivateJwk,
   IdTokenType,
   EmbedOption,
   GetWalletResponseMethod,
   ResponseModeOption,
   Presentation,
   PresentationType,
+  EphemeralECDHPublicJwk,
 } from '..';
 import { Id, PresentationDefinition } from '@vecrea/oid4vc-prex';
 
@@ -19,7 +20,7 @@ describe('Requested', () => {
   const type = new PresentationType.IdTokenRequest([IdTokenType.SubjectSigned]);
   const requestId = new RequestId('request-id');
   const nonce = new Nonce('nonce');
-  const ephemeralECDHPrivateJwk = new EphemeralECDHPrivateJwk('hoge');
+  const ephemeralECDHPublicJwk = new EphemeralECDHPublicJwk('hoge');
   const responseMode = ResponseModeOption.DirectPostJwt;
   const presentationDefinitionMode = EmbedOption.ByValue.INSTANCE;
   const getWalletResponseMethod = new GetWalletResponseMethod.Redirect(
@@ -33,7 +34,7 @@ describe('Requested', () => {
       type,
       requestId,
       nonce,
-      ephemeralECDHPrivateJwk,
+      ephemeralECDHPublicJwk,
       responseMode,
       presentationDefinitionMode,
       getWalletResponseMethod
@@ -44,7 +45,7 @@ describe('Requested', () => {
     expect(requested.type).toBe(type);
     expect(requested.requestId).toBe(requestId);
     expect(requested.nonce).toBe(nonce);
-    expect(requested.ephemeralECDHPrivateJwk).toBe(ephemeralECDHPrivateJwk);
+    expect(requested.ephemeralECDHPublicJwk).toBe(ephemeralECDHPublicJwk);
     expect(requested.responseMode).toBe(responseMode);
     expect(requested.presentationDefinitionMode).toBe(
       presentationDefinitionMode
@@ -59,7 +60,7 @@ describe('Requested', () => {
       type,
       requestId,
       nonce,
-      ephemeralECDHPrivateJwk,
+      ephemeralECDHPublicJwk,
       responseMode,
       presentationDefinitionMode,
       getWalletResponseMethod
@@ -93,7 +94,7 @@ describe('Requested', () => {
         type,
         requestId,
         nonce,
-        ephemeralECDHPrivateJwk,
+        ephemeralECDHPublicJwk,
         responseMode,
         presentationDefinitionMode,
         getWalletResponseMethod
@@ -105,8 +106,8 @@ describe('Requested', () => {
         expect(presentation.type).toBe(type);
         expect(presentation.requestId).toBe(requestId);
         expect(presentation.nonce).toBe(nonce);
-        expect(presentation.ephemeralECDHPrivateJwk).toBe(
-          ephemeralECDHPrivateJwk
+        expect(presentation.ephemeralECDHPublicJwk).toBe(
+          ephemeralECDHPublicJwk
         );
         expect(presentation.responseMode).toBe(responseMode);
         expect(presentation.presentationDefinitionMode).toBe(
@@ -127,7 +128,7 @@ describe('Requested', () => {
         type,
         requestId,
         nonce,
-        ephemeralECDHPrivateJwk,
+        ephemeralECDHPublicJwk,
         responseMode,
         presentationDefinitionMode,
         getWalletResponseMethod
@@ -140,8 +141,8 @@ describe('Requested', () => {
           expect(presentation.type).toBe(type);
           expect(presentation.requestId).toBe(requestId);
           expect(presentation.nonce).toBe(nonce);
-          expect(presentation.ephemeralECDHPrivateJwk).toBe(
-            ephemeralECDHPrivateJwk
+          expect(presentation.ephemeralECDHPublicJwk).toBe(
+            ephemeralECDHPublicJwk
           );
           expect(presentation.responseMode).toBe(responseMode);
           expect(presentation.presentationDefinitionMode).toBe(
@@ -174,7 +175,7 @@ describe('Requested', () => {
         type,
         requestId,
         nonce,
-        ephemeralECDHPrivateJwk,
+        ephemeralECDHPublicJwk,
         responseMode,
         presentationDefinitionMode,
         getWalletResponseMethod
@@ -199,7 +200,7 @@ describe('Requested', () => {
         },
         request_id: 'def456',
         nonce: 'ghi789',
-        ephemeral_ecdh_private_jwk: 'hoge',
+        ephemeral_ecdh_public_jwk: 'hoge',
         response_mode: 'direct_post',
         presentation_definition_mode: {
           __type: 'ByValue',
@@ -230,7 +231,7 @@ describe('Requested', () => {
         },
         request_id: 'def456',
         nonce: 'ghi789',
-        ephemeral_ecdh_private_jwk: 'hoge',
+        ephemeral_ecdh_public_jwk: 'hoge',
         response_mode: 'direct_post',
         presentation_definition_mode: {
           __type: 'ByValue',
@@ -254,8 +255,8 @@ describe('Requested', () => {
       );
       expect(requested.requestId).toEqual(new RequestId('def456'));
       expect(requested.nonce).toEqual(new Nonce('ghi789'));
-      expect(requested.ephemeralECDHPrivateJwk).toEqual(
-        new EphemeralECDHPrivateJwk('hoge')
+      expect(requested.ephemeralECDHPublicJwk).toEqual(
+        new EphemeralECDHPublicJwk('hoge')
       );
       expect(requested.responseMode).toEqual(ResponseModeOption.DirectPost);
       expect(requested.presentationDefinitionMode).toEqual(
@@ -296,7 +297,7 @@ describe('Requested', () => {
       const requested = Presentation.Requested.fromJSON(json);
 
       expect(requested).toBeInstanceOf(Presentation.Requested);
-      expect(requested.ephemeralECDHPrivateJwk).toBeUndefined();
+      expect(requested.ephemeralECDHPublicJwk).toBeUndefined();
     });
   });
 });

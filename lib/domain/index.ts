@@ -32,6 +32,7 @@ export * from './Nonce';
 export * from './PresentationType';
 export * from './WalletResponse';
 export * from './EphemeralECDHPrivateJwk';
+export * from './EphemeralECDHPublicJwk';
 export * from './StaticSigningPrivateJwk';
 export * from './ResponseCode';
 export * from './ResponseModeOption';

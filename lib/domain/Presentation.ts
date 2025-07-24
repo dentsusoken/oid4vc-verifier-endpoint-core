@@ -18,10 +18,14 @@ import { z } from 'zod';
 import { TransactionId, transactionIdSchema } from './TransactionId';
 import { PresentationType, presentationTypeSchema } from './PresentationType';
 import { RequestId, requestIdScheme } from './RequestId';
+// import {
+//   EphemeralECDHPrivateJwk,
+//   ephemeralECDHPrivateJwkSchema,
+// } from './EphemeralECDHPrivateJwk';
 import {
-  EphemeralECDHPrivateJwk,
-  ephemeralECDHPrivateJwkSchema,
-} from './EphemeralECDHPrivateJwk';
+  EphemeralECDHPublicJwk,
+  ephemeralECDHPublicJwkSchema,
+} from './EphemeralECDHPublicJwk';
 import {
   ResponseModeOption,
   responseModeOptionSchema,
@@ -32,11 +36,15 @@ import {
   getWalletResponseMethodSchema,
 } from './GetWalletResponseMethod';
 import { Nonce, nonceSchema } from './Nonce';
-import { WalletResponse, walletResponseSchema } from './WalletResponse';
+// import { WalletResponse } from './WalletResponse';
 import { ResponseCode, responseCodeSchema } from './ResponseCode';
 import { iso8601Schema } from './iso8601Schema';
 import { FromJSON } from '../common/json/FromJSON';
 import { Result, runCatching } from '@vecrea/oid4vc-core/utils';
+import {
+  AuthorizationResponse,
+  authorizationResponseSchema,
+} from './AuthorizationResponse';
 
 /**
  * Represents a presentation.
@@ -68,7 +76,7 @@ const requestedSchema = z.object({
   type: presentationTypeSchema,
   request_id: requestIdScheme,
   nonce: nonceSchema,
-  ephemeral_ecdh_private_jwk: z.optional(ephemeralECDHPrivateJwkSchema),
+  ephemeral_ecdh_public_jwk: z.optional(ephemeralECDHPublicJwkSchema),
   response_mode: responseModeOptionSchema,
   presentation_definition_mode: embedOptionSchema,
   get_wallet_response_method: getWalletResponseMethodSchema,
@@ -96,7 +104,7 @@ const requestObjectRetrievedSchema = z.object({
   request_id: requestIdScheme,
   request_object_retrieved_at: iso8601Schema,
   nonce: nonceSchema,
-  ephemeral_ecdh_private_jwk: z.optional(ephemeralECDHPrivateJwkSchema),
+  ephemeral_ecdh_public_jwk: z.optional(ephemeralECDHPublicJwkSchema),
   response_mode: responseModeOptionSchema,
   get_wallet_response_method: getWalletResponseMethodSchema,
 });
@@ -123,7 +131,7 @@ const submittedSchema = z.object({
   request_id: requestIdScheme,
   request_object_retrieved_at: iso8601Schema,
   submitted_at: iso8601Schema,
-  wallet_response: walletResponseSchema,
+  wallet_response: authorizationResponseSchema,
   nonce: nonceSchema,
   response_code: z.optional(responseCodeSchema),
 });
@@ -328,8 +336,8 @@ export namespace Presentation {
         PresentationType.fromJSON(json.type),
         new RequestId(json.request_id),
         new Nonce(json.nonce),
-        json.ephemeral_ecdh_private_jwk
-          ? new EphemeralECDHPrivateJwk(json.ephemeral_ecdh_private_jwk)
+        json.ephemeral_ecdh_public_jwk
+          ? new EphemeralECDHPublicJwk(json.ephemeral_ecdh_public_jwk)
           : undefined,
         json.response_mode,
         EmbedOption.fromJSON(json.presentation_definition_mode),
@@ -353,7 +361,7 @@ export namespace Presentation {
       public type: PresentationType,
       public requestId: RequestId,
       public nonce: Nonce,
-      public ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk | undefined,
+      public ephemeralECDHPublicJwk: EphemeralECDHPublicJwk | undefined,
       public responseMode: ResponseModeOption,
       public presentationDefinitionMode: EmbedOption,
       public getWalletResponseMethod: GetWalletResponseMethod
@@ -374,7 +382,7 @@ export namespace Presentation {
             this.requestId,
             at,
             this.nonce,
-            this.ephemeralECDHPrivateJwk,
+            this.ephemeralECDHPublicJwk,
             this.responseMode,
             this.getWalletResponseMethod
           )
@@ -409,8 +417,8 @@ export namespace Presentation {
         get_wallet_response_method: this.getWalletResponseMethod.toJSON(),
       };
 
-      if (this.ephemeralECDHPrivateJwk) {
-        json.ephemeral_ecdh_private_jwk = this.ephemeralECDHPrivateJwk.toJSON();
+      if (this.ephemeralECDHPublicJwk) {
+        json.ephemeral_ecdh_public_jwk = this.ephemeralECDHPublicJwk.toJSON();
       }
 
       return json;
@@ -458,8 +466,8 @@ export namespace Presentation {
         new RequestId(json.request_id),
         new Date(json.request_object_retrieved_at),
         new Nonce(json.nonce),
-        json.ephemeral_ecdh_private_jwk
-          ? new EphemeralECDHPrivateJwk(json.ephemeral_ecdh_private_jwk)
+        json.ephemeral_ecdh_public_jwk
+          ? new EphemeralECDHPublicJwk(json.ephemeral_ecdh_public_jwk)
           : undefined,
         json.response_mode,
         GetWalletResponseMethod.fromJSON(json.get_wallet_response_method)
@@ -484,7 +492,7 @@ export namespace Presentation {
       public requestId: RequestId,
       public requestObjectRetrievedAt: Date,
       public nonce: Nonce,
-      public ephemeralECDHPrivateJwk: EphemeralECDHPrivateJwk | undefined,
+      public ephemeralECDHPublicJwk: EphemeralECDHPublicJwk | undefined,
       public responseMode: ResponseModeOption,
       public getWalletResponseMethod: GetWalletResponseMethod
     ) {
@@ -507,7 +515,7 @@ export namespace Presentation {
      */
     submit(
       at: Date,
-      walletResponse: WalletResponse,
+      walletResponse: AuthorizationResponse,
       responseCode: ResponseCode | undefined
     ): Result<Presentation.Submitted> {
       return runCatching(
@@ -555,8 +563,8 @@ export namespace Presentation {
         get_wallet_response_method: this.getWalletResponseMethod.toJSON(),
       };
 
-      if (this.ephemeralECDHPrivateJwk) {
-        json.ephemeral_ecdh_private_jwk = this.ephemeralECDHPrivateJwk.toJSON();
+      if (this.ephemeralECDHPublicJwk) {
+        json.ephemeral_ecdh_public_jwk = this.ephemeralECDHPublicJwk.toJSON();
       }
 
       return json;
@@ -603,7 +611,7 @@ export namespace Presentation {
         new RequestId(json.request_id),
         new Date(json.request_object_retrieved_at),
         new Date(json.submitted_at),
-        WalletResponse.fromJson(json.wallet_response),
+        AuthorizationResponse.fromJSON(json.wallet_response),
         new Nonce(json.nonce),
         json.response_code ? new ResponseCode(json.response_code) : undefined
       );
@@ -616,7 +624,7 @@ export namespace Presentation {
      * @param {RequestId} requestId - The request ID.
      * @param {Date} requestObjectRetrievedAt - The request object retrieval date and time.
      * @param {Date} submittedAt - The submission date and time.
-     * @param {WalletResponse} walletResponse - The wallet response.
+     * @param {AuthorizationResponse} walletResponse - The wallet response.
      * @param {Nonce} nonce - The nonce.
      * @param {ResponseCode | undefined} responseCode - The response code.
      */
@@ -627,7 +635,7 @@ export namespace Presentation {
       public requestId: RequestId,
       public requestObjectRetrievedAt: Date,
       public submittedAt: Date,
-      public walletResponse: WalletResponse,
+      public walletResponse: AuthorizationResponse,
       public nonce: Nonce,
       public responseCode: ResponseCode | undefined
     ) {
