@@ -104,7 +104,6 @@ curl --location 'https://oid4vc-verifier-endpoint-hono.g-trustedweb.workers.dev/
       'x': 'ODhL-OY1pZC9m4n4sR8AcBkR6WR9Flf-auV62TfjCpw',
       'y': 'WViWpkI_U7eGs73bcEnb52LHCwJ9bUu121-ZOBfb6II',
       'crv': 'P-256',
-      'd': 'dA5oiahJprWwVfkZ2mSeNszBNLRHTS209SDvfoTneYM',
       'kid': '48ca2b34-4133-46c9-997a-91a28383e435',
       'use': 'enc',
       'alg': 'ECDH-ES'
