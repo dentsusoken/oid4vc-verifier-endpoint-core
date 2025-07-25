@@ -23,15 +23,8 @@ This project is based on the [verifier-endpoint](https://github.com/eu-digital-i
 
 ### Sequence Diagrams
 
-#### Same device
-
-- [Markdown](docs/sequence/same_device.md)
-- [PDF](docs/sequence/same_device.pdf)
-
-#### Cross device
-
-- [Markdown](docs/sequence/cross_device.md)
-- [PDF](docs/sequence/cross_device.pdf)
+- [Same device](docs/sequence/same_device.md)
+- [Cross device](docs/sequence/cross_device.md)
 
 ### API Documentation
 
